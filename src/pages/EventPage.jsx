@@ -23,12 +23,16 @@ function EventPage() {
       <Container>
         <Row>
           <Col>
-            <PageTitle className="title">
-              {currentEvent.map((item) => item.title)}
-            </PageTitle>
+            {currentEvent.map((item) => (
+              <PageTitle
+                key={item.title}
+                className="title"
+              >
+                {item.title}
+              </PageTitle>
+            ))}
           </Col>
         </Row>
-
         <Row>
           <Col lg={12} xl={5}>
             <EventPageSlider name={name} />

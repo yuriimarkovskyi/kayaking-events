@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -7,9 +7,14 @@ const StyledSelect = styled.select`
   height: 40px;
 `;
 
-function Select({ children }) {
-  return <StyledSelect>{children}</StyledSelect>;
-}
+const Select = forwardRef(({ children, ...props }, ref) => (
+  <StyledSelect
+    ref={ref}
+    {...props}
+  >
+    {children}
+  </StyledSelect>
+));
 
 Select.propTypes = {
   children: PropTypes.node.isRequired,

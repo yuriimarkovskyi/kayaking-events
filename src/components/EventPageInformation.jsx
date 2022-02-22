@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { changeVisibilityAction } from '../store/visibilityReducer';
 import Modal from './UI/Modal';
-import EventPageForm from './EventPageForm';
 import Button from './UI/Button';
+import EventPageFormNew from './EventPageForm';
 
 const StyledEventPageInformation = styled.div`
   .list {
@@ -71,7 +71,7 @@ function EventPageInformation({ name }) {
       ))}
       <Button onClick={handleShowModal}>Реєстрація</Button>
       <Modal>
-        <EventPageForm name={name} />
+        <EventPageFormNew name={name} />
       </Modal>
     </StyledEventPageInformation>
   );

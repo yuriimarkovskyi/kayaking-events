@@ -21,7 +21,7 @@ const StyledModal = styled.div`
 
   .content {
     position: relative;
-    min-width: 350px;
+    min-width: 400px;
     padding: 30px;
     border-radius: 10px;
     background: white;
@@ -29,8 +29,10 @@ const StyledModal = styled.div`
 
   .icon-close {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
   }
 `;
 
@@ -59,20 +61,18 @@ function Modal({ children }) {
   return (
     <StyledModal
       className={visibility && 'active'}
-      onClick={handleCloseModal}
       onKeyDown={handleKeyDown}
-      tabIndex="0"
     >
       <div className="content">
         {children}
-
-        <button
-          type="button"
+        <input
+          type="image"
+          src={`${window.location.origin}/images/icons/icon-close.png`}
+          alt=""
           className="icon-close"
           onClick={handleCloseModal}
-        >
-          X
-        </button>
+          onKeyDown={handleKeyDown}
+        />
       </div>
     </StyledModal>
   );

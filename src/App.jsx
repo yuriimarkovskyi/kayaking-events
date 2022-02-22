@@ -1,9 +1,6 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
-import EventList from './pages/EventList';
-import EventPage from './pages/EventPage';
-import EventsInformation from './pages/EventsInformation';
+import AppRoutes from './components/AppRoutes';
 
 const StyledApp = styled.div`
   padding: 20px;
@@ -12,14 +9,7 @@ const StyledApp = styled.div`
 function App() {
   return (
     <StyledApp>
-      <Routes>
-        <Route path="/" element={<EventList />} />
-        <Route path="/event/:name" element={<EventPage />} />
-        <Route
-          path="/events-information"
-          element={<EventsInformation />}
-        />
-      </Routes>
+      <AppRoutes />
     </StyledApp>
   );
 }

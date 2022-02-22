@@ -28,7 +28,6 @@ const StyledEventListItem = styled(Link)`
 `;
 
 function EventListItem({ event }) {
-  console.log(event);
   return (
     <StyledEventListItem to={`event/${event.name}`}>
       <h3 className="title">{event.title}</h3>
@@ -38,7 +37,18 @@ function EventListItem({ event }) {
 }
 
 EventListItem.propTypes = {
-  event: PropTypes.objectOf(PropTypes.string).isRequired,
+  event: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+    dates: PropTypes.arrayOf(PropTypes.number).isRequired,
+    priceSingleKayak: PropTypes.number.isRequired,
+    priceDoubleKayak: PropTypes.number.isRequired,
+    imagesSlider: PropTypes.arrayOf(PropTypes.string).isRequired,
+    descriptionFeatures: PropTypes.arrayOf(PropTypes.string).isRequired,
+  }).isRequired,
 };
 
 export default EventListItem;

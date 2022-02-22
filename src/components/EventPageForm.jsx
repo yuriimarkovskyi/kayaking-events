@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
+import { useForm, Controller } from 'react-hook-form';
 import { addMemberAction } from '../store/membersReducer/action';
 import { changeVisibilityAction } from '../store/visibilityReducer';
 import Button from './UI/Button';
@@ -26,8 +27,14 @@ const StyledEventPageForm = styled.form`
   }
 
   .kayaks-counter {
-    span {
+    &__title {
       font-weight: bold;
+      margin-right: 5px;
+    }
+
+    &__input {
+      border: none;
+      width: 50px;
     }
   }
 
@@ -39,45 +46,31 @@ const StyledEventPageForm = styled.form`
 `;
 
 function EventPageForm({ name }) {
-  const nameRef = useRef();
-  const emailRef = useRef();
-  const phoneRef = useRef();
-  const selectRef = useRef();
-  const priceRef = useRef();
-  const textAreaRef = useRef();
-
-  const [singleKayaks, setSingleKayaks] = useState(0);
-  const [doubleKayaks, setDoubleKayaks] = useState(0);
-
   const dispatch = useDispatch();
+  const {
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: 'onBlur',
+  });
+
+  const members = useSelector((state) => state.members.members);
   const events = useSelector((state) => state.events.events);
   const currentEvent = events.filter((item) => item.name === name);
   const priceSingleKayak = currentEvent.map((item) => item.priceSingleKayak);
   const priceDoubleKayak = currentEvent.map((item) => item.priceDoubleKayak);
-  const members = useSelector((state) => state.members.members);
+  const [date, setDate] = useState();
+  const [singleKayaks, setSingleKayaks] = useState(0);
+  const [doubleKayaks, setDoubleKayaks] = useState(0);
+  const [price, setPrice] = useState();
+  const totalPrice = priceSingleKayak * singleKayaks + priceDoubleKayak * doubleKayaks;
 
-  const addNewPost = (e) => {
-    e.preventDefault();
-
-    const item = {
-      event: name,
-      name: nameRef.current.value,
-      email: emailRef.current.value,
-      phone: phoneRef.current.value,
-      date: selectRef.current.value,
-      notes: textAreaRef.current.value,
-      singleKayaks,
-      doubleKayaks,
-      price: priceRef.current.textContent.replace(/\D/g, ''),
-    };
-
-    dispatch(addMemberAction(item));
-    dispatch(changeVisibilityAction());
+  const handleChangeDate = (e) => {
+    setDate(e.target.value);
+    console.log(e.target.value);
   };
-
-  useEffect(() => {
-    localStorage.setItem(name, JSON.stringify(members));
-  }, [members]);
 
   const handleIncreaseSingleKayaks = () => {
     setSingleKayaks(singleKayaks + 1);
@@ -95,31 +88,110 @@ function EventPageForm({ name }) {
     setDoubleKayaks(doubleKayaks - 1);
   };
 
+  const handleChangePrice = () => {
+    setPrice(totalPrice);
+  };
+
+  const onSubmit = (data) => {
+    const member = {
+      id: Date.now(),
+      event: name,
+      name: data.customerName,
+      email: data.email,
+      phone: data.phone,
+      date: data.date,
+      singleKayaks,
+      doubleKayaks,
+      price: totalPrice,
+      notes: data.notes,
+    };
+    console.log(member);
+    dispatch(addMemberAction(member));
+    dispatch(changeVisibilityAction());
+    reset();
+  };
+
+  useEffect(() => {
+    localStorage.setItem(name, JSON.stringify(members));
+  }, [members]);
+
   return (
-    <StyledEventPageForm>
-      <Input ref={nameRef} placeholder="ПІБ" required />
-      <Input ref={emailRef} type="email" placeholder="Email" />
-      <Input ref={phoneRef} type="phone" placeholder="Номер телефону" />
-      <Select ref={selectRef} defaultValue="Дата походу">
-        <option disabled>Дата походу</option>
-        {currentEvent.map((item) => item.dates.map((date) => (
-          <option key={date}>{new Date(date).toLocaleDateString()}</option>
-        )))}
-      </Select>
+    <StyledEventPageForm onSubmit={handleSubmit(onSubmit)}>
+      {errors.name && <span>{errors.name.message}</span>}
+      <Controller
+        defaultValue=""
+        name="customerName"
+        control={control}
+        rules={{ required: 'Введіть ПІБ' }}
+        render={({ field }) => (
+          <Input
+            placeholder="ПІБ"
+            {...field}
+          />
+        )}
+      />
+      {errors.email && <span>{errors.email.message}</span>}
+      <Controller
+        defaultValue=""
+        name="email"
+        control={control}
+        rules={{ required: 'Введіть email' }}
+        render={({ field }) => (
+          <Input
+            type="email"
+            placeholder="Електронна пошта"
+            {...field}
+          />
+        )}
+      />
+      {errors.phone && <span>{errors.phone.message}</span>}
+      <Controller
+        defaultValue=""
+        name="phone"
+        control={control}
+        rules={{ required: 'Введіть номер телефону' }}
+        render={({ field }) => (
+          <Input
+            type="phone"
+            placeholder="Номер телефону"
+            {...field}
+          />
+        )}
+      />
+      <Controller
+        defaultValue={date}
+        value={date}
+        name="date"
+        control={control}
+        rules={{ required: 'Оберіть дату походу' }}
+        render={({ field }) => (
+          <Select
+            onChange={handleChangeDate}
+            {...field}
+          >
+            {currentEvent.map((item) => item.dates.map((eventDate) => (
+              <option key={eventDate}>
+                {new Date(eventDate).toLocaleDateString()}
+              </option>
+            )))}
+          </Select>
+        )}
+      />
       <div className="kayaks-count">
         <p className="kayaks-counter">
           Одномісних каяків:
           <span>
-            {' '}
-            {singleKayaks}
+            {` ${singleKayaks}`}
           </span>
         </p>
-        <Button secondary type="button" onClick={handleIncreaseSingleKayaks}>
+        <Button
+          secondary
+          onClick={handleIncreaseSingleKayaks}
+        >
           +
         </Button>
         <Button
           secondary
-          type="button"
           disabled={!singleKayaks}
           onClick={handleDecreaseSingleKayaks}
         >
@@ -134,30 +206,45 @@ function EventPageForm({ name }) {
             {doubleKayaks}
           </span>
         </p>
-        <Button secondary type="button" onClick={handleIncreaseDoubleKayaks}>
+        <Button
+          secondary
+          onClick={handleIncreaseDoubleKayaks}
+        >
           +
         </Button>
         <Button
           secondary
-          type="button"
           disabled={!doubleKayaks}
           onClick={handleDecreaseDoubleKayaks}
         >
           -
         </Button>
       </div>
-      <p className="price" ref={priceRef}>
+      <p
+        value={price}
+        onChange={handleChangePrice}
+        className="price"
+      >
         Загальна вартість:
         <span>
-          {' '}
-          {priceSingleKayak * singleKayaks
-            + priceDoubleKayak * doubleKayaks}
-          {' '}
+          {` ${priceSingleKayak * singleKayaks + priceDoubleKayak * doubleKayaks} `}
         </span>
         UAH
       </p>
-      <TextArea ref={textAreaRef} placeholder="Примітки" />
-      <Button onClick={addNewPost}>Зареєструватись</Button>
+      <Controller
+        defaultValue=""
+        name="notes"
+        control={control}
+        render={({ field }) => (
+          <TextArea
+            placeholder="Примітки"
+            {...field}
+          />
+        )}
+      />
+      <Button type="submit" disabled={!isValid}>
+        Зареєструватись
+      </Button>
     </StyledEventPageForm>
   );
 }

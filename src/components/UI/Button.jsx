@@ -26,12 +26,34 @@ const StyledButton = styled.button`
   }
 `;
 
-function Button({ children }) {
-  return <StyledButton>{children}</StyledButton>;
+function Button({
+  children, type, secondary, onClick, disabled,
+}) {
+  return (
+    <StyledButton
+      type={type}
+      secondary={secondary}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {children}
+    </StyledButton>
+  );
 }
 
 Button.propTypes = {
   children: PropTypes.string.isRequired,
+  type: PropTypes.string,
+  secondary: PropTypes.bool,
+  onClick: PropTypes.func,
+  disabled: PropTypes.bool,
+};
+
+Button.defaultProps = {
+  type: 'button',
+  secondary: false,
+  onClick: null,
+  disabled: false,
 };
 
 export default Button;

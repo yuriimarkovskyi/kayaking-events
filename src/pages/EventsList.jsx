@@ -17,7 +17,7 @@ const StyledEventList = styled.div`
   }
 `;
 
-function EventList() {
+function EventsList() {
   const events = useSelector((state) => state.events.events);
 
   return (
@@ -40,4 +40,4 @@ function EventList() {
   );
 }
 
-export default EventList;
+export default EventsList;

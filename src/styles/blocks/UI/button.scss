@@ -1,0 +1,29 @@
+.button {
+  border: 1px solid #4ec7da;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 18px;
+  background: #4ec7da;
+  color: white;
+  transition: 0.4s;
+
+  &:hover {
+    background: white;
+    color: #4ec7da;
+  }
+
+  &[disabled] {
+    pointer-events: none;
+    border: 1px solid transparent;
+    background: #c0c0c0;
+  }
+
+  &_secondary {
+    border-radius: 50%;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    font-size: 22px;
+    line-height: 0;
+  }
+}

@@ -1,0 +1,13 @@
+.event-information {
+  &__list {
+    &:not(:last-child) {
+      margin-bottom: 15px;
+    }
+  }
+
+  &__list-item {
+    &_bold {
+      font-weight: bold;
+    }
+  }
+}

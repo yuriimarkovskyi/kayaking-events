@@ -1,18 +1,13 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import EventsList from '../pages/EventsList';
-import EventPage from '../pages/EventPage';
-import EventsInformation from '../pages/EventsInformation';
+import { Routes, Route } from 'react-router-dom';
+import { routes } from '../helpers/routes';
 
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<EventsList />} />
-      <Route path="/event/:name" element={<EventPage />} />
-      <Route
-        path="/events-information"
-        element={<EventsInformation />}
-      />
+      {routes.map((route) => (
+        <Route key={route.path} path={route.path} element={route.element} />
+      ))}
     </Routes>
   );
 }

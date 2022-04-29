@@ -1,0 +1,23 @@
+.events-item {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 350px;
+  padding: 10px;
+  transition: 0.4s;
+  border: 1px solid;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &__title {
+    flex: 1 0 auto;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  &__image {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+}

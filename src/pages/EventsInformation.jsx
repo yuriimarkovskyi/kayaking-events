@@ -11,7 +11,7 @@ function EventsInformation() {
   };
 
   return (
-    <div>
+    <>
       <button type="button" data-value="members" onClick={handleTab}>
         Members
       </button>
@@ -78,7 +78,7 @@ function EventsInformation() {
           </ul>
         ))
         : '123'}
-    </div>
+    </>
   );
 }
 

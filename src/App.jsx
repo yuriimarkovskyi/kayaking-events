@@ -1,16 +1,12 @@
 import React from 'react';
-import styled from 'styled-components';
+import { Container } from 'react-bootstrap';
 import AppRoutes from './components/AppRoutes';
-
-const StyledApp = styled.div`
-  padding: 20px;
-`;
 
 function App() {
   return (
-    <StyledApp>
+    <Container>
       <AppRoutes />
-    </StyledApp>
+    </Container>
   );
 }
 

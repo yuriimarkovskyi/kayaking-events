@@ -1,0 +1,14 @@
+.event-slider {
+  @include media-extra {
+    margin-bottom: 30px;
+  }
+
+  &__pagination {
+    margin-top: 10px;
+  }
+
+  &__image {
+    width: 100%;
+    border-radius: 10px;
+  }
+}

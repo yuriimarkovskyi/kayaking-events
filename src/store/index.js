@@ -1,13 +1,12 @@
-import { legacy_createStore as createStore, combineReducers } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import { eventsReducer } from './eventsReducer';
-import { visibilityReducer } from './visibilityReducer';
-import { membersReducer } from './membersReducer';
+import { configureStore } from '@reduxjs/toolkit';
+import visibilitySlice from './visibilitySlice';
+import eventsSlice from './eventsSlice';
+import membersSlice from './membersSlice';
 
-const rootReducer = combineReducers({
-  events: eventsReducer,
-  visibility: visibilityReducer,
-  members: membersReducer,
+export const store = configureStore({
+  reducer: {
+    events: eventsSlice,
+    visibility: visibilitySlice,
+    members: membersSlice,
+  },
 });
-
-export const store = createStore(rootReducer, composeWithDevTools());

@@ -1,19 +1,19 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeVisibilityAction } from '../../store/visibilityReducer';
+import { changeVisibility } from '../../store/visibilitySlice';
 
 function Modal({ children }) {
   const dispatch = useDispatch();
-  const visibility = useSelector((state) => state.visibility.visibility);
+  const visibility = useSelector((state) => state.visibility);
 
   const handleCloseModal = () => {
-    dispatch(changeVisibilityAction());
+    dispatch(changeVisibility());
   };
 
   const handleKeyDown = (e) => {
     if (e.keyCode === 27) {
-      dispatch(changeVisibilityAction());
+      dispatch(changeVisibility());
     }
   };
 

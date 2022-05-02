@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeVisibilityAction } from '../store/visibilityReducer';
+import { changeVisibility } from '../store/visibilitySlice';
 import Modal from './UI/Modal';
 import Button from './UI/Button';
 import EventForm from './EventForm';
@@ -12,14 +12,16 @@ function EventInformation({ name }) {
   const currentEvent = events.filter((item) => item.name === name);
 
   const handleShowModal = () => {
-    dispatch(changeVisibilityAction());
+    dispatch(changeVisibility());
   };
 
   return (
     <div className="event-information">
       {currentEvent.map((item) => (
         <ul key={item.id} className="event-information__list">
-          <li className="event-information__list-item">{item.description}</li>
+          <li className="event-information__list-item">
+            {item.description}
+          </li>
           <ul className="event-information__list">
             {item.descriptionFeatures.map((feature) => (
               <li className="list-item" key={feature}>
@@ -27,7 +29,9 @@ function EventInformation({ name }) {
               </li>
             ))}
           </ul>
-          <li className="event-information__list-item event-information__list-item_bold">Вартість:</li>
+          <li className="event-information__list-item event-information__list-item_bold">
+            Вартість:
+          </li>
           <ul className="event-information__list">
             <li className="event-information__list-item">
               Одномісний каяк -
@@ -44,7 +48,9 @@ function EventInformation({ name }) {
               ГРН
             </li>
           </ul>
-          <li className="event-information__list-item event-information__list-item_bold">Дати:</li>
+          <li className="event-information__list-item event-information__list-item_bold">
+            Дати:
+          </li>
           <ul className="event-information__list">
             {item.dates.map((date) => (
               <li key={date} className="event-information__list-item">

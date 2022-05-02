@@ -13,7 +13,7 @@ export const routes = [
     element: <Event />,
   },
   {
-    path: '/events-information',
+    path: '/events-info',
     element: <EventsInformation />,
   },
   {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
@@ -7,34 +7,20 @@ import Button from './UI/Button';
 import { addMember } from '../store/membersSlice';
 
 function EventForm({ name }) {
+  const {
+    register, handleSubmit, watch, reset, formState: { errors, isValid },
+  } = useForm({ mode: 'onBlur' });
+
   const dispatch = useDispatch();
   const members = useSelector((state) => state.members.members);
   const events = useSelector((state) => state.events.events);
   const currentEvent = events.filter((item) => item.name === name);
-  const priceSingleKayak = currentEvent.map((item) => item.priceSingleKayak);
+
+  const soloKayaks = watch('soloKayaks', 0);
+  const doubleKayaks = watch('doubleKayaks', 0);
+  const priceSoloKayak = currentEvent.map((item) => item.priceSoloKayak);
   const priceDoubleKayak = currentEvent.map((item) => item.priceDoubleKayak);
-  const [singleKayaks, setSingleKayaks] = useState(0);
-  const [doubleKayaks, setDoubleKayaks] = useState(0);
-  const price = `${priceSingleKayak * singleKayaks + priceDoubleKayak * doubleKayaks} ГРН`;
-
-  const {
-    register, handleSubmit, reset, formState: { errors, isValid },
-  } = useForm({
-    mode: 'onBlur',
-    defaultValues: {
-      phone: '+380',
-      singleKayaks,
-      doubleKayaks,
-    },
-  });
-
-  const handleChangeSingleKayaks = (e) => {
-    setSingleKayaks(e.target.value);
-  };
-
-  const handleChangeDoubleKayaks = (e) => {
-    setDoubleKayaks(e.target.value);
-  };
+  const price = `${priceSoloKayak * soloKayaks + priceDoubleKayak * doubleKayaks} ГРН`;
 
   const onSubmit = (data) => {
     const member = {
@@ -44,17 +30,14 @@ function EventForm({ name }) {
       email: data.email,
       phone: data.phone,
       date: data.date,
-      singleKayaks: Number(data.singleKayaks),
+      soloKayaks: Number(data.soloKayaks),
       doubleKayaks: Number(data.doubleKayaks),
-      price,
+      price: Number(price),
       notes: data.notes,
     };
 
     dispatch(addMember(member));
     dispatch(changeVisibility());
-
-    setSingleKayaks(1);
-    setDoubleKayaks(1);
     reset();
   };
 
@@ -110,6 +93,7 @@ function EventForm({ name }) {
       <input
         type="tel"
         className={`event-form__field event-form__input ${errors.phone ? 'error' : ''}`}
+        defaultValue="+380"
         placeholder="Номер телефону"
         {...register('phone', {
           required: 'Поле обов`язкове для заповнення',
@@ -156,31 +140,29 @@ function EventForm({ name }) {
                     )}
       <div className="event-form__field-wrapper">
         <input
-          className="event-form__input-range"
           type="range"
-          onInput={handleChangeSingleKayaks}
-          onMouseUp={handleChangeSingleKayaks}
-          min="1"
+          className="event-form__input-range"
+          defaultValue="0"
+          min="0"
           max="10"
-          {...register('singleKayaks')}
+          {...register('soloKayaks', { required: true })}
         />
         <span className="event-form__input-range-value">
           Одномісних каяків
           {' - '}
           <span>
-            {singleKayaks}
+            {soloKayaks}
           </span>
         </span>
       </div>
       <div className="event-form__field-wrapper">
         <input
-          className="event-form__input-range"
           type="range"
-          onInput={handleChangeDoubleKayaks}
-          onMouseUp={handleChangeDoubleKayaks}
-          min="1"
+          className="event-form__input-range"
+          defaultValue="0"
+          min="0"
           max="10"
-          {...register('doubleKayaks')}
+          {...register('doubleKayaks', { required: true })}
         />
         <span className="event-form__input-range-value">
           Двомісних каяків

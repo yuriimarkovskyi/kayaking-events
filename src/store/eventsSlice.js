@@ -14,7 +14,7 @@ const eventsSlice = createSlice({
             '🤗 Друзі, запрошуємо вас на прогулянку каяками довкола острова Муромець!',
         image: `${path}/images/primary/ostriv-muromec.jpg`,
         dates: [1655203681000, 1625605200001],
-        priceSingleKayak: 730,
+        priceSoloKayak: 730,
         priceDoubleKayak: 570,
         imagesSlider: [
           `${path}/images/secondary/IMG_7989.jpg`,
@@ -42,7 +42,7 @@ const eventsSlice = createSlice({
             '🤗 Друзі, запрошуємо вас на сплав, що проходить у самому центрі нашого з вами улюбленого міста! Якщо ви новенький у місті або хочете побачити його з нової точки зору, цей сплав саме для вас!',
         image: `${path}/images/primary/sercem-kyjeva.jpg`,
         dates: [1655203681000, 1625605200001],
-        priceSingleKayak: 730,
+        priceSoloKayak: 730,
         priceDoubleKayak: 570,
         imagesSlider: [
           `${path}/images/secondary/IMG_7989.jpg`,

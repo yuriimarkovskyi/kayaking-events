@@ -16,7 +16,7 @@ const eventsSlice = createSlice({
         dates: [1655203681000, 1625605200001],
         priceSoloKayak: 730,
         priceDoubleKayak: 570,
-        imagesSlider: [
+        images: [
           `${path}/images/secondary/IMG_7989.jpg`,
           `${path}/images/secondary/IMG_8026.jpg`,
           `${path}/images/secondary/IMG_8070.jpg`,
@@ -44,7 +44,7 @@ const eventsSlice = createSlice({
         dates: [1655203681000, 1625605200001],
         priceSoloKayak: 730,
         priceDoubleKayak: 570,
-        imagesSlider: [
+        images: [
           `${path}/images/secondary/IMG_7989.jpg`,
           `${path}/images/secondary/IMG_8026.jpg`,
           `${path}/images/secondary/IMG_8070.jpg`,

@@ -11,7 +11,7 @@ function EventInformation({ name }) {
   const events = useSelector((state) => state.events.events);
   const currentEvent = events.filter((item) => item.name === name);
 
-  const handleShowModal = () => {
+  const showModal = () => {
     dispatch(changeVisibility());
   };
 
@@ -60,7 +60,7 @@ function EventInformation({ name }) {
           </ul>
         </ul>
       ))}
-      <Button type="button" onClick={handleShowModal}>
+      <Button type="button" onClick={showModal}>
         Реєстрація
       </Button>
       <Modal>

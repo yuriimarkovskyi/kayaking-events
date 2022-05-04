@@ -10,6 +10,7 @@
     "react": "^18.1.0",
     "react-bootstrap": "^2.1.1",
     "react-dom": "^18.1.0",
+    "react-helmet": "^6.1.0",
     "react-hook-form": "^7.26.1",
     "react-redux": "^8.0.1",
     "react-router-dom": "^6.2.1",

@@ -42,7 +42,7 @@ function EventForm({ name }) {
   };
 
   useEffect(() => {
-    localStorage.setItem(name, JSON.stringify(members));
+    localStorage.setItem('kayak-event', JSON.stringify(members));
   }, [members]);
 
   return (

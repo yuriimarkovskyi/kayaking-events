@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import EventsInformation from './EventsInformation';
+import AdminPanel from './AdminPanel';
 
 function LoginPage() {
   const [login, setLogin] = useState(false);
@@ -10,7 +10,7 @@ function LoginPage() {
   return (
     <div>
       {
-        !login
+        login
           ? (
             <form>
               <button type="button" onClick={logIn}>
@@ -19,7 +19,7 @@ function LoginPage() {
             </form>
           )
           : (
-            <EventsInformation />
+            <AdminPanel />
           )
       }
     </div>

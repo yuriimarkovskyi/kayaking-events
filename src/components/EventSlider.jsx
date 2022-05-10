@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 
-function EventSlider({ name }) {
+function EventSlider({ link }) {
   const events = useSelector((state) => state.events.events);
-  const currentEvent = events.filter((item) => item.name === name);
+  const currentEvent = events.filter((item) => item.link === link);
 
   return (
     <Splide
@@ -37,7 +37,7 @@ function EventSlider({ name }) {
 }
 
 EventSlider.propTypes = {
-  name: PropTypes.string.isRequired,
+  link: PropTypes.string.isRequired,
 };
 
 export default EventSlider;

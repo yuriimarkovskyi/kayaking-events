@@ -13,7 +13,7 @@ function AppRoutes() {
         element={<EventsList />}
       />
       <Route
-        path="event/:name"
+        path="event/:link"
         element={<EventPage />}
       />
       <Route

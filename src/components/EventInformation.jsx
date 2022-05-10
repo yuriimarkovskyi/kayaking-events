@@ -6,10 +6,10 @@ import Modal from './UI/Modal';
 import Button from './UI/Button';
 import EventForm from './EventForm';
 
-function EventInformation({ name }) {
+function EventInformation({ link }) {
   const dispatch = useDispatch();
   const events = useSelector((state) => state.events.events);
-  const currentEvent = events.filter((item) => item.name === name);
+  const currentEvent = events.filter((item) => item.link === link);
 
   const showModal = () => {
     dispatch(changeVisibility());
@@ -64,14 +64,14 @@ function EventInformation({ name }) {
         Реєстрація
       </Button>
       <Modal>
-        <EventForm name={name} />
+        <EventForm link={link} />
       </Modal>
     </div>
   );
 }
 
 EventInformation.propTypes = {
-  name: PropTypes.string.isRequired,
+  link: PropTypes.string.isRequired,
 };
 
 export default EventInformation;

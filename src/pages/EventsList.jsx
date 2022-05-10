@@ -21,7 +21,7 @@ function EventsList() {
         {events.map((event) => (
           <Link
             key={event.id}
-            to={`event/${event.name}`}
+            to={`event/${event.link}`}
             className="events-list__item"
           >
             <h3 className="events-list__item-title">

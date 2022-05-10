@@ -8,9 +8,9 @@ import EventSlider from '../components/EventSlider';
 import EventInformation from '../components/EventInformation';
 
 function EventPage() {
-  const { name } = useParams();
+  const { link } = useParams();
   const events = useSelector((state) => state.events.events);
-  const currentEvent = events.filter((item) => item.name === name);
+  const currentEvent = events.filter((item) => item.link === link);
 
   return (
     <>
@@ -32,10 +32,10 @@ function EventPage() {
       </Row>
       <Row>
         <Col lg={12} xl={5}>
-          <EventSlider name={name} />
+          <EventSlider link={link} />
         </Col>
         <Col lg={12} xl={7}>
-          <EventInformation name={name} />
+          <EventInformation link={link} />
         </Col>
       </Row>
     </>

@@ -6,7 +6,7 @@ import { changeVisibility } from '../store/visibilitySlice';
 import Button from './UI/Button';
 import { addMember } from '../store/membersSlice';
 
-function EventForm({ name }) {
+function EventForm({ link }) {
   const {
     register, handleSubmit, watch, reset, formState: { errors, isValid },
   } = useForm({ mode: 'onBlur' });
@@ -14,7 +14,7 @@ function EventForm({ name }) {
   const dispatch = useDispatch();
   const members = useSelector((state) => state.members.members);
   const events = useSelector((state) => state.events.events);
-  const currentEvent = events.filter((item) => item.name === name);
+  const currentEvent = events.filter((item) => item.link === link);
 
   const soloKayaks = watch('soloKayaks', 0);
   const doubleKayaks = watch('doubleKayaks', 0);
@@ -24,16 +24,21 @@ function EventForm({ name }) {
 
   const onSubmit = (data) => {
     const member = {
-      id: Date.now(),
-      event: name,
-      name: data.customerName,
-      email: data.email,
-      phone: data.phone,
-      date: data.date,
-      soloKayaks: Number(data.soloKayaks),
-      doubleKayaks: Number(data.doubleKayaks),
-      price: Number(price),
-      notes: data.notes,
+      event: link,
+      generalData: {
+        date: Number(data.date),
+        restData: {
+          id: Date.now(),
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          soloKayaks: Number(data.soloKayaks),
+          doubleKayaks: Number(data.doubleKayaks),
+          price: parseInt(price, 10),
+          notes: data.notes,
+          isCompleted: false,
+        },
+      },
     };
 
     dispatch(addMember(member));
@@ -42,7 +47,7 @@ function EventForm({ name }) {
   };
 
   useEffect(() => {
-    localStorage.setItem('kayak-event', JSON.stringify(members));
+    localStorage.setItem('events-list', JSON.stringify(members));
   }, [members]);
 
   return (
@@ -50,7 +55,7 @@ function EventForm({ name }) {
       <input
         className={`event-form__field event-form__input ${errors.customerName ? 'error' : ''}`}
         placeholder="ПІБ"
-        {...register('customerName', {
+        {...register('name', {
           required: 'Поле обов`язкове для заповнення',
           minLength: {
             value: 6,
@@ -127,7 +132,7 @@ function EventForm({ name }) {
           Дата походу
         </option>
         {currentEvent.map((item) => item.dates.map((eventDate) => (
-          <option key={eventDate} value={new Date(eventDate).toLocaleDateString()}>
+          <option key={eventDate} value={eventDate}>
             {new Date(eventDate).toLocaleDateString()}
           </option>
         )))}
@@ -174,7 +179,7 @@ function EventForm({ name }) {
       </div>
       <div className="event-form__field-wrapper">
         <span>
-          {'Загальна вартість: '}
+          {'Сума до сплати: '}
         </span>
         <input
           disabled
@@ -195,7 +200,7 @@ function EventForm({ name }) {
 }
 
 EventForm.propTypes = {
-  name: PropTypes.string.isRequired,
+  link: PropTypes.string.isRequired,
 };
 
 export default EventForm;

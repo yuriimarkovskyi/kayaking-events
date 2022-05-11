@@ -6,53 +6,47 @@ const membersSlice = createSlice({
     members: [
       {
         event: 'ostriv-muromec',
-        generalData: {
+        data: {
+          id: 12,
           date: 1655203681000,
-          restData: {
-            id: 12,
-            name: 'Yurii',
-            email: 'yurii.markovskyi@gmail.com',
-            phone: '+380958923309',
-            soloKayaks: 1,
-            doubleKayaks: 0,
-            price: 730,
-            notes: 'I need Tempest',
-            isCompleted: false,
-          },
+          name: 'Yurii',
+          email: 'yurii.markovskyi@gmail.com',
+          phone: '+380958923309',
+          soloKayaks: 1,
+          doubleKayaks: 0,
+          price: 730,
+          notes: 'I need Tempest',
+          isCompleted: false,
         },
       },
       {
         event: 'sercem-kyjeva',
-        generalData: {
+        data: {
+          id: 13,
           date: 1655203681000,
-          restData: {
-            id: 13,
-            name: 'Yurii',
-            email: 'sensysnoname@gmail.com',
-            phone: '+380958923309',
-            soloKayaks: 1,
-            doubleKayaks: 0,
-            price: 730,
-            notes: 'I need Tempest',
-            isCompleted: false,
-          },
+          name: 'Yurii',
+          email: 'sensysnoname@gmail.com',
+          phone: '+380958923309',
+          soloKayaks: 1,
+          doubleKayaks: 0,
+          price: 730,
+          notes: 'I need Tempest',
+          isCompleted: false,
         },
       },
       {
         event: 'sercem-kyjeva',
-        generalData: {
+        data: {
+          id: 14,
           date: 1655203681000,
-          restData: {
-            id: 14,
-            name: 'Yurii',
-            email: 'sensysnoname@gmail.com',
-            phone: '+380958923309',
-            soloKayaks: 1,
-            doubleKayaks: 0,
-            price: 730,
-            notes: 'I need Tempestttt',
-            isCompleted: false,
-          },
+          name: 'Yurii',
+          email: 'sensysnoname@gmail.com',
+          phone: '+380958923309',
+          soloKayaks: 1,
+          doubleKayaks: 0,
+          price: 730,
+          notes: 'I need Tempestttt',
+          isCompleted: false,
         },
       },
     ],
@@ -61,8 +55,16 @@ const membersSlice = createSlice({
     addMember(state, action) {
       state.members.push(action.payload);
     },
+    completeMember: (state, action) => {
+      const index = state.members.findIndex((item) => item.id === action.payload.id);
+      state.members[index].data.isCompleted = !state.members[index].data.isCompleted;
+    },
+    removeMember: (state, action) => {
+      // eslint-disable-next-line max-len
+      state.members = state.members.map((el) => el.data.filter((item) => item.id !== action.payload));
+    },
   },
 });
 
-export const { addMember } = membersSlice.actions;
+export const { addMember, completeMember, removeMember } = membersSlice.actions;
 export default membersSlice.reducer;

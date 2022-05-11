@@ -25,19 +25,17 @@ function EventForm({ link }) {
   const onSubmit = (data) => {
     const member = {
       event: link,
-      generalData: {
+      data: {
+        id: Date.now(),
         date: Number(data.date),
-        restData: {
-          id: Date.now(),
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          soloKayaks: Number(data.soloKayaks),
-          doubleKayaks: Number(data.doubleKayaks),
-          price: parseInt(price, 10),
-          notes: data.notes,
-          isCompleted: false,
-        },
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        soloKayaks: Number(data.soloKayaks),
+        doubleKayaks: Number(data.doubleKayaks),
+        price: parseInt(price, 10),
+        notes: data.notes,
+        isCompleted: false,
       },
     };
 

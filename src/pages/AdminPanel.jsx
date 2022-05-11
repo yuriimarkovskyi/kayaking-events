@@ -9,7 +9,7 @@ import { uniqObjectsByKey } from '../helpers/uniqObjectsByKey';
 
 function AdminPanel() {
   const storedMembers = JSON.parse(localStorage.getItem('events-list'));
-  const membersUniqEvent = uniqObjectsByKey(storedMembers, 'event', 'generalData');
+  const membersUniqEvent = uniqObjectsByKey(storedMembers, 'event', 'data');
 
   return (
     <Tabs>

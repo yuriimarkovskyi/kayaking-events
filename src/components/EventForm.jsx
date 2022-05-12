@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
 import { changeVisibility } from '../store/visibilitySlice';
 import Button from './UI/Button';
 import { addMember } from '../store/membersSlice';
 
-function EventForm({ link }) {
+function EventForm() {
   const {
     register, handleSubmit, watch, reset, formState: { errors, isValid },
   } = useForm({ mode: 'onBlur' });
-
   const dispatch = useDispatch();
+  const { link } = useParams();
   const members = useSelector((state) => state.members.members);
   const events = useSelector((state) => state.events.events);
   const currentEvent = events.filter((item) => item.link === link);
-
+  const currentEventName = currentEvent.map((el) => el.name).toString();
   const soloKayaks = watch('soloKayaks', 0);
   const doubleKayaks = watch('doubleKayaks', 0);
   const priceSoloKayak = currentEvent.map((item) => item.priceSoloKayak);
@@ -24,19 +24,17 @@ function EventForm({ link }) {
 
   const onSubmit = (data) => {
     const member = {
-      event: link,
-      data: {
-        id: Date.now(),
-        date: Number(data.date),
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        soloKayaks: Number(data.soloKayaks),
-        doubleKayaks: Number(data.doubleKayaks),
-        price: parseInt(price, 10),
-        notes: data.notes,
-        isCompleted: false,
-      },
+      event: currentEventName,
+      id: Date.now(),
+      date: Number(data.date),
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      soloKayaks: Number(data.soloKayaks),
+      doubleKayaks: Number(data.doubleKayaks),
+      price: parseInt(price, 10),
+      notes: data.notes,
+      isCompleted: false,
     };
 
     dispatch(addMember(member));
@@ -196,9 +194,5 @@ function EventForm({ link }) {
     </form>
   );
 }
-
-EventForm.propTypes = {
-  link: PropTypes.string.isRequired,
-};
 
 export default EventForm;

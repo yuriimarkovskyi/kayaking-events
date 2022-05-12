@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AdminPanel from './AdminPanel';
+import AdminPage from './AdminPage';
 
 function LoginPage() {
   const [login, setLogin] = useState(false);
@@ -19,7 +19,7 @@ function LoginPage() {
             </form>
           )
           : (
-            <AdminPanel />
+            <AdminPage />
           )
       }
     </div>

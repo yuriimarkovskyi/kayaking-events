@@ -1,11 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-function EventSlider({ link }) {
+function EventSlider() {
+  const { link } = useParams();
   const events = useSelector((state) => state.events.events);
-  const currentEvent = events.filter((item) => item.link === link);
+  const currentEvent = events.filter((el) => el.link === link);
 
   return (
     <Splide
@@ -27,7 +28,7 @@ function EventSlider({ link }) {
         },
       }}
     >
-      {currentEvent.map((item) => item.images.map((image) => (
+      {currentEvent.map((el) => el.images.map((image) => (
         <SplideSlide key={image}>
           <img src={image} alt="" className="event-slider__image" />
         </SplideSlide>
@@ -35,9 +36,5 @@ function EventSlider({ link }) {
     </Splide>
   );
 }
-
-EventSlider.propTypes = {
-  link: PropTypes.string.isRequired,
-};
 
 export default EventSlider;

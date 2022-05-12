@@ -10,32 +10,32 @@ import EventInformation from '../components/EventInformation';
 function EventPage() {
   const { link } = useParams();
   const events = useSelector((state) => state.events.events);
-  const currentEvent = events.filter((item) => item.link === link);
+  const currentEvent = events.filter((el) => el.link === link);
 
   return (
     <>
       <Helmet>
-        {currentEvent.map((item) => (
-          <title key={item.title}>
-            {item.title}
+        {currentEvent.map((el) => (
+          <title key={el.title}>
+            {el.title}
           </title>
         ))}
       </Helmet>
       <Row>
         <Col>
-          {currentEvent.map((item) => (
-            <Title key={item.title}>
-              {item.title}
+          {currentEvent.map((el) => (
+            <Title key={el.title}>
+              {el.title}
             </Title>
           ))}
         </Col>
       </Row>
       <Row>
         <Col lg={12} xl={5}>
-          <EventSlider link={link} />
+          <EventSlider />
         </Col>
         <Col lg={12} xl={7}>
-          <EventInformation link={link} />
+          <EventInformation />
         </Col>
       </Row>
     </>

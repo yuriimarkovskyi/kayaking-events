@@ -1,15 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { changeVisibility } from '../store/visibilitySlice';
 import Modal from './UI/Modal';
 import Button from './UI/Button';
 import EventForm from './EventForm';
 
-function EventInformation({ link }) {
+function EventInformation() {
   const dispatch = useDispatch();
+  const { link } = useParams();
   const events = useSelector((state) => state.events.events);
-  const currentEvent = events.filter((item) => item.link === link);
+  const currentEvent = events.filter((el) => el.link === link);
 
   const showModal = () => {
     dispatch(changeVisibility());
@@ -17,13 +18,13 @@ function EventInformation({ link }) {
 
   return (
     <div className="event-information">
-      {currentEvent.map((item) => (
-        <ul key={item.id} className="event-information__list">
+      {currentEvent.map((el) => (
+        <ul key={el.id} className="event-information__list">
           <li className="event-information__list-item">
-            {item.description}
+            {el.description}
           </li>
           <ul className="event-information__list">
-            {item.descriptionFeatures.map((feature) => (
+            {el.descriptionFeatures.map((feature) => (
               <li className="list-item" key={feature}>
                 {feature}
               </li>
@@ -34,25 +35,17 @@ function EventInformation({ link }) {
           </li>
           <ul className="event-information__list">
             <li className="event-information__list-item">
-              Одномісний каяк -
-              {' '}
-              {item.priceSingleKayak}
-              {' '}
-              ГРН
+              {`Одномісний каяк - ${el.priceSoloKayak} ГРН`}
             </li>
             <li className="event-information__list-item">
-              Двомісний каяк -
-              {' '}
-              {item.priceDoubleKayak}
-              {' '}
-              ГРН
+              {`Двомісний каяк - ${el.priceSoloKayak} ГРН`}
             </li>
           </ul>
           <li className="event-information__list-item event-information__list-item_bold">
             Дати:
           </li>
           <ul className="event-information__list">
-            {item.dates.map((date) => (
+            {el.dates.map((date) => (
               <li key={date} className="event-information__list-item">
                 {new Date(date).toLocaleDateString()}
               </li>
@@ -64,14 +57,10 @@ function EventInformation({ link }) {
         Реєстрація
       </Button>
       <Modal>
-        <EventForm link={link} />
+        <EventForm />
       </Modal>
     </div>
   );
 }
-
-EventInformation.propTypes = {
-  link: PropTypes.string.isRequired,
-};
 
 export default EventInformation;

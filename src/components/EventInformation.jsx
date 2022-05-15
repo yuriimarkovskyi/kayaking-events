@@ -1,9 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { Button } from 'antd';
 import { changeVisibility } from '../store/visibilitySlice';
 import Modal from './UI/Modal';
-import Button from './UI/Button';
 import EventForm from './EventForm';
 
 function EventInformation() {
@@ -53,7 +53,7 @@ function EventInformation() {
           </ul>
         </ul>
       ))}
-      <Button type="button" onClick={showModal}>
+      <Button type="primary" value="large" onClick={showModal}>
         Реєстрація
       </Button>
       <Modal>

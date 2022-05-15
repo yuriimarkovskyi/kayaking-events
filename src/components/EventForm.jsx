@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
+import { Button } from 'antd';
 import { changeVisibility } from '../store/visibilitySlice';
-import Button from './UI/Button';
-import { addMember } from '../store/membersSlice';
+import { addCustomer } from '../store/registrationsSlice';
 
 function EventForm() {
   const {
@@ -12,46 +12,42 @@ function EventForm() {
   } = useForm({ mode: 'onBlur' });
   const dispatch = useDispatch();
   const { link } = useParams();
-  const members = useSelector((state) => state.members.members);
   const events = useSelector((state) => state.events.events);
   const currentEvent = events.filter((item) => item.link === link);
   const currentEventName = currentEvent.map((el) => el.name).toString();
-  const soloKayaks = watch('soloKayaks', 0);
-  const doubleKayaks = watch('doubleKayaks', 0);
+  const numberOfSoloKayaks = watch('numberOfSoloKayaks', 0);
+  const numberOfDoubleKayaks = watch('numberOfDoubleKayaks', 0);
   const priceSoloKayak = currentEvent.map((item) => item.priceSoloKayak);
   const priceDoubleKayak = currentEvent.map((item) => item.priceDoubleKayak);
-  const price = `${priceSoloKayak * soloKayaks + priceDoubleKayak * doubleKayaks} ГРН`;
+  const amountPayable = `${priceSoloKayak * numberOfSoloKayaks + priceDoubleKayak * numberOfDoubleKayaks} ГРН`;
 
   const onSubmit = (data) => {
-    const member = {
-      event: currentEventName,
+    const customer = {
       id: Date.now(),
-      date: Number(data.date),
-      name: data.name,
-      email: data.email,
-      phone: data.phone,
-      soloKayaks: Number(data.soloKayaks),
-      doubleKayaks: Number(data.doubleKayaks),
-      price: parseInt(price, 10),
+      eventName: currentEventName,
+      registrationTime: Date.now(),
+      eventDate: Number(data.date),
+      customerName: data.customerName,
+      customerEmail: data.customerEmail,
+      customerPhone: data.customerPhone,
+      numberOfSoloKayaks: Number(data.numberOfSoloKayaks),
+      numberOfDoubleKayaks: Number(data.numberOfDoubleKayaks),
+      amountPayable: parseInt(amountPayable, 10),
       notes: data.notes,
       isCompleted: false,
     };
 
-    dispatch(addMember(member));
+    dispatch(addCustomer(customer));
     dispatch(changeVisibility());
     reset();
   };
 
-  useEffect(() => {
-    localStorage.setItem('events-list', JSON.stringify(members));
-  }, [members]);
-
   return (
-    <form className="event-form" onSubmit={handleSubmit(onSubmit)} noValidate>
+    <form className="event-form" noValidate>
       <input
         className={`event-form__field event-form__input ${errors.customerName ? 'error' : ''}`}
         placeholder="ПІБ"
-        {...register('name', {
+        {...register('customerName', {
           required: 'Поле обов`язкове для заповнення',
           minLength: {
             value: 6,
@@ -75,9 +71,9 @@ function EventForm() {
                     )}
       <input
         type="email"
-        className={`event-form__field event-form__input ${errors.email ? 'error' : ''}`}
+        className={`event-form__field event-form__input ${errors.customerEmail ? 'error' : ''}`}
         placeholder="Електронна пошта"
-        {...register('email', {
+        {...register('customerEmail', {
           required: 'Поле обов`язкове для заповнення',
           pattern: {
             value: /[A-Za-z0-9._%+-]+@[A-Za-z0-9\-.]+\.[A-Za-z]/,
@@ -85,18 +81,18 @@ function EventForm() {
           },
         })}
       />
-      {errors.email
+      {errors.customerEmail
                     && (
                     <p className="event-form__field-error-text">
-                      {errors.email.message}
+                      {errors.customerEmail.message}
                     </p>
                     )}
       <input
         type="tel"
-        className={`event-form__field event-form__input ${errors.phone ? 'error' : ''}`}
+        className={`event-form__field event-form__input ${errors.customerPhone ? 'error' : ''}`}
         defaultValue="+380"
         placeholder="Номер телефону"
-        {...register('phone', {
+        {...register('customerPhone', {
           required: 'Поле обов`язкове для заповнення',
           minLength: {
             value: 13,
@@ -112,10 +108,10 @@ function EventForm() {
           },
         })}
       />
-      {errors.phone
+      {errors.customerPhone
                     && (
                     <p className="event-form__field-error-text">
-                      {errors.phone.message}
+                      {errors.customerPhone.message}
                     </p>
                     )}
       <select
@@ -146,13 +142,13 @@ function EventForm() {
           defaultValue="0"
           min="0"
           max="10"
-          {...register('soloKayaks', { required: true })}
+          {...register('numberOfSoloKayaks', { required: true })}
         />
         <span className="event-form__input-range-value">
           Одномісних каяків
           {' - '}
           <span>
-            {soloKayaks}
+            {numberOfSoloKayaks}
           </span>
         </span>
       </div>
@@ -163,13 +159,13 @@ function EventForm() {
           defaultValue="0"
           min="0"
           max="10"
-          {...register('doubleKayaks', { required: true })}
+          {...register('numberOfDoubleKayaks', { required: true })}
         />
         <span className="event-form__input-range-value">
           Двомісних каяків
           {' - '}
           <span>
-            {doubleKayaks}
+            {numberOfDoubleKayaks}
           </span>
         </span>
       </div>
@@ -180,7 +176,7 @@ function EventForm() {
         <input
           disabled
           className="event-form__input-price"
-          value={price}
+          value={amountPayable}
         />
       </div>
       <textarea
@@ -188,7 +184,13 @@ function EventForm() {
         placeholder="Примітки"
         {...register('notes')}
       />
-      <Button className="event-form__button" disabled={!isValid}>
+      <Button
+        type="primary"
+        value="large"
+        disabled={!isValid}
+        onClick={handleSubmit(onSubmit)}
+        block
+      >
         Зареєструватись
       </Button>
     </form>

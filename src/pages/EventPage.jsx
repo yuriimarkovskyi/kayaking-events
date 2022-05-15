@@ -1,19 +1,21 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Container } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
-import Title from '../components/UI/Title';
+import { Typography } from 'antd';
+
 import EventSlider from '../components/EventSlider';
 import EventInformation from '../components/EventInformation';
 
 function EventPage() {
+  const { Title } = Typography;
   const { link } = useParams();
   const events = useSelector((state) => state.events.events);
   const currentEvent = events.filter((el) => el.link === link);
 
   return (
-    <>
+    <Container>
       <Helmet>
         {currentEvent.map((el) => (
           <title key={el.title}>
@@ -24,7 +26,7 @@ function EventPage() {
       <Row>
         <Col>
           {currentEvent.map((el) => (
-            <Title key={el.title}>
+            <Title key={el.title} className="title" level={2}>
               {el.title}
             </Title>
           ))}
@@ -38,7 +40,7 @@ function EventPage() {
           <EventInformation />
         </Col>
       </Row>
-    </>
+    </Container>
   );
 }
 

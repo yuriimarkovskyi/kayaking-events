@@ -1,14 +1,22 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Button } from 'antd';
+import {
+  Modal, Button, List, Divider,
+} from 'antd';
+import Item from 'antd/es/list/Item';
+import moment from 'moment';
+import 'moment/locale/uk';
+import facebookIcon from '../images/icons/facebook.png';
+import instagramIcon from '../images/icons/instagram.png';
 import { changeVisibility } from '../store/visibilitySlice';
-import Modal from './UI/Modal';
-import EventForm from './EventForm';
+// import EventForm from './EventForm';
+import RegistrationForm from './RegistrationForm';
 
 function EventInformation() {
   const dispatch = useDispatch();
   const { link } = useParams();
+  const isVisible = useSelector((state) => state.visibility);
   const events = useSelector((state) => state.events.events);
   const currentEvent = events.filter((el) => el.link === link);
 
@@ -16,48 +24,95 @@ function EventInformation() {
     dispatch(changeVisibility());
   };
 
+  const closeModal = () => {
+    dispatch(changeVisibility());
+  };
+
   return (
     <div className="event-information">
       {currentEvent.map((el) => (
-        <ul key={el.id} className="event-information__list">
-          <li className="event-information__list-item">
-            {el.description}
-          </li>
-          <ul className="event-information__list">
-            {el.descriptionFeatures.map((feature) => (
-              <li className="list-item" key={feature}>
-                {feature}
-              </li>
-            ))}
-          </ul>
-          <li className="event-information__list-item event-information__list-item_bold">
-            Вартість:
-          </li>
-          <ul className="event-information__list">
-            <li className="event-information__list-item">
-              {`Одномісний каяк - ${el.priceSoloKayak} ГРН`}
-            </li>
-            <li className="event-information__list-item">
-              {`Двомісний каяк - ${el.priceSoloKayak} ГРН`}
-            </li>
-          </ul>
-          <li className="event-information__list-item event-information__list-item_bold">
-            Дати:
-          </li>
-          <ul className="event-information__list">
-            {el.dates.map((date) => (
-              <li key={date} className="event-information__list-item">
-                {new Date(date).toLocaleDateString()}
-              </li>
-            ))}
-          </ul>
-        </ul>
+        <div key={el.id}>
+          <List
+            size="small"
+            header={(
+              <span className="event-information__title">
+                {`🤗 ${el.description}`}
+              </span>
+            )}
+            dataSource={el.descriptionFeatures}
+            renderItem={(item) => (
+              <Item>
+                {`🔹 ${item}`}
+              </Item>
+            )}
+          />
+          <List
+            size="small"
+            header={(
+              <span className="event-information__title">
+                💳 Вартість:
+              </span>
+            )}
+            dataSource={el.price}
+            renderItem={(item) => (
+              <Item>
+                {`${item.title} ${item.price} ГРН`}
+              </Item>
+            )}
+          />
+          <List
+            size="small"
+            header={(
+              <span className="event-information__title">
+                📆 Коли:
+              </span>
+            )}
+            dataSource={el.dates}
+            renderItem={(item) => (
+              <>
+                <Item className="event-information__dates">
+                  <span>
+                    {`Дата - ${moment(item.date).locale('uk').format('LL')}`}
+                  </span>
+                  <span>
+                    {`Вільних місць - ${item.freePlaces.soloKayaks + item.freePlaces.doubleKayaks}.`}
+                  </span>
+                  {item.guide.map((guide) => (
+                    <ul key={guide.id} className="event-information__dates-guide">
+                      <li>
+                        {`Гід - ${guide.name}`}
+                      </li>
+                      <li>
+                        <a href={guide.links.facebook} target="_blank" rel="noreferrer">
+                          <img src={facebookIcon} alt="" />
+                        </a>
+                      </li>
+                      <li>
+                        <a href={guide.links.instagram} target="_blank" rel="noreferrer">
+                          <img src={instagramIcon} alt="" />
+                        </a>
+                      </li>
+                    </ul>
+                  ))}
+                </Item>
+                <Divider />
+              </>
+            )}
+          />
+        </div>
       ))}
       <Button type="primary" value="large" onClick={showModal}>
         Реєстрація
       </Button>
-      <Modal>
-        <EventForm />
+      <Modal
+        title="Форма реєстрації"
+        centered
+        width={500}
+        footer={null}
+        visible={isVisible}
+        onCancel={closeModal}
+      >
+        <RegistrationForm />
       </Modal>
     </div>
   );

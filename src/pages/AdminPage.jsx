@@ -3,6 +3,7 @@ import { Tabs } from 'antd';
 import { Container } from 'react-bootstrap';
 import { UnorderedListOutlined, EditOutlined } from '@ant-design/icons';
 import AdminRegistrations from '../components/AdminRegistrations';
+import AdminEvents from '../components/AdminEvents';
 
 function AdminPage() {
   const { TabPane } = Tabs;
@@ -29,7 +30,9 @@ function AdminPage() {
             </span>
         )}
           key="2"
-        />
+        >
+          <AdminEvents />
+        </TabPane>
       </Tabs>
     </Container>
   );

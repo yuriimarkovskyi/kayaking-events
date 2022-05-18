@@ -1,13 +1,16 @@
 .event-information {
-  &__list {
-    &:not(:last-child) {
-      margin-bottom: 15px;
-    }
+  &__title {
+    font-weight: bold;
   }
 
-  &__list-item {
-    &_bold {
-      font-weight: bold;
-    }
+  &__dates {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  &__dates-guide {
+    display: flex;
+    column-gap: 3px;
   }
 }

@@ -28,7 +28,7 @@ function EventSlider() {
         },
       }}
     >
-      {currentEvent.map((el) => el.images.map((image) => (
+      {currentEvent.map((el) => el.imagesSlider.map((image) => (
         <SplideSlide key={image}>
           <img src={image} alt="" className="event-slider__image" />
         </SplideSlide>

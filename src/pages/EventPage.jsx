@@ -23,20 +23,16 @@ function EventPage() {
           </title>
         ))}
       </Helmet>
+      {currentEvent.map((el) => (
+        <Title key={el.title} className="title" level={2}>
+          {el.title}
+        </Title>
+      ))}
       <Row>
-        <Col>
-          {currentEvent.map((el) => (
-            <Title key={el.title} className="title" level={2}>
-              {el.title}
-            </Title>
-          ))}
-        </Col>
-      </Row>
-      <Row>
-        <Col lg={12} xl={5}>
+        <Col lg={12} xl={6}>
           <EventSlider />
         </Col>
-        <Col lg={12} xl={7}>
+        <Col lg={12} xl={6}>
           <EventInformation />
         </Col>
       </Row>

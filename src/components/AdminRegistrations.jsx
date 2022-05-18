@@ -31,7 +31,6 @@ function AdminRegistrations() {
   return (
     <Table
       rowKey="id"
-      locale="uk"
       dataSource={dataSource}
       columns={columns}
       pagination={false}

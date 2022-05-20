@@ -14,7 +14,9 @@ const registrationsSlice = createSlice({
         customerPhone: '+380958923309',
         soloKayaks: 1,
         doubleKayaks: 0,
-        amount: 730,
+        isChildren: false,
+        childrenAmount: 0,
+        sum: 730,
         notes: 'I need Tempest',
         isCompleted: false,
       },
@@ -28,6 +30,8 @@ const registrationsSlice = createSlice({
         customerPhone: '+380958923309',
         soloKayaks: 1,
         doubleKayaks: 0,
+        isChildren: false,
+        childrenAmount: 0,
         amount: 730,
         notes: 'I need Tempest',
         isCompleted: false,
@@ -40,9 +44,11 @@ const registrationsSlice = createSlice({
         customerName: 'Марковський Юрій Володимирович',
         customerEmail: 'sensysnoname@gmail.com',
         customerPhone: '+380958923309',
-        soloKayaks: 1,
-        doubleKayaks: 0,
-        amount: 730,
+        soloKayaks: 0,
+        doubleKayaks: 1,
+        isChildren: true,
+        childrenAmount: 1,
+        amount: 1425,
         notes: 'I need Tempest',
         isCompleted: false,
       },
@@ -54,11 +60,13 @@ const registrationsSlice = createSlice({
         customerName: 'Марковський Юрій Володимирович',
         customerEmail: 'sensysnoname@gmail.com',
         customerPhone: '+380958923309',
-        soloKayaks: 1,
-        doubleKayaks: 0,
-        amount: 730,
+        soloKayaks: 0,
+        doubleKayaks: 1,
+        isChildren: true,
+        childrenAmount: 1,
+        amount: 1425,
         notes: 'I need Tempest',
-        isCompleted: false,
+        isCompleted: true,
       },
     ],
   },
@@ -67,9 +75,9 @@ const registrationsSlice = createSlice({
       state.registrations.push(action.payload);
     },
     completeRegistration: (state, action) => {
-      const index = state.members.findIndex((item) => item.id === action.payload.id);
+      const index = state.registrations.findIndex((el) => el.id === action.payload.id);
 
-      state.members[index].isCompleted = !state.members[index].isCompleted;
+      state.registrations[index].isCompleted = !state.registrations[index].isCompleted;
     },
   },
 });

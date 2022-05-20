@@ -1,10 +1,9 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Row, Col, Container } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import { Typography } from 'antd';
-
 import EventSlider from '../components/EventSlider';
 import EventInformation from '../components/EventInformation';
 

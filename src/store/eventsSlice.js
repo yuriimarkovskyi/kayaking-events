@@ -197,7 +197,12 @@ const eventsSlice = createSlice({
     ],
   },
   reducers: {
+    changeFreePlaces(state, action) {
+      state.registrations.push(action.payload);
+    },
   },
 });
+
+export const { changeFreePlaces } = eventsSlice.actions;
 
 export default eventsSlice.reducer;

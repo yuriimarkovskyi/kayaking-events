@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
-  Modal, Button, List, Divider,
+  Button, Divider, List, Modal,
 } from 'antd';
 import Item from 'antd/es/list/Item';
 import moment from 'moment';
@@ -10,7 +10,6 @@ import 'moment/locale/uk';
 import facebookIcon from '../images/icons/facebook.png';
 import instagramIcon from '../images/icons/instagram.png';
 import { changeVisibility } from '../store/visibilitySlice';
-// import EventForm from './EventForm';
 import RegistrationForm from './RegistrationForm';
 
 function EventInformation() {
@@ -101,7 +100,12 @@ function EventInformation() {
           />
         </div>
       ))}
-      <Button type="primary" value="large" onClick={showModal}>
+      <Button
+        type="primary"
+        htmlType="button"
+        value="large"
+        onClick={showModal}
+      >
         Реєстрація
       </Button>
       <Modal

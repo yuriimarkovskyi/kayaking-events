@@ -18,7 +18,7 @@ export const columns = [
   },
   {
     title: 'Обкладинка',
-    dataIndex: 'image',
+    dataIndex: 'imageCover',
   },
   {
     title: 'Дати',

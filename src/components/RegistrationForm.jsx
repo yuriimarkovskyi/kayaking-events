@@ -1,27 +1,26 @@
 import React from 'react';
 import {
-  Button, Checkbox, Form, Input, InputNumber, Select, Typography,
+  Button,
+  Checkbox, Form, Input, InputNumber, Select, Typography,
 } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import 'moment/locale/uk';
 import { addCustomer } from '../store/registrationsSlice';
-
-// import { changeVisibility } from '../store/visibilitySlice';
+import { changeVisibility } from '../store/visibilitySlice';
 
 function RegistrationForm() {
+  const [form] = Form.useForm();
   const { Option } = Select;
   const { Text } = Typography;
-  const [form] = Form.useForm();
 
   const { link } = useParams();
   const dispatch = useDispatch();
-
   const eventDateValue = Form.useWatch('eventDate', form);
   const soloKayaksValue = Form.useWatch('soloKayaks', form);
   const doubleKayaksValue = Form.useWatch('doubleKayaks', form);
-  const isChildren = Form.useWatch('children', form);
+  const isChildrenValue = Form.useWatch('isChildren', form);
   const childrenAmountValue = Form.useWatch('childrenAmount', form);
 
   const events = useSelector((state) => state.events.events);
@@ -41,9 +40,13 @@ function RegistrationForm() {
     item.price)));
 
   const priceTotal = priceSoloKayak * soloKayaksValue + priceDoubleKayak * doubleKayaksValue * 2;
-  const amount = isChildren
+  const sum = isChildrenValue
     ? priceTotal + (childrenAmountValue * priceDoubleKayak) / 2
     : priceTotal;
+
+  const onReset = () => {
+    form.resetFields();
+  };
 
   const onFinish = (values) => {
     const customer = {
@@ -56,16 +59,16 @@ function RegistrationForm() {
       customerPhone: `+380${values.customerPhone}`,
       soloKayaks: values.soloKayaks,
       doubleKayaks: values.doubleKayaks,
-      amount,
-      children: values.children,
-      childrenAmount: isChildren ? values.childrenAmount : 0,
+      isChildren: values.isChildren,
+      childrenAmount: isChildrenValue ? values.childrenAmount : 0,
+      sum,
       notes: values.notes,
       isCompleted: false,
     };
-    console.log(customer);
-    // form.resetFields();
+
+    form.resetFields();
     dispatch(addCustomer(customer));
-    // dispatch(changeVisibility());
+    dispatch(changeVisibility());
   };
 
   return (
@@ -73,6 +76,7 @@ function RegistrationForm() {
       form={form}
       layout="vertical"
       name="registration-form"
+      id="registration-form"
       onFinish={onFinish}
       scrollToFirstError
     >
@@ -107,7 +111,7 @@ function RegistrationForm() {
         label="Номер телефону:"
         rules={[
           { required: true, message: 'Поле є обов\'язковим для заповнення' },
-          { pattern: /^([5-9][0-9]\d{7})$/, message: 'Номер телефону має бути в українському форматі' },
+          { pattern: /^([5-9][0-9]\d{7})$/, message: 'Вкажіть коректний номер телефону' },
           { min: 9, message: 'Поле має містити у собі 9 символів' },
           { max: 9, message: 'Поле має містити у собі 9 символів' },
         ]}
@@ -130,41 +134,42 @@ function RegistrationForm() {
           )))}
         </Select>
       </Form.Item>
+      <div className="registration-form__items-group">
+        <Form.Item
+          wrapperCol
+          name="soloKayaks"
+          initialValue={0}
+          label="Одномісних каяків:"
+          extra={eventDateValue ? `На обрану дату доступно ${freePlacesSoloKayaks} одномісних каяків` : null}
+          rules={[
+            { required: true, message: 'Поле є обов\'язковим для заповнення' },
+          ]}
+        >
+          <InputNumber
+            disabled={!eventDateValue}
+            min={0}
+            max={freePlacesSoloKayaks}
+          />
+        </Form.Item>
+        <Form.Item
+          name="doubleKayaks"
+          initialValue={0}
+          label="Двомісних каяків:"
+          extra={eventDateValue ? `На обрану дату доступно ${freePlacesDoubleKayaks} двомісних каяків` : null}
+          rules={[
+            { required: true, message: 'Поле є обов\'язковим для заповнення' },
+          ]}
+        >
+          <InputNumber
+            disabled={!eventDateValue}
+            min={0}
+            max={freePlacesDoubleKayaks}
+          />
+        </Form.Item>
+      </div>
       <Form.Item
         className="registration-form__item"
-        name="soloKayaks"
-        initialValue={0}
-        label="Одномісних каяків:"
-        tooltip={eventDateValue ? `На обрану дату доступно ${freePlacesSoloKayaks} одномісних каяків` : null}
-        rules={[
-          { required: true, message: 'Поле є обов\'язковим для заповнення' },
-        ]}
-      >
-        <InputNumber
-          disabled={!eventDateValue}
-          min={0}
-          max={freePlacesSoloKayaks}
-        />
-      </Form.Item>
-      <Form.Item
-        className="registration-form__item"
-        name="doubleKayaks"
-        initialValue={0}
-        label="Двомісних каяків:"
-        tooltip={eventDateValue ? `На обрану дату доступно ${freePlacesDoubleKayaks} двомісних каяків` : null}
-        rules={[
-          { required: true, message: 'Поле є обов\'язковим для заповнення' },
-        ]}
-      >
-        <InputNumber
-          disabled={!eventDateValue}
-          min={0}
-          max={freePlacesDoubleKayaks}
-        />
-      </Form.Item>
-      <Form.Item
-        className="registration-form__item"
-        name="children"
+        name="isChildren"
         valuePropName="checked"
       >
         <Checkbox disabled={!doubleKayaksValue}>
@@ -174,12 +179,12 @@ function RegistrationForm() {
       <Form.Item
         className="registration-form__item"
         name="childrenAmount"
-        hidden={!isChildren}
+        hidden={!isChildrenValue}
         initialValue={1}
         label="Кількість дітей:"
         tooltip="Сидіння ставиться між переднім та заднім сидіннями у каяку. На дитину діє знижка у розмірі 50% від вартості місця"
         rules={[
-          { required: !!isChildren, message: 'Поле є обов\'язковим для заповнення' },
+          { required: !!isChildrenValue, message: 'Поле є обов\'язковим для заповнення' },
         ]}
       >
         <InputNumber
@@ -193,7 +198,7 @@ function RegistrationForm() {
         label="Вартість:"
       >
         <Text strong>
-          {`${(amount || 0)} ГРН`}
+          {`${(sum || 0)} ГРН`}
         </Text>
       </Form.Item>
       <Form.Item
@@ -208,10 +213,17 @@ function RegistrationForm() {
       </Form.Item>
       <Form.Item>
         <Button
+          className="registration-form__button_reset"
+          htmlType="button"
+          size="large"
+          onClick={onReset}
+        >
+          Очистити поля
+        </Button>
+        <Button
           type="primary"
           htmlType="submit"
           size="large"
-          block
         >
           Зареєструватись
         </Button>

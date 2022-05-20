@@ -14,18 +14,9 @@ function EventSlider() {
       options={{
         type: 'loop',
         arrows: false,
-        pagination: true,
+        pagination: false,
         autoplay: true,
         interval: 3000,
-        breakpoints: {
-          1199: {
-            pagination: false,
-          },
-        },
-        classes: {
-          pagination: 'splide__pagination event-slider__pagination slider-pagination',
-          page: 'splide__pagination__page slider-pagination__bullet',
-        },
       }}
     >
       {currentEvent.map((el) => el.imagesSlider.map((image) => (

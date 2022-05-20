@@ -1,3 +1,5 @@
+import { Tag } from 'antd';
+
 export const dataSource = [];
 export const columns = [
   {
@@ -26,34 +28,50 @@ export const columns = [
   {
     title: 'Email',
     dataIndex: 'customerEmail',
+    render: (email) => (
+      <a href={`mailto:${email}`}>
+        {email}
+      </a>
+    ),
   },
   {
     title: 'Номер телефону',
     dataIndex: 'customerPhone',
+    render: (phone) => (
+      <a href={`tel:${phone}`}>
+        {phone}
+      </a>
+    ),
   },
   {
     title: 'Одномісних каяків',
-    dataIndex: 'numberOfSoloKayaks',
+    dataIndex: 'soloKayaks',
   },
   {
     title: 'Двомісних каяків',
-    dataIndex: 'numberOfDoubleKayaks',
+    dataIndex: 'doubleKayaks',
+  },
+  {
+    title: 'Діти',
+    dataIndex: 'isChildren',
+    render: (tag) => (
+      <Tag key={tag}>
+        {tag.toUpperCase()}
+      </Tag>
+    ),
+  },
+  {
+    title: 'Кількість дітей',
+    dataIndex: 'childrenAmount',
   },
   {
     title: 'Сума до сплати',
-    dataIndex: 'amountPayable',
+    dataIndex: 'amount',
     ellipsis: true,
   },
   {
     title: 'Нотатки',
     dataIndex: 'notes',
     ellipsis: true,
-  },
-  {
-    title: 'Статус',
-    dataIndex: 'isCompleted',
-    render: () => (
-      <input type="checkbox" />
-    ),
   },
 ];

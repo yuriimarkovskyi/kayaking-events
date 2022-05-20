@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
-import { Typography, Card } from 'antd';
+import { Card, Typography } from 'antd';
 
 function EventsList() {
   const { Title } = Typography;

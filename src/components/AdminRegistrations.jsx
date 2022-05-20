@@ -23,8 +23,10 @@ function AdminRegistrations() {
       ...el,
       registrationTime: moment(el.registrationTime).startOf('seconds').fromNow(),
       eventDate: moment().locale('uk').format('LL'),
-      numberOfSoloKayaks: el.numberOfSoloKayaks === 0 ? '-' : el.numberOfSoloKayaks,
-      numberOfDoubleKayaks: el.numberOfDoubleKayaks === 0 ? '-' : el.numberOfDoubleKayaks,
+      soloKayaks: el.soloKayaks ? el.soloKayaks : '-',
+      doubleKayaks: el.doubleKayaks ? el.doubleKayaks : '-',
+      isChildren: el.isChildren ? 'Так' : '',
+      childrenAmount: el.childrenAmount ? el.childrenAmount : '-',
     });
   });
 
@@ -34,6 +36,7 @@ function AdminRegistrations() {
       dataSource={dataSource}
       columns={columns}
       pagination={false}
+      size="small"
       scroll={{ x: true }}
     />
   );

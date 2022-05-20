@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import EventsList from '../pages/EventsList';
 import EventPage from '../pages/EventPage';
 import LoginPage from '../pages/LoginPage';

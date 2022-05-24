@@ -3,14 +3,4 @@
     display: flex;
     column-gap: 20px;
   }
-
-  &__item {
-    margin-bottom: 10px;
-  }
-
-  &__button {
-    &_reset {
-      margin-right: 10px;
-    }
-  }
 }

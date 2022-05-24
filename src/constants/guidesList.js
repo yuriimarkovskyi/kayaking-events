@@ -1,4 +1,4 @@
-export const guides = [
+export const guidesList = [
   {
     id: 1,
     name: 'Марковський Юрій Володимирович',

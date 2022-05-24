@@ -1,7 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { guides } from '../helpers/guides';
-
-const path = window.location.origin;
+import { guidesList } from '../constants/guidesList';
 
 const eventsSlice = createSlice({
   name: 'events',
@@ -13,7 +11,7 @@ const eventsSlice = createSlice({
         link: 'ostriv-muromec',
         title: 'Похід на каяках довкола острова Муромець',
         description: 'Друзі, запрошуємо вас на прогулянку каяками довкола острова Муромець!',
-        imageCover: `${path}/images/primary/ostriv-muromec.jpg`,
+        imageCover: `${process.env.PUBLIC_URL}/images/primary/ostriv-muromec.jpg`,
         dates: [
           {
             date: 1655203681000,
@@ -25,7 +23,7 @@ const eventsSlice = createSlice({
               soloKayaks: 10,
               doubleKayaks: 10,
             },
-            guide: guides.filter((el) => el.id === 1),
+            guide: guidesList.filter((el) => el.id === 1),
           },
           {
             date: 1625605200001,
@@ -37,7 +35,7 @@ const eventsSlice = createSlice({
               soloKayaks: 5,
               doubleKayaks: 5,
             },
-            guide: guides.filter((el) => el.id === 2),
+            guide: guidesList.filter((el) => el.id === 2),
           },
         ],
         price: [
@@ -53,12 +51,12 @@ const eventsSlice = createSlice({
           },
         ],
         imagesSlider: [
-          `${path}/images/secondary/IMG_7989.jpg`,
-          `${path}/images/secondary/IMG_8026.jpg`,
-          `${path}/images/secondary/IMG_8070.jpg`,
-          `${path}/images/secondary/IMG_8924.jpg`,
-          `${path}/images/secondary/IMG_8925.jpg`,
-          `${path}/images/secondary/IMG_8926.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_7989.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8026.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8070.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8924.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8925.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8926.jpg`,
         ],
         descriptionFeatures: [
           'Умовно маршрут можна розділити на три частини: Дніпро, Десенка, Бобрівня.',
@@ -76,7 +74,7 @@ const eventsSlice = createSlice({
         link: 'sercem-kyjeva',
         title: 'Похід на каяках “Серцем Києва”',
         description: 'Друзі, запрошуємо вас у похід, що проходить у самому центрі нашого з вами улюбленого міста! Якщо ви новенький у місті або хочете побачити його з нової точки зору, цей сплав саме для вас!',
-        imageCover: `${path}/images/primary/sercem-kyjeva.jpg`,
+        imageCover: `${process.env.PUBLIC_URL}/images/primary/sercem-kyjeva.jpg`,
         dates: [
           {
             date: 1655203681000,
@@ -88,7 +86,7 @@ const eventsSlice = createSlice({
               soloKayaks: 10,
               doubleKayaks: 10,
             },
-            guide: guides.filter((el) => el.id === 1),
+            guide: guidesList.filter((el) => el.id === 1),
           },
           {
             date: 1625605200001,
@@ -100,7 +98,7 @@ const eventsSlice = createSlice({
               soloKayaks: 5,
               doubleKayaks: 5,
             },
-            guide: guides.filter((el) => el.id === 2),
+            guide: guidesList.filter((el) => el.id === 2),
           },
         ],
         price: [
@@ -116,12 +114,12 @@ const eventsSlice = createSlice({
           },
         ],
         imagesSlider: [
-          `${path}/images/secondary/IMG_7989.jpg`,
-          `${path}/images/secondary/IMG_8026.jpg`,
-          `${path}/images/secondary/IMG_8070.jpg`,
-          `${path}/images/secondary/IMG_8924.jpg`,
-          `${path}/images/secondary/IMG_8925.jpg`,
-          `${path}/images/secondary/IMG_8926.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_7989.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8026.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8070.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8924.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8925.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8926.jpg`,
         ],
         descriptionFeatures: [
           'Це єдиний наш сплав, який дозволить побачити Київ саме зсередини.',
@@ -138,7 +136,7 @@ const eventsSlice = createSlice({
         link: 'zhukiv-ostriv',
         title: 'Похід на Жуків острів',
         description: 'Друзі, запрошуємо вас у похід, що проходить у самому центрі нашого з вами улюбленого міста! Якщо ви новенький у місті або хочете побачити його з нової точки зору, цей сплав саме для вас!',
-        imageCover: `${path}/images/primary/sercem-kyjeva.jpg`,
+        imageCover: `${process.env.PUBLIC_URL}/images/primary/sercem-kyjeva.jpg`,
         dates: [
           {
             date: 1655203681000,
@@ -150,7 +148,7 @@ const eventsSlice = createSlice({
               soloKayaks: 10,
               doubleKayaks: 10,
             },
-            guide: guides.filter((el) => el.id === 1),
+            guide: guidesList.filter((el) => el.id === 1),
           },
           {
             date: 1625605200001,
@@ -162,7 +160,7 @@ const eventsSlice = createSlice({
               soloKayaks: 5,
               doubleKayaks: 5,
             },
-            guide: guides.filter((el) => el.id === 2),
+            guide: guidesList.filter((el) => el.id === 2),
           },
         ],
         price: [
@@ -178,12 +176,12 @@ const eventsSlice = createSlice({
           },
         ],
         imagesSlider: [
-          `${path}/images/secondary/IMG_7989.jpg`,
-          `${path}/images/secondary/IMG_8026.jpg`,
-          `${path}/images/secondary/IMG_8070.jpg`,
-          `${path}/images/secondary/IMG_8924.jpg`,
-          `${path}/images/secondary/IMG_8925.jpg`,
-          `${path}/images/secondary/IMG_8926.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_7989.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8026.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8070.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8924.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8925.jpg`,
+          `${process.env.PUBLIC_URL}/images/secondary/IMG_8926.jpg`,
         ],
         descriptionFeatures: [
           'Це єдиний наш сплав, який дозволить побачити Київ саме зсередини.',

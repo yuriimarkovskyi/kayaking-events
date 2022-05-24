@@ -17,18 +17,19 @@ function RegistrationForm() {
 
   const { link } = useParams();
   const dispatch = useDispatch();
-  const eventDateValue = Form.useWatch('eventDate', form);
-  const soloKayaksValue = Form.useWatch('soloKayaks', form);
-  const doubleKayaksValue = Form.useWatch('doubleKayaks', form);
-  const isChildrenValue = Form.useWatch('isChildren', form);
-  const childrenAmountValue = Form.useWatch('childrenAmount', form);
+
+  const dateWatcher = Form.useWatch('date', form);
+  const soloKayaksWatcher = Form.useWatch('soloKayaks', form);
+  const doubleKayaksWatcher = Form.useWatch('doubleKayaks', form);
+  const isChildrenWatcher = Form.useWatch('isChildren', form);
+  const childrenAmountWatcher = Form.useWatch('childrenAmount', form);
 
   const events = useSelector((state) => state.events.events);
   const currentEvent = events.filter((el) => el.link === link);
   const eventName = currentEvent.map((el) => el.name).toString();
 
   const selectedDate = currentEvent.map((el) => (
-    el.dates.filter((date) => date.date === eventDateValue)));
+    el.dates.filter((date) => date.date === dateWatcher)));
   const freePlacesSoloKayaks = Number(selectedDate.flat().map((el) => (
     el.freePlaces.soloKayaks)));
   const freePlacesDoubleKayaks = Number(selectedDate.flat().map((el) => (
@@ -39,30 +40,32 @@ function RegistrationForm() {
   const priceDoubleKayak = Number(price.filter((el) => el.id === 'doubleKayak').map((item) => (
     item.price)));
 
-  const priceTotal = priceSoloKayak * soloKayaksValue + priceDoubleKayak * doubleKayaksValue * 2;
-  const sum = isChildrenValue
-    ? priceTotal + (childrenAmountValue * priceDoubleKayak) / 2
+  const priceTotal = (
+    priceSoloKayak * soloKayaksWatcher + priceDoubleKayak * doubleKayaksWatcher * 2
+  );
+  const sum = isChildrenWatcher
+    ? priceTotal + (childrenAmountWatcher * priceDoubleKayak) / 2
     : priceTotal;
 
-  const onReset = () => {
-    form.resetFields();
-  };
-
   const onFinish = (values) => {
+    const {
+      name, email, phone, date, soloKayaks, doubleKayaks, isChildren, childrenAmount, notes,
+    } = values;
+
     const customer = {
       id: Date.now(),
       eventName,
       registrationTime: Date.now(),
-      eventDate: values.eventDate,
-      customerName: values.customerName,
-      customerEmail: values.customerEmail,
-      customerPhone: `+380${values.customerPhone}`,
-      soloKayaks: values.soloKayaks,
-      doubleKayaks: values.doubleKayaks,
-      isChildren: values.isChildren,
-      childrenAmount: isChildrenValue ? values.childrenAmount : 0,
+      customerName: name,
+      customerEmail: email,
+      customerPhone: `+380${phone}`,
+      eventDate: date,
+      soloKayaks,
+      doubleKayaks,
+      isChildren,
+      childrenAmount: isChildrenWatcher ? childrenAmount : 0,
       sum,
-      notes: values.notes,
+      notes,
       isCompleted: false,
     };
 
@@ -73,16 +76,16 @@ function RegistrationForm() {
 
   return (
     <Form
+      className="registration-form form"
       form={form}
       layout="vertical"
       name="registration-form"
-      id="registration-form"
       onFinish={onFinish}
       scrollToFirstError
     >
       <Form.Item
-        className="registration-form__item"
-        name="customerName"
+        className="form__item"
+        name="name"
         label="ПІБ:"
         rules={[
           { required: true, message: 'Поле є обов\'язковим для заповнення' },
@@ -95,8 +98,8 @@ function RegistrationForm() {
         <Input />
       </Form.Item>
       <Form.Item
-        className="registration-form__item"
-        name="customerEmail"
+        className="form__item"
+        name="email"
         label="E-mail:"
         rules={[
           { type: 'email', message: 'Введіть коректний E-mail' },
@@ -106,8 +109,8 @@ function RegistrationForm() {
         <Input />
       </Form.Item>
       <Form.Item
-        className="registration-form__item"
-        name="customerPhone"
+        className="form__item"
+        name="phone"
         label="Номер телефону:"
         rules={[
           { required: true, message: 'Поле є обов\'язковим для заповнення' },
@@ -119,8 +122,8 @@ function RegistrationForm() {
         <Input addonBefore="+380" />
       </Form.Item>
       <Form.Item
-        className="registration-form__item"
-        name="eventDate"
+        className="form__item"
+        name="date"
         label="Дата івенту:"
         rules={[
           { required: true, message: 'Необхідно обрати дату походу' },
@@ -138,15 +141,15 @@ function RegistrationForm() {
         <Form.Item
           wrapperCol
           name="soloKayaks"
-          initialValue={0}
           label="Одномісних каяків:"
-          extra={eventDateValue ? `На обрану дату доступно ${freePlacesSoloKayaks} одномісних каяків` : null}
+          extra={dateWatcher ? `На обрану дату доступно ${freePlacesSoloKayaks} одномісних каяків` : null}
+          initialValue={0}
           rules={[
             { required: true, message: 'Поле є обов\'язковим для заповнення' },
           ]}
         >
           <InputNumber
-            disabled={!eventDateValue}
+            disabled={!dateWatcher}
             min={0}
             max={freePlacesSoloKayaks}
           />
@@ -155,46 +158,46 @@ function RegistrationForm() {
           name="doubleKayaks"
           initialValue={0}
           label="Двомісних каяків:"
-          extra={eventDateValue ? `На обрану дату доступно ${freePlacesDoubleKayaks} двомісних каяків` : null}
+          extra={dateWatcher ? `На обрану дату доступно ${freePlacesDoubleKayaks} двомісних каяків` : null}
           rules={[
             { required: true, message: 'Поле є обов\'язковим для заповнення' },
           ]}
         >
           <InputNumber
-            disabled={!eventDateValue}
+            disabled={!dateWatcher}
             min={0}
             max={freePlacesDoubleKayaks}
           />
         </Form.Item>
       </div>
       <Form.Item
-        className="registration-form__item"
+        className="form__item"
         name="isChildren"
         valuePropName="checked"
       >
-        <Checkbox disabled={!doubleKayaksValue}>
+        <Checkbox disabled={!doubleKayaksWatcher}>
           Потрібне дитяче сидіння у двомісний каяк
         </Checkbox>
       </Form.Item>
       <Form.Item
-        className="registration-form__item"
+        className="form__item"
         name="childrenAmount"
-        hidden={!isChildrenValue}
+        hidden={!isChildrenWatcher}
         initialValue={1}
         label="Кількість дітей:"
         tooltip="Сидіння ставиться між переднім та заднім сидіннями у каяку. На дитину діє знижка у розмірі 50% від вартості місця"
         rules={[
-          { required: !!isChildrenValue, message: 'Поле є обов\'язковим для заповнення' },
+          { required: !!isChildrenWatcher, message: 'Поле є обов\'язковим для заповнення' },
         ]}
       >
         <InputNumber
           min={1}
-          max={doubleKayaksValue}
+          max={doubleKayaksWatcher}
         />
       </Form.Item>
       <Form.Item
-        className="registration-form__item"
-        hidden={!eventDateValue}
+        className="form__item"
+        hidden={!dateWatcher}
         label="Вартість:"
       >
         <Text strong>
@@ -202,7 +205,7 @@ function RegistrationForm() {
         </Text>
       </Form.Item>
       <Form.Item
-        className="registration-form__item"
+        className="form__item"
         name="notes"
         label="Примітки:"
         rules={[
@@ -213,17 +216,9 @@ function RegistrationForm() {
       </Form.Item>
       <Form.Item>
         <Button
-          className="registration-form__button_reset"
-          htmlType="button"
-          size="large"
-          onClick={onReset}
-        >
-          Очистити поля
-        </Button>
-        <Button
           type="primary"
           htmlType="submit"
-          size="large"
+          block
         >
           Зареєструватись
         </Button>

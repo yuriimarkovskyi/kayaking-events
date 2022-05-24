@@ -1,7 +1,6 @@
 import { Tag } from 'antd';
 
-export const dataSource = [];
-export const columns = [
+export const registrationsColumns = [
   {
     title: 'Івент',
     dataIndex: 'eventName',
@@ -75,3 +74,47 @@ export const columns = [
     ellipsis: true,
   },
 ];
+export const registrationsData = [];
+export const eventsColumns = [
+  {
+    title: 'Івент',
+    dataIndex: 'name',
+  },
+  {
+    title: 'Лінк',
+    dataIndex: 'link',
+  },
+  {
+    title: 'Заголовок',
+    dataIndex: 'title',
+  },
+  {
+    title: 'Опис',
+    dataIndex: 'description',
+  },
+  {
+    title: 'Обкладинка',
+    dataIndex: 'imageCover',
+  },
+  {
+    title: 'Дати',
+    dataIndex: 'dates',
+  },
+  {
+    title: 'Ціна за одномісний каяк',
+    dataIndex: 'priceSoloKayak',
+  },
+  {
+    title: 'Ціна за двомісний каяк',
+    dataIndex: 'priceDoubleKayak',
+  },
+  {
+    title: 'Зображення слайдеру',
+    dataIndex: 'images',
+  },
+  {
+    title: 'Ключові моменти',
+    dataIndex: 'descriptionFeatures',
+  },
+];
+export const eventsData = [];

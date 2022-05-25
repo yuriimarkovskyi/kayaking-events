@@ -15,8 +15,9 @@ import RegistrationForm from './RegistrationForm';
 function EventInformation() {
   const dispatch = useDispatch();
   const { link } = useParams();
+
   const isVisible = useSelector((state) => state.visibility);
-  const events = useSelector((state) => state.events.events);
+  const events = useSelector((state) => state.events);
   const currentEvent = events.filter((el) => el.link === link);
 
   const showModal = () => {

@@ -7,6 +7,7 @@ import { useAuthState, useSignInWithEmailAndPassword } from 'react-firebase-hook
 import Registrations from '../components/Registrations';
 import AuthorizationForm from '../components/AuthorizationForm';
 import { app } from '../firebase/firebase';
+import Loader from '../components/Loader';
 
 function Dashboard() {
   const { TabPane } = Tabs;
@@ -14,11 +15,15 @@ function Dashboard() {
 
   const auth = getAuth(app);
   const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
-  const [user] = useAuthState(auth);
+  const [user, loading, error] = useAuthState(auth);
 
   const logout = () => {
     signOut(auth);
   };
+
+  if (loading) return <Loader />;
+
+  if (error) console.error(error);
 
   return (
     user

@@ -5,7 +5,8 @@ import { useSelector } from 'react-redux';
 
 function EventSlider() {
   const { link } = useParams();
-  const events = useSelector((state) => state.events.events);
+
+  const events = useSelector((state) => state.events);
   const currentEvent = events.filter((el) => el.link === link);
 
   return (

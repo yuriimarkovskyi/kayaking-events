@@ -7,7 +7,7 @@ import { registrationsColumns, registrationsData } from '../constants/tablesData
 import { uniqObjectsByKey } from '../helpers/uniqObjectsByKey';
 
 function Registrations() {
-  const registrations = useSelector((state) => state.registrations.registrations);
+  const registrations = useSelector((state) => state.registrations);
   const uniqEventRegistrations = uniqObjectsByKey(registrations, 'eventName');
   const eventTableColumn = registrationsColumns.filter((el) => el.dataIndex === 'eventName');
 

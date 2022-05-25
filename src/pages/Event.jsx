@@ -7,14 +7,16 @@ import { Typography } from 'antd';
 import EventSlider from '../components/EventSlider';
 import EventInformation from '../components/EventInformation';
 
-function EventPage() {
+function Event() {
   const { Title } = Typography;
   const { link } = useParams();
-  const events = useSelector((state) => state.events.events);
+
+  const events = useSelector((state) => state.events);
   const currentEvent = events.filter((el) => el.link === link);
 
   return (
     <Container>
+
       <Helmet>
         {currentEvent.map((el) => (
           <title key={el.title}>
@@ -22,6 +24,7 @@ function EventPage() {
           </title>
         ))}
       </Helmet>
+
       {currentEvent.map((el) => (
         <Title key={el.title} className="title" level={2}>
           {el.title}
@@ -39,4 +42,4 @@ function EventPage() {
   );
 }
 
-export default EventPage;
+export default Event;

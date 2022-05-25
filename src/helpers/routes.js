@@ -1,16 +1,16 @@
-import EventsList from '../pages/EventsList';
-import EventPage from '../pages/EventPage';
+import Events from '../pages/Events';
+import Event from '../pages/Event';
 import ErrorPage from '../components/ErrorPage';
 import Dashboard from '../pages/Dashboard';
 
 export const routes = [
   {
     path: '/',
-    element: <EventsList />,
+    element: <Events />,
   },
   {
     path: 'event/:link',
-    element: <EventPage />,
+    element: <Event />,
   },
   {
     path: 'dashboard',

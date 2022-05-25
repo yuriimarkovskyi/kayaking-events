@@ -1,0 +1,60 @@
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+
+  &__line-wrapper {
+    width: 70px;
+    height: 70px;
+    position: relative;
+  }
+
+  &__line {
+    background-color: #333;
+    width: 50px;
+    height: 3px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: anm-LL-4-move 1.8s infinite linear;
+
+    &_1 {
+      background-color: #e74c3c;
+    }
+
+    &_2 {
+      background-color: #3498db;
+      animation-delay: -0.9s;
+    }
+
+    &_3 {
+      background-color: #2ecc71;
+      animation-delay: -1.35s;
+    }
+
+    &_4 {
+      background-color: #f1c40f;
+      animation-delay: -.45s;
+    }
+  }
+}
+
+@keyframes anm-LL-4-move {
+  25% {
+    transform: translateX(42px) rotate(-90deg) scale(0.9);
+  }
+  50% {
+    transform: translateX(42px) translateY(42px) rotate(-179deg);
+  }
+  50.1% {
+    transform: translateX(42px) translateY(42px) rotate(-180deg);
+  }
+  75% {
+    transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.9);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}

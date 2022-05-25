@@ -43,11 +43,11 @@ export const registrationsColumns = [
     ),
   },
   {
-    title: 'Одномісних каяків',
+    title: 'Одномісних',
     dataIndex: 'soloKayaks',
   },
   {
-    title: 'Двомісних каяків',
+    title: 'Двомісних',
     dataIndex: 'doubleKayaks',
   },
   {

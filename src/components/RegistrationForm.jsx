@@ -1,7 +1,6 @@
 import React from 'react';
 import {
-  Button,
-  Checkbox, Form, Input, InputNumber, Select, Typography,
+  Button, Checkbox, Form, Input, InputNumber, Select, Typography,
 } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +8,7 @@ import moment from 'moment';
 import 'moment/locale/uk';
 import { addCustomer } from '../store/registrationsSlice';
 import { changeVisibility } from '../store/visibilitySlice';
+import { useWatchValues } from '../hooks/useWatchValues';
 
 function RegistrationForm() {
   const [form] = Form.useForm();
@@ -17,14 +17,15 @@ function RegistrationForm() {
 
   const { link } = useParams();
   const dispatch = useDispatch();
+  const [
+    dateWatcher,
+    soloKayaksWatcher,
+    doubleKayaksWatcher,
+    isChildrenWatcher,
+    childrenAmountWatcher,
+  ] = useWatchValues(['date', 'soloKayaks', 'doubleKayaks', 'isChildren', 'childrenAmount'], form);
 
-  const dateWatcher = Form.useWatch('date', form);
-  const soloKayaksWatcher = Form.useWatch('soloKayaks', form);
-  const doubleKayaksWatcher = Form.useWatch('doubleKayaks', form);
-  const isChildrenWatcher = Form.useWatch('isChildren', form);
-  const childrenAmountWatcher = Form.useWatch('childrenAmount', form);
-
-  const events = useSelector((state) => state.events.events);
+  const events = useSelector((state) => state.events);
   const currentEvent = events.filter((el) => el.link === link);
   const eventName = currentEvent.map((el) => el.name).toString();
 
@@ -43,7 +44,7 @@ function RegistrationForm() {
   const priceTotal = (
     priceSoloKayak * soloKayaksWatcher + priceDoubleKayak * doubleKayaksWatcher * 2
   );
-  const sum = isChildrenWatcher
+  const amount = isChildrenWatcher
     ? priceTotal + (childrenAmountWatcher * priceDoubleKayak) / 2
     : priceTotal;
 
@@ -64,7 +65,7 @@ function RegistrationForm() {
       doubleKayaks,
       isChildren,
       childrenAmount: isChildrenWatcher ? childrenAmount : 0,
-      sum,
+      amount,
       notes,
       isCompleted: false,
     };
@@ -201,7 +202,7 @@ function RegistrationForm() {
         label="Вартість:"
       >
         <Text strong>
-          {`${(sum || 0)} ГРН`}
+          {`${(amount || 0)} ГРН`}
         </Text>
       </Form.Item>
       <Form.Item

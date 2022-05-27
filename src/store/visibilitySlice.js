@@ -8,6 +8,7 @@ const visibilitySlice = createSlice({
   },
 });
 
-export const { changeVisibility } = visibilitySlice.actions;
+const { changeVisibility } = visibilitySlice.actions;
 
 export default visibilitySlice.reducer;
+export { changeVisibility };

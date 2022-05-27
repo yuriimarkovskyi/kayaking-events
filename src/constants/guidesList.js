@@ -1,4 +1,4 @@
-export const guidesList = [
+const guidesList = [
   {
     id: 1,
     name: 'Марковський Юрій Володимирович',
@@ -16,3 +16,5 @@ export const guidesList = [
     },
   },
 ];
+
+export { guidesList };

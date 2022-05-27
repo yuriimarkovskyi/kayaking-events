@@ -1,6 +1,6 @@
 import { Tag } from 'antd';
 
-export const registrationsColumns = [
+const registrationsColumns = [
   {
     title: 'Івент',
     dataIndex: 'eventName',
@@ -74,8 +74,8 @@ export const registrationsColumns = [
     ellipsis: true,
   },
 ];
-export const registrationsData = [];
-export const eventsColumns = [
+const registrationsData = [];
+const eventsColumns = [
   {
     title: 'Івент',
     dataIndex: 'name',
@@ -117,4 +117,8 @@ export const eventsColumns = [
     dataIndex: 'descriptionFeatures',
   },
 ];
-export const eventsData = [];
+const eventsData = [];
+
+export {
+  registrationsColumns, registrationsData, eventsColumns, eventsData,
+};

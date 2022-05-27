@@ -1,25 +1,8 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import {
-  FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE,
+  FLUSH, PAUSE, PERSIST, persistStore, PURGE, REGISTER, REHYDRATE,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-import visibilitySlice from './visibilitySlice';
-import eventsSlice from './eventsSlice';
-import registrationsSlice from './registrationsSlice';
-
-const persistConfig = {
-  key: 'root',
-  storage,
-  blacklist: ['visibility', 'events'],
-};
-
-const rootReducer = combineReducers({
-  events: eventsSlice,
-  registrations: registrationsSlice,
-  visibility: visibilitySlice,
-});
-
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+import { persistedReducer } from './reducers';
 
 export const store = configureStore({
   reducer: persistedReducer,
@@ -30,4 +13,5 @@ export const store = configureStore({
   }),
 });
 
-export const persistor = persistStore(store);
+const persistor = persistStore(store);
+export { persistor };

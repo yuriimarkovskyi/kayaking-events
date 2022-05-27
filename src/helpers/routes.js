@@ -1,9 +1,9 @@
 import Events from '../pages/Events';
 import Event from '../pages/Event';
 import ErrorPage from '../components/ErrorPage';
-import Dashboard from '../pages/Dashboard';
+import Dashboard from '../pages/protected/Dashboard';
 
-export const routes = [
+const routes = [
   {
     path: '/',
     element: <Events />,
@@ -21,3 +21,5 @@ export const routes = [
     element: <ErrorPage />,
   },
 ];
+
+export { routes };

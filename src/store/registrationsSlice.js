@@ -80,6 +80,7 @@ const registrationsSlice = createSlice({
   },
 });
 
-export const { addCustomer, completeRegistration } = registrationsSlice.actions;
+const { addCustomer, completeRegistration } = registrationsSlice.actions;
 
 export default registrationsSlice.reducer;
+export { addCustomer, completeRegistration };

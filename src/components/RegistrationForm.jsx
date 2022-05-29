@@ -6,9 +6,10 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import 'moment/locale/uk';
-import { addCustomer } from '../store/registrationsSlice';
 import { changeVisibility } from '../store/visibilitySlice';
 import { useWatchValues } from '../hooks/useWatchValues';
+import { firebaseDatabase } from '../firebase/firebase';
+import { pushDataToBase } from '../helpers/pushDataToBase';
 
 function RegistrationForm() {
   const [form] = Form.useForm();
@@ -23,7 +24,7 @@ function RegistrationForm() {
     doubleKayaksWatcher,
     isChildrenWatcher,
     childrenAmountWatcher,
-  ] = useWatchValues(['date', 'soloKayaks', 'doubleKayaks', 'isChildren', 'childrenAmount'], form);
+  ] = useWatchValues(['eventDate', 'soloKayaks', 'doubleKayaks', 'isChildren', 'childrenAmount'], form);
 
   const events = useSelector((state) => state.events);
   const currentEvent = events.filter((el) => el.link === link);
@@ -50,28 +51,28 @@ function RegistrationForm() {
 
   const onFinish = (values) => {
     const {
-      name, email, phone, date, soloKayaks, doubleKayaks, isChildren, childrenAmount, notes,
+      name, email, phone, eventDate, soloKayaks, doubleKayaks, isChildren, childrenAmount, notes,
     } = values;
 
     const customer = {
-      id: Date.now(),
+      key: Date.now(),
       eventName,
       registrationTime: Date.now(),
-      customerName: name,
-      customerEmail: email,
-      customerPhone: `+380${phone}`,
-      eventDate: date,
+      name,
+      email,
+      phone,
+      eventDate,
       soloKayaks,
       doubleKayaks,
       isChildren,
-      childrenAmount: isChildrenWatcher ? childrenAmount : 0,
+      childrenAmount: isChildrenWatcher ? childrenAmount : null,
       amount,
       notes,
       isCompleted: false,
     };
 
     form.resetFields();
-    dispatch(addCustomer(customer));
+    pushDataToBase(firebaseDatabase, 'registrations', customer);
     dispatch(changeVisibility());
   };
 
@@ -124,7 +125,7 @@ function RegistrationForm() {
       </Form.Item>
       <Form.Item
         className="form__item"
-        name="date"
+        name="eventDate"
         label="Дата івенту:"
         rules={[
           { required: true, message: 'Необхідно обрати дату походу' },
@@ -133,7 +134,7 @@ function RegistrationForm() {
         <Select>
           {currentEvent.map((item) => item.dates.map((date) => (
             <Option key={date.date} value={date.date}>
-              {moment(date.date).locale('uk').format('LL')}
+              {moment.unix(date.date).locale('uk').format('L')}
             </Option>
           )))}
         </Select>
@@ -174,6 +175,7 @@ function RegistrationForm() {
       <Form.Item
         className="form__item"
         name="isChildren"
+        initialValue={false}
         valuePropName="checked"
       >
         <Checkbox disabled={!doubleKayaksWatcher}>
@@ -188,7 +190,7 @@ function RegistrationForm() {
         label="Кількість дітей:"
         tooltip="Сидіння ставиться між переднім та заднім сидіннями у каяку. На дитину діє знижка у розмірі 50% від вартості місця"
         rules={[
-          { required: !!isChildrenWatcher, message: 'Поле є обов\'язковим для заповнення' },
+          { required: !isChildrenWatcher, message: 'Поле є обов\'язковим для заповнення' },
         ]}
       >
         <InputNumber
@@ -208,6 +210,7 @@ function RegistrationForm() {
       <Form.Item
         className="form__item"
         name="notes"
+        initialValue={null}
         label="Примітки:"
         rules={[
           { whitespace: true, message: 'Поле не може містити у собі лише пробіли' },

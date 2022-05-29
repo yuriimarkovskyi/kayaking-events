@@ -13,7 +13,7 @@ const eventsSlice = createSlice({
       imageCover: `${process.env.PUBLIC_URL}/images/primary/ostriv-muromec.jpg`,
       dates: [
         {
-          date: 1655203681000,
+          date: 1653804000,
           totalPlaces: {
             soloKayaks: 10,
             doubleKayaks: 10,
@@ -25,7 +25,7 @@ const eventsSlice = createSlice({
           guide: guidesList.filter((el) => el.id === 1),
         },
         {
-          date: 1625605200001,
+          date: 1656482400,
           totalPlaces: {
             soloKayaks: 10,
             doubleKayaks: 10,
@@ -76,7 +76,7 @@ const eventsSlice = createSlice({
       imageCover: `${process.env.PUBLIC_URL}/images/primary/sercem-kyjeva.jpg`,
       dates: [
         {
-          date: 1655203681000,
+          date: 1653804000,
           totalPlaces: {
             soloKayaks: 10,
             doubleKayaks: 10,
@@ -88,7 +88,7 @@ const eventsSlice = createSlice({
           guide: guidesList.filter((el) => el.id === 1),
         },
         {
-          date: 1625605200001,
+          date: 1656482400,
           totalPlaces: {
             soloKayaks: 10,
             doubleKayaks: 10,
@@ -102,14 +102,14 @@ const eventsSlice = createSlice({
       ],
       price: [
         {
-          soloKayak: {
-            title: 'Одномісний каяк:',
-            price: 730,
-          },
-          doubleKayak: {
-            title: 'Двомісний каяк:',
-            price: 570,
-          },
+          id: 'soloKayak',
+          title: 'Одномісний каяк:',
+          price: 730,
+        },
+        {
+          id: 'doubleKayak',
+          title: 'Двомісний каяк:',
+          price: 570,
         },
       ],
       imagesSlider: [
@@ -138,7 +138,7 @@ const eventsSlice = createSlice({
       imageCover: `${process.env.PUBLIC_URL}/images/primary/sercem-kyjeva.jpg`,
       dates: [
         {
-          date: 1655203681000,
+          date: 1653804000,
           totalPlaces: {
             soloKayaks: 10,
             doubleKayaks: 10,
@@ -150,7 +150,7 @@ const eventsSlice = createSlice({
           guide: guidesList.filter((el) => el.id === 1),
         },
         {
-          date: 1625605200001,
+          date: 1656482400,
           totalPlaces: {
             soloKayaks: 10,
             doubleKayaks: 10,
@@ -164,14 +164,14 @@ const eventsSlice = createSlice({
       ],
       price: [
         {
-          soloKayak: {
-            title: 'Одномісний каяк:',
-            price: 730,
-          },
-          doubleKayak: {
-            title: 'Двомісний каяк:',
-            price: 570,
-          },
+          id: 'soloKayak',
+          title: 'Одномісний каяк:',
+          price: 730,
+        },
+        {
+          id: 'doubleKayak',
+          title: 'Двомісний каяк:',
+          price: 570,
         },
       ],
       imagesSlider: [

@@ -72,7 +72,7 @@ function EventInformation() {
               <>
                 <Item className="event-information__dates">
                   <span>
-                    {`Дата - ${moment(item.date).locale('uk').format('LL')}`}
+                    {`Дата - ${moment.unix(item.date).locale('uk').format('L')}`}
                   </span>
                   <span>
                     {`Вільних місць - ${item.freePlaces.soloKayaks + item.freePlaces.doubleKayaks}.`}

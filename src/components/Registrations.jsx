@@ -2,41 +2,36 @@ import React from 'react';
 import { Table } from 'antd';
 import moment from 'moment';
 import 'moment/locale/uk';
-import { useSelector } from 'react-redux';
-import { registrationsColumns, registrationsData } from '../constants/tablesData';
-import { uniqObjectsByKey } from '../helpers/uniqObjectsByKey';
+import { useListVals } from 'react-firebase-hooks/database';
+import { ref } from 'firebase/database';
+import { registrationsColumns } from '../constants/tablesData';
+import { firebaseDatabase } from '../firebase/firebase';
+import { filterTableColumn } from '../helpers/filterTableColumn';
 
 function Registrations() {
-  const registrations = useSelector((state) => state.registrations);
-  const uniqEventRegistrations = uniqObjectsByKey(registrations, 'eventName');
-  const eventTableColumn = registrationsColumns.filter((el) => el.dataIndex === 'eventName');
-
-  uniqEventRegistrations.forEach((el) => {
-    eventTableColumn.map((item) => item.filters.push({
-      text: el.eventName,
-      value: el.eventName,
-    }));
+  const [registrations, loading, error] = useListVals(ref(firebaseDatabase, 'registrations'), {
+    transform: (el) => ({
+      ...el,
+      phone: `+380${el.phone}`,
+      registrationTime: moment(el.registrationTime).startOf('seconds').fromNow(),
+      eventDate: moment.unix(el.eventDate).locale('uk').format('L'),
+      soloKayaks: el.soloKayaks ? el.soloKayaks : '-',
+      doubleKayaks: el.doubleKayaks ? el.doubleKayaks : '-',
+      isChildren: el.isChildren ? 'Так' : false,
+      childrenAmount: el.childrenAmount ? el.childrenAmount : '-',
+    }),
   });
 
-  if (!registrationsData.length) {
-    registrations.forEach((el) => {
-      registrationsData.push({
-        ...el,
-        registrationTime: moment(el.registrationTime).startOf('seconds').fromNow(),
-        eventDate: moment().locale('uk').format('LL'),
-        soloKayaks: el.soloKayaks ? el.soloKayaks : '-',
-        doubleKayaks: el.doubleKayaks ? el.doubleKayaks : '-',
-        isChildren: el.isChildren ? 'Так' : '',
-        childrenAmount: el.childrenAmount ? el.childrenAmount : '-',
-      });
-    });
-  }
+  filterTableColumn(registrations, 'eventName', registrationsColumns);
+  filterTableColumn(registrations, 'eventDate', registrationsColumns);
+
+  if (error) console.error(error);
 
   return (
     <Table
-      rowKey="id"
-      dataSource={registrationsData}
+      dataSource={registrations}
       columns={registrationsColumns}
+      loading={loading}
       pagination={false}
       size="small"
       scroll={{ x: true }}

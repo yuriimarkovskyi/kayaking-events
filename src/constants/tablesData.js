@@ -13,20 +13,22 @@ const registrationsColumns = [
     dataIndex: 'registrationTime',
     sortDirections: ['ascend', 'descend', 'ascend'],
     defaultSortOrder: 'descend',
-    sorter: (a, b) => a.id - b.id,
+    sorter: (a, b) => a.key - b.key,
   },
   {
     title: 'Дата івенту',
     dataIndex: 'eventDate',
     ellipsis: true,
+    filters: [],
+    onFilter: (value, record) => record.eventDate.indexOf(value) === 0,
   },
   {
     title: 'ПІБ',
-    dataIndex: 'customerName',
+    dataIndex: 'name',
   },
   {
     title: 'Email',
-    dataIndex: 'customerEmail',
+    dataIndex: 'email',
     render: (email) => (
       <a href={`mailto:${email}`}>
         {email}
@@ -35,7 +37,7 @@ const registrationsColumns = [
   },
   {
     title: 'Номер телефону',
-    dataIndex: 'customerPhone',
+    dataIndex: 'phone',
     render: (phone) => (
       <a href={`tel:${phone}`}>
         {phone}
@@ -55,7 +57,7 @@ const registrationsColumns = [
     dataIndex: 'isChildren',
     render: (tag) => (
       <Tag key={tag}>
-        {tag.toUpperCase()}
+        {tag}
       </Tag>
     ),
   },
@@ -74,7 +76,6 @@ const registrationsColumns = [
     ellipsis: true,
   },
 ];
-const registrationsData = [];
 const eventsColumns = [
   {
     title: 'Івент',
@@ -117,8 +118,7 @@ const eventsColumns = [
     dataIndex: 'descriptionFeatures',
   },
 ];
-const eventsData = [];
 
 export {
-  registrationsColumns, registrationsData, eventsColumns, eventsData,
+  registrationsColumns, eventsColumns,
 };

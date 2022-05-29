@@ -1,4 +1,6 @@
-import { Button, Form, Input } from 'antd';
+import {
+  Button, Checkbox, Form, Input,
+} from 'antd';
 import PropTypes from 'prop-types';
 import { LoginOutlined } from '@ant-design/icons';
 
@@ -39,6 +41,15 @@ function AuthorizationForm({ signIn }) {
         ]}
       >
         <Input.Password />
+      </Form.Item>
+      <Form.Item
+        name="remember"
+        valuePropName="checked"
+        initialValue
+      >
+        <Checkbox>
+          Запам`ятати мене
+        </Checkbox>
       </Form.Item>
       <Form.Item>
         <Button

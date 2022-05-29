@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Layout, Tabs } from 'antd';
 import { Col, Container, Row } from 'react-bootstrap';
-import { EditOutlined, LogoutOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { LogoutOutlined } from '@ant-design/icons';
 import { getAuth, signOut } from 'firebase/auth';
 import { useAuthState, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import Registrations from '../../components/Registrations';
@@ -46,26 +46,10 @@ function Dashboard() {
           </Header>
           <Content>
             <Tabs centered size="large">
-              <TabPane
-                tab={(
-                  <span>
-                    <UnorderedListOutlined />
-                    Реєстрації
-                  </span>
-                 )}
-                key="1"
-              >
+              <TabPane tab="Реєстрації" key="Реєстрації">
                 <Registrations />
               </TabPane>
-              <TabPane
-                tab={(
-                  <span>
-                    <EditOutlined />
-                    Івенти
-                  </span>
-                  )}
-                key="2"
-              >
+              <TabPane tab="Івенти" key="Івенти">
                 Events
               </TabPane>
             </Tabs>

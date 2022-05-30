@@ -1,16 +1,30 @@
 import {
   Button, Checkbox, Form, Input,
 } from 'antd';
-import PropTypes from 'prop-types';
 import { LoginOutlined } from '@ant-design/icons';
+import {
+  browserSessionPersistence, browserLocalPersistence, getAuth, setPersistence,
+} from 'firebase/auth';
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { firebaseApp } from '../firebase/firebase';
 
-function AuthorizationForm({ signIn }) {
+function AuthorizationForm() {
+  const auth = getAuth(firebaseApp);
+  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
   const [form] = Form.useForm();
+  const isRemember = Form.useWatch('remember', form);
 
   const onFinish = (values) => {
     const { email, password } = values;
 
-    signIn(email, password);
+    if (isRemember) {
+      return setPersistence(auth, browserLocalPersistence)
+        .then(() => signInWithEmailAndPassword(email, password))
+        .catch((error) => console.error(error));
+    }
+    return setPersistence(auth, browserSessionPersistence)
+      .then(() => signInWithEmailAndPassword(email, password))
+      .catch((error) => console.error(error));
   };
 
   return (
@@ -45,7 +59,7 @@ function AuthorizationForm({ signIn }) {
       <Form.Item
         name="remember"
         valuePropName="checked"
-        initialValue
+        initialValue={false}
       >
         <Checkbox>
           Запам`ятати мене
@@ -63,9 +77,5 @@ function AuthorizationForm({ signIn }) {
     </Form>
   );
 }
-
-AuthorizationForm.propTypes = {
-  signIn: PropTypes.func.isRequired,
-};
 
 export default AuthorizationForm;

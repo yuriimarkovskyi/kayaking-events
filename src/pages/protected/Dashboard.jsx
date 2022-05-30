@@ -3,7 +3,7 @@ import { Button, Layout, Tabs } from 'antd';
 import { Col, Container, Row } from 'react-bootstrap';
 import { LogoutOutlined } from '@ant-design/icons';
 import { getAuth, signOut } from 'firebase/auth';
-import { useAuthState, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import Registrations from '../../components/Registrations';
 import AuthorizationForm from '../../components/AuthorizationForm';
 import { firebaseApp } from '../../firebase/firebase';
@@ -14,7 +14,6 @@ function Dashboard() {
   const { Header, Content } = Layout;
 
   const auth = getAuth(firebaseApp);
-  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
   const [user, loading] = useAuthState(auth);
 
   if (loading) return <Loader />;
@@ -26,7 +25,7 @@ function Dashboard() {
           <Content className="dashboard__content_form">
             <Row>
               <Col className="mx-auto" sm={10} md={6} lg={4}>
-                <AuthorizationForm signIn={signInWithEmailAndPassword} />
+                <AuthorizationForm />
               </Col>
             </Row>
           </Content>

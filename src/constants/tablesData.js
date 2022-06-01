@@ -1,4 +1,28 @@
-import { Tag } from 'antd';
+import {
+  Badge, Button, Popconfirm, Space, Tag,
+} from 'antd';
+import {
+  equalTo, get, orderByChild, query, ref, remove, update,
+} from 'firebase/database';
+import { firebaseDatabase } from '../firebase/firebase';
+
+const updateData = async (value) => {
+  const databaseRef = ref(firebaseDatabase, 'registrations');
+  const queryConstraints = [orderByChild('key'), equalTo(value)];
+  const selectedData = await get(query(databaseRef, ...queryConstraints));
+  const summaryRef = ref(firebaseDatabase, `registrations/${Object.keys(selectedData.val()).toString()}`);
+
+  return update(summaryRef, { isCompleted: true });
+};
+
+const deleteData = async (value) => {
+  const databaseRef = ref(firebaseDatabase, 'registrations');
+  const queryConstraints = [orderByChild('key'), equalTo(value)];
+  const selectedData = await get(query(databaseRef, ...queryConstraints));
+  const summaryRef = ref(firebaseDatabase, `registrations/${Object.keys(selectedData.val()).toString()}`);
+
+  return remove(summaryRef);
+};
 
 const registrationsColumns = [
   {
@@ -7,6 +31,19 @@ const registrationsColumns = [
     fixed: 'left',
     filters: [],
     onFilter: (value, record) => record.eventName.indexOf(value) === 0,
+    render: (value, record) => (
+      record.isCompleted
+        ? (
+          <Badge dot status="success">
+            {value}
+          </Badge>
+        )
+        : (
+          <Badge dot status="default">
+            {value}
+          </Badge>
+        )
+    ),
   },
   {
     title: 'Зареєстровано',
@@ -16,7 +53,7 @@ const registrationsColumns = [
     sorter: (a, b) => a.key - b.key,
   },
   {
-    title: 'Дата івенту',
+    title: 'Дата',
     dataIndex: 'eventDate',
     ellipsis: true,
     filters: [],
@@ -66,7 +103,7 @@ const registrationsColumns = [
     dataIndex: 'childrenAmount',
   },
   {
-    title: 'Сума до сплати',
+    title: 'До сплати',
     dataIndex: 'amount',
     ellipsis: true,
   },
@@ -74,6 +111,32 @@ const registrationsColumns = [
     title: 'Нотатки',
     dataIndex: 'notes',
     ellipsis: true,
+  },
+  {
+    title: 'Дії',
+    key: 'action',
+    align: 'center',
+    render: (value) => (
+      <Space>
+        <Button
+          type="link"
+          onClick={() => updateData(value.key)}
+        >
+          Узгоджено
+        </Button>
+        <Popconfirm
+          placement="left"
+          title="Ви впевнені?"
+          okText="Так"
+          cancelText="Ні"
+          onConfirm={() => deleteData(value.key)}
+        >
+          <Button type="link" danger>
+            Видалити
+          </Button>
+        </Popconfirm>
+      </Space>
+    ),
   },
 ];
 const eventsColumns = [

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Button, Checkbox, Form, Input, InputNumber, Select, Typography,
+  Button, Checkbox, Form, Input, InputNumber, message, Select, Typography,
 } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -73,6 +73,13 @@ function RegistrationForm() {
 
     form.resetFields();
     pushDataToBase(firebaseDatabase, 'registrations', customer);
+    message.success({
+      content: 'Ви успішно зареєструвались',
+      duration: 3,
+      style: {
+        marginTop: '30vh',
+      },
+    });
     dispatch(changeVisibility());
   };
 

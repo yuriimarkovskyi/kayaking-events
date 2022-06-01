@@ -4,12 +4,12 @@ import moment from 'moment';
 import 'moment/locale/uk';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
-import { registrationsColumns } from '../constants/tablesData';
 import { firebaseDatabase } from '../firebase/firebase';
-import { filterTableColumn } from '../helpers/filterTableColumn';
+import { filtersInColumnsTable } from '../helpers/filtersInColumnsTable';
+import { registrationsColumns } from '../constants/tablesData';
 
 function Registrations() {
-  const [registrations, loading, error] = useListVals(ref(firebaseDatabase, 'registrations'), {
+  const [registrationsValues, loading, error] = useListVals(ref(firebaseDatabase, 'registrations'), {
     transform: (el) => ({
       ...el,
       phone: `+380${el.phone}`,
@@ -22,19 +22,20 @@ function Registrations() {
     }),
   });
 
-  filterTableColumn(registrations, 'eventName', registrationsColumns);
-  filterTableColumn(registrations, 'eventDate', registrationsColumns);
+  filtersInColumnsTable(registrationsValues, 'eventName', registrationsColumns);
+  filtersInColumnsTable(registrationsValues, 'eventDate', registrationsColumns);
 
   if (error) console.error(error);
 
   return (
     <Table
-      dataSource={registrations}
-      columns={registrationsColumns}
-      loading={loading}
-      pagination={false}
       size="small"
+      bordered
+      pagination={false}
       scroll={{ x: true }}
+      loading={loading}
+      dataSource={registrationsValues}
+      columns={registrationsColumns}
     />
   );
 }

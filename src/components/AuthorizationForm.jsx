@@ -1,7 +1,7 @@
 import {
   Button, Checkbox, Form, Input,
 } from 'antd';
-import { LoginOutlined } from '@ant-design/icons';
+import { LockOutlined, LoginOutlined, UserOutlined } from '@ant-design/icons';
 import {
   browserSessionPersistence, browserLocalPersistence, getAuth, setPersistence,
 } from 'firebase/auth';
@@ -38,23 +38,21 @@ function AuthorizationForm() {
       <Form.Item
         className="form__item"
         name="email"
-        label="E-mail:"
         rules={[
           { type: 'email', message: 'Введіть коректний E-mail' },
           { required: true, message: 'Поле є обов\'язковим для заповнення' },
         ]}
       >
-        <Input />
+        <Input prefix={<UserOutlined />} placeholder="E-mail" />
       </Form.Item>
       <Form.Item
         className="form__item"
-        label="Пароль:"
         name="password"
         rules={[
           { required: true, message: 'Поле є обов\'язковим для заповнення' },
         ]}
       >
-        <Input.Password />
+        <Input.Password prefix={<LockOutlined />} placeholder="Пароль" />
       </Form.Item>
       <Form.Item
         name="remember"
@@ -62,7 +60,7 @@ function AuthorizationForm() {
         initialValue={false}
       >
         <Checkbox>
-          Запам`ятати мене
+          Запам`ятати
         </Checkbox>
       </Form.Item>
       <Form.Item>
@@ -70,6 +68,7 @@ function AuthorizationForm() {
           type="primary"
           htmlType="submit"
           icon={<LoginOutlined />}
+          block
         >
           Авторизуватись
         </Button>

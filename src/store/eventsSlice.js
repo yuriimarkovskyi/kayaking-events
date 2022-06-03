@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { guidesList } from '../constants/guidesList';
 
 const eventsSlice = createSlice({
   name: 'events',
@@ -22,7 +21,14 @@ const eventsSlice = createSlice({
             soloKayaks: 10,
             doubleKayaks: 10,
           },
-          guide: guidesList.filter((el) => el.id === 1),
+          guide: {
+            key: 1,
+            name: 'Марковський Юрій Володимирович',
+            links: {
+              facebook: 'https://www.facebook.com/404/',
+              instagram: 'https://www.instagram.com/404/',
+            },
+          },
         },
         {
           date: 1656482400,
@@ -34,7 +40,14 @@ const eventsSlice = createSlice({
             soloKayaks: 5,
             doubleKayaks: 5,
           },
-          guide: guidesList.filter((el) => el.id === 2),
+          guide: {
+            key: 2,
+            name: 'Острозький Костянтин Павлович',
+            links: {
+              facebook: 'https://www.facebook.com/404/',
+              instagram: 'https://www.instagram.com/404/',
+            },
+          },
         },
       ],
       price: [
@@ -85,7 +98,6 @@ const eventsSlice = createSlice({
             soloKayaks: 10,
             doubleKayaks: 10,
           },
-          guide: guidesList.filter((el) => el.id === 1),
         },
         {
           date: 1656482400,
@@ -97,7 +109,6 @@ const eventsSlice = createSlice({
             soloKayaks: 5,
             doubleKayaks: 5,
           },
-          guide: guidesList.filter((el) => el.id === 2),
         },
       ],
       price: [
@@ -147,7 +158,6 @@ const eventsSlice = createSlice({
             soloKayaks: 10,
             doubleKayaks: 10,
           },
-          guide: guidesList.filter((el) => el.id === 1),
         },
         {
           date: 1656482400,
@@ -159,7 +169,6 @@ const eventsSlice = createSlice({
             soloKayaks: 5,
             doubleKayaks: 5,
           },
-          guide: guidesList.filter((el) => el.id === 2),
         },
       ],
       price: [

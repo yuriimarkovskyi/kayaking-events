@@ -6,7 +6,7 @@ import {
   browserSessionPersistence, browserLocalPersistence, getAuth, setPersistence,
 } from 'firebase/auth';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
-import { firebaseApp } from '../firebase/firebase';
+import { firebaseApp } from '../../firebase/firebase';
 
 function AuthorizationForm() {
   const auth = getAuth(firebaseApp);

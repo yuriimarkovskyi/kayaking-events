@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import { Typography } from 'antd';
-import EventSlider from '../components/EventSlider';
-import EventInformation from '../components/EventInformation';
+import EventSlider from '../components/Event/EventSlider';
+import EventInformation from '../components/Event/EventInformation';
 
 function Event() {
   const { Title } = Typography;

@@ -4,12 +4,12 @@ import moment from 'moment';
 import 'moment/locale/uk';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
-import { firebaseDatabase } from '../firebase/firebase';
-import { filtersInColumnsTable } from '../helpers/filtersInColumnsTable';
-import { registrationsColumns } from '../constants/tablesData';
+import { firebaseDb } from '../../firebase/firebase';
+import { filtersInColumnsTable } from '../../helpers/filtersInColumnsTable';
+import { registrationsColumns } from '../../constants/tableColumns';
 
 function Registrations() {
-  const [registrationsValues, loading, error] = useListVals(ref(firebaseDatabase, 'registrations'), {
+  const [registrationsValues, loading, error] = useListVals(ref(firebaseDb, 'registrations'), {
     transform: (el) => ({
       ...el,
       phone: `+380${el.phone}`,

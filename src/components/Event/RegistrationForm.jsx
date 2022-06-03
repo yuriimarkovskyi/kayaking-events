@@ -6,10 +6,10 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import 'moment/locale/uk';
-import { changeVisibility } from '../store/visibilitySlice';
-import { useWatchValues } from '../hooks/useWatchValues';
-import { firebaseDatabase } from '../firebase/firebase';
-import { pushDataToBase } from '../helpers/pushDataToBase';
+import { changeVisibility } from '../../store/visibilitySlice';
+import { useWatchValues } from '../../hooks/useWatchValues';
+import { firebaseDb } from '../../firebase/firebase';
+import { pushDataToDb } from '../../helpers/pushDataToDb';
 
 function RegistrationForm() {
   const [form] = Form.useForm();
@@ -69,10 +69,11 @@ function RegistrationForm() {
       amount,
       notes,
       isCompleted: false,
+      isRejected: false,
     };
 
     form.resetFields();
-    pushDataToBase(firebaseDatabase, 'registrations', customer);
+    pushDataToDb(firebaseDb, 'registrations', customer);
     message.success({
       content: 'Ви успішно зареєструвались',
       duration: 3,

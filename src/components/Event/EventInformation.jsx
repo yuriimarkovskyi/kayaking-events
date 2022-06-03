@@ -7,9 +7,9 @@ import {
 import Item from 'antd/es/list/Item';
 import moment from 'moment';
 import 'moment/locale/uk';
-import facebookIcon from '../images/icons/facebook.png';
-import instagramIcon from '../images/icons/instagram.png';
-import { changeVisibility } from '../store/visibilitySlice';
+import facebookIcon from '../../images/icons/facebook.png';
+import instagramIcon from '../../images/icons/instagram.png';
+import { changeVisibility } from '../../store/visibilitySlice';
 import RegistrationForm from './RegistrationForm';
 
 function EventInformation() {
@@ -104,7 +104,6 @@ function EventInformation() {
       <Button
         type="primary"
         htmlType="button"
-        value="large"
         onClick={showModal}
       >
         Реєстрація
@@ -112,7 +111,7 @@ function EventInformation() {
       <Modal
         title="Форма реєстрації"
         centered
-        width={500}
+        width="500"
         footer={null}
         visible={isVisible}
         onCancel={closeModal}

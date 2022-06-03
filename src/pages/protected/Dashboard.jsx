@@ -4,22 +4,23 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { LogoutOutlined } from '@ant-design/icons';
 import { getAuth, signOut } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import Registrations from '../../components/Registrations';
-import AuthorizationForm from '../../components/AuthorizationForm';
+import Registrations from '../../components/Dashboard/Registrations';
+import AuthorizationForm from '../../components/Dashboard/AuthorizationForm';
 import { firebaseApp } from '../../firebase/firebase';
 import Loader from '../../components/Loader';
+import Instructors from '../../components/Dashboard/Instructors';
 
 function Dashboard() {
   const { TabPane } = Tabs;
   const { Header, Content } = Layout;
 
   const auth = getAuth(firebaseApp);
-  const [user, loading] = useAuthState(auth);
+  const [isUser, loading] = useAuthState(auth);
 
   if (loading) return <Loader />;
 
   return (
-    !user
+    !isUser
       ? (
         <Container>
           <Content className="dashboard__content_form">
@@ -45,11 +46,11 @@ function Dashboard() {
           </Header>
           <Content>
             <Tabs centered size="large">
-              <TabPane tab="Реєстрації" key="Реєстрації">
+              <TabPane tab="Реєстрації" key="1">
                 <Registrations />
               </TabPane>
-              <TabPane tab="Івенти" key="Івенти">
-                Events
+              <TabPane tab="Інструктори" key="2">
+                <Instructors />
               </TabPane>
             </Tabs>
           </Content>

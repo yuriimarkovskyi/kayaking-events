@@ -1,12 +1,12 @@
 import React from 'react';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
 function EventSlider() {
   const { link } = useParams();
 
-  const events = useSelector((state) => state.events);
+  const events = useAppSelector((state) => state.events);
   const currentEvent = events.filter((el) => el.link === link);
 
   return (

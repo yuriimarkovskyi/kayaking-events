@@ -1,18 +1,20 @@
 import React from 'react';
 import { Button, Drawer, Table } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { instructorsColumns } from '../../constants/tableColumns';
 import { changeVisibility } from '../../store/visibilitySlice';
 import InstructorsForm from './InstructorsForm';
 import { firebaseDb } from '../../firebase/firebase';
+import { IInstructor } from '../../types/types';
 
-function Instructors() {
-  const dispatch = useDispatch();
-  const isVisible = useSelector((state) => state.visibility);
+function Instructors(): JSX.Element {
+  const dispatch = useAppDispatch();
+  const isVisible = useAppSelector((state) => state.visibility);
 
-  const [instructorsValues, loading, error] = useListVals(ref(firebaseDb, 'instructors'));
+  const [instructorsValues, loading, error] = useListVals<IInstructor>(ref(firebaseDb, 'instructors'));
 
   const showDrawer = () => {
     dispatch(changeVisibility());

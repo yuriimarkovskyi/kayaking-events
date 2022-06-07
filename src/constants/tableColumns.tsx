@@ -2,33 +2,36 @@ import {
   Badge, Button, Dropdown, Menu, Popconfirm, Tag, Tooltip,
 } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
+import type { ColumnsType } from 'antd/lib/table';
+import React from 'react';
 import { firebaseDb } from '../firebase/firebase';
 import { updateDataInDb } from '../helpers/updateDataInDb';
 import { deleteDataInDb } from '../helpers/deleteDataInDb';
+import { ICustomerTransformed, IInstructor } from '../types/types';
 
-const updateIsCompleted = (callback) => (
+const updateIsCompleted = (callback: string | number) => (
   updateDataInDb(firebaseDb, 'registrations', 'key', { isCompleted: true }, callback)
 );
 
-const updateIsRejected = (callback) => (
+const updateIsRejected = (callback: string | number) => (
   updateDataInDb(firebaseDb, 'registrations', 'key', { isCompleted: false, isRejected: true }, callback)
 );
 
-const deleteRegistration = (callback) => (
+const deleteRegistration = (callback: string | number) => (
   deleteDataInDb(firebaseDb, 'registrations', 'key', callback)
 );
 
-const deleteInstructor = (callback) => (
+const deleteInstructor = (callback: string | number) => (
   deleteDataInDb(firebaseDb, 'instructors', 'key', callback)
 );
 
-const registrationsColumns = [
+const registrationsColumns: ColumnsType<ICustomerTransformed> = [
   {
     title: 'Івент',
     dataIndex: 'eventName',
     fixed: 'left',
     filters: [],
-    onFilter: (value, record) => record.eventName.indexOf(value) === 0,
+    onFilter: (value, record) => record.eventName.includes(value as string),
     render: (value, record) => {
       if (record.isCompleted) {
         return (
@@ -56,18 +59,18 @@ const registrationsColumns = [
     dataIndex: 'registrationTime',
     sortDirections: ['ascend', 'descend', 'ascend'],
     defaultSortOrder: 'descend',
-    sorter: (a, b) => a.key - b.key,
+    sorter: (a, b) => Number(a.key) - Number(b.key),
   },
   {
     title: 'Дата',
     dataIndex: 'eventDate',
     ellipsis: true,
     filters: [],
-    onFilter: (value, record) => record.eventDate.indexOf(value) === 0,
+    onFilter: (value, record) => record.eventDate.includes(value as string),
   },
   {
     title: 'ПІБ',
-    dataIndex: 'name',
+    dataIndex: 'fullName',
   },
   {
     title: 'Email',
@@ -192,37 +195,37 @@ const registrationsColumns = [
   },
 ];
 
-const instructorsColumns = [
+const instructorsColumns: ColumnsType<IInstructor> = [
   {
     title: 'ПІБ',
     dataIndex: 'name',
   },
   {
     title: 'Facebook',
-    render: (value) => (
-      <a href={value.links.facebook} target="_blank" rel="noreferrer">
-        {value.links.facebook}
+    render: (_, record) => (
+      <a href={record?.links?.facebook} target="_blank" rel="noreferrer">
+        {record?.links?.facebook}
       </a>
     ),
   },
   {
     title: 'Instagram',
-    render: (value) => (
-      <a href={value.links.instagram} target="_blank" rel="noreferrer">
-        {value.links.instagram}
+    render: (_, record) => (
+      <a href={record?.links?.instagram} target="_blank" rel="noreferrer">
+        {record?.links?.instagram}
       </a>
     ),
   },
   {
     title: 'Дії',
     dataIndex: 'actions',
-    render: (_, render) => (
+    render: (_, record) => (
       <Popconfirm
         placement="left"
         title="Ви впевнені?"
         okText="Так"
         cancelText="Ні"
-        onConfirm={() => deleteInstructor(render.key)}
+        onConfirm={() => deleteInstructor(record.key)}
       >
         <Button block danger>
           Видалити

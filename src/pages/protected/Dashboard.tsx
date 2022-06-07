@@ -10,7 +10,7 @@ import { firebaseApp } from '../../firebase/firebase';
 import Loader from '../../components/Loader';
 import Instructors from '../../components/Dashboard/Instructors';
 
-function Dashboard() {
+function Dashboard(): JSX.Element {
   const { TabPane } = Tabs;
   const { Header, Content } = Layout;
 

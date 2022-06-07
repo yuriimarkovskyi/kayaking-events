@@ -1,25 +1,18 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Card, Layout, Typography } from 'antd';
+import { useAppSelector } from '../hooks/useAppSelector';
 
-function Events() {
+function Events(): JSX.Element {
   const { Title } = Typography;
   const { Meta } = Card;
   const { Content } = Layout;
 
-  const events = useSelector((state) => state.events);
+  const events = useAppSelector((state) => state.events);
 
   return (
     <Container>
-      <Helmet>
-        <title>
-          Список івентів
-        </title>
-      </Helmet>
-
       <Layout>
         <Content>
           <Title className="title" level={2}>

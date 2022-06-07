@@ -3,18 +3,19 @@ import {
 } from 'antd';
 import { LockOutlined, LoginOutlined, UserOutlined } from '@ant-design/icons';
 import {
-  browserSessionPersistence, browserLocalPersistence, getAuth, setPersistence,
+  browserLocalPersistence, browserSessionPersistence, getAuth, setPersistence,
 } from 'firebase/auth';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import React from 'react';
 import { firebaseApp } from '../../firebase/firebase';
 
-function AuthorizationForm() {
+function AuthorizationForm(): JSX.Element {
   const auth = getAuth(firebaseApp);
   const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
   const [form] = Form.useForm();
   const isRemember = Form.useWatch('remember', form);
 
-  const onFinish = (values) => {
+  const onFinish = (values: any) => {
     const { email, password } = values;
 
     if (isRemember) {

@@ -1,30 +1,20 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { Col, Container, Row } from 'react-bootstrap';
-import { Helmet } from 'react-helmet';
 import { Typography } from 'antd';
+import { useAppSelector } from '../hooks/useAppSelector';
 import EventSlider from '../components/Event/EventSlider';
 import EventInformation from '../components/Event/EventInformation';
 
-function Event() {
+function Event(): JSX.Element {
   const { Title } = Typography;
   const { link } = useParams();
 
-  const events = useSelector((state) => state.events);
+  const events = useAppSelector((state) => state.events);
   const currentEvent = events.filter((el) => el.link === link);
 
   return (
     <Container>
-
-      <Helmet>
-        {currentEvent.map((el) => (
-          <title key={el.title}>
-            {el.title}
-          </title>
-        ))}
-      </Helmet>
-
       {currentEvent.map((el) => (
         <Title key={el.title} className="title" level={2}>
           {el.title}

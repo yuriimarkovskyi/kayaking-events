@@ -3,30 +3,29 @@ import {
   Button, Checkbox, Form, Input, InputNumber, message, Select, Typography,
 } from 'antd';
 import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
 import 'moment/locale/uk';
 import { changeVisibility } from '../../store/visibilitySlice';
-import { useWatchValues } from '../../hooks/useWatchValues';
 import { firebaseDb } from '../../firebase/firebase';
 import { pushDataToDb } from '../../helpers/pushDataToDb';
+import { ICustomer } from '../../types/types';
 
-function RegistrationForm() {
+function RegistrationForm(): JSX.Element {
   const [form] = Form.useForm();
   const { Option } = Select;
   const { Text } = Typography;
 
   const { link } = useParams();
-  const dispatch = useDispatch();
-  const [
-    dateWatcher,
-    soloKayaksWatcher,
-    doubleKayaksWatcher,
-    isChildrenWatcher,
-    childrenAmountWatcher,
-  ] = useWatchValues(['eventDate', 'soloKayaks', 'doubleKayaks', 'isChildren', 'childrenAmount'], form);
+  const dispatch = useAppDispatch();
+  const dateWatcher = Form.useWatch('eventDate', form);
+  const soloKayaksWatcher = Form.useWatch('soloKayaks', form);
+  const doubleKayaksWatcher = Form.useWatch('doubleKayaks', form);
+  const isChildrenWatcher = Form.useWatch('isChildren', form);
+  const childrenAmountWatcher = Form.useWatch('childrenAmount', form);
 
-  const events = useSelector((state) => state.events);
+  const events = useAppSelector((state) => state.events);
   const currentEvent = events.filter((el) => el.link === link);
   const eventName = currentEvent.map((el) => el.name).toString();
 
@@ -37,9 +36,9 @@ function RegistrationForm() {
   const freePlacesDoubleKayaks = Number(selectedDate.flat().map((el) => (
     el.freePlaces.doubleKayaks)));
   const price = currentEvent.flatMap((el) => el.price);
-  const priceSoloKayak = Number(price.filter((el) => el.id === 'soloKayak').map((item) => (
+  const priceSoloKayak = Number(price.filter((el) => el.key === 'soloKayak').map((item) => (
     item.price)));
-  const priceDoubleKayak = Number(price.filter((el) => el.id === 'doubleKayak').map((item) => (
+  const priceDoubleKayak = Number(price.filter((el) => el.key === 'doubleKayak').map((item) => (
     item.price)));
 
   const priceTotal = (
@@ -49,27 +48,35 @@ function RegistrationForm() {
     ? priceTotal + (childrenAmountWatcher * priceDoubleKayak) / 2
     : priceTotal;
 
-  const onFinish = (values) => {
+  const onFinish = (values: any) => {
     const {
-      name, email, phone, eventDate, soloKayaks, doubleKayaks, isChildren, childrenAmount, notes,
-    } = values;
-
-    const customer = {
-      key: Date.now(),
-      eventName,
-      registrationTime: Date.now(),
-      name,
+      fullName,
       email,
       phone,
       eventDate,
       soloKayaks,
       doubleKayaks,
       isChildren,
-      childrenAmount: isChildrenWatcher ? childrenAmount : null,
+      childrenAmount,
+      notes,
+    } = values;
+    const customer: ICustomer = {
+      key: Date.now(),
+      eventName,
+      registrationTime: Date.now(),
+      fullName,
+      email,
+      phone,
+      eventDate,
+      soloKayaks,
+      doubleKayaks,
+      isChildren,
+      childrenAmount: isChildrenWatcher ? childrenAmount : 0,
       amount,
       notes,
       isCompleted: false,
       isRejected: false,
+      rejectedReason: '',
     };
 
     form.resetFields();
@@ -95,7 +102,7 @@ function RegistrationForm() {
     >
       <Form.Item
         className="form__item"
-        name="name"
+        name="fullName"
         label="ПІБ:"
         rules={[
           { required: true, message: 'Поле є обов\'язковим для заповнення' },
@@ -149,7 +156,6 @@ function RegistrationForm() {
       </Form.Item>
       <div className="registration-form__items-group">
         <Form.Item
-          wrapperCol
           name="soloKayaks"
           label="Одномісних каяків:"
           extra={dateWatcher ? `На обрану дату доступно ${freePlacesSoloKayaks} одномісних каяків` : null}

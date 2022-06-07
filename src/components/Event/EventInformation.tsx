@@ -1,23 +1,24 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import {
-  Button, Divider, List, Modal,
-} from 'antd';
+import { Button, List, Modal } from 'antd';
 import Item from 'antd/es/list/Item';
 import moment from 'moment';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
 import 'moment/locale/uk';
+// @ts-ignore
 import facebookIcon from '../../images/icons/facebook.png';
+// @ts-ignore
 import instagramIcon from '../../images/icons/instagram.png';
 import { changeVisibility } from '../../store/visibilitySlice';
 import RegistrationForm from './RegistrationForm';
 
-function EventInformation() {
-  const dispatch = useDispatch();
+function EventInformation(): JSX.Element {
   const { link } = useParams();
+  const dispatch = useAppDispatch();
 
-  const isVisible = useSelector((state) => state.visibility);
-  const events = useSelector((state) => state.events);
+  const isVisible = useAppSelector((state) => state.visibility);
+  const events = useAppSelector((state) => state.events);
   const currentEvent = events.filter((el) => el.link === link);
 
   const showModal = () => {
@@ -69,34 +70,29 @@ function EventInformation() {
             )}
             dataSource={el.dates}
             renderItem={(item) => (
-              <>
-                <Item className="event-information__dates">
-                  <span>
-                    {`Дата - ${moment.unix(item.date).locale('uk').format('L')}`}
-                  </span>
-                  <span>
-                    {`Вільних місць - ${item.freePlaces.soloKayaks + item.freePlaces.doubleKayaks}.`}
-                  </span>
-                  {item.guide.map((guide) => (
-                    <ul key={guide.id} className="event-information__dates-guide">
-                      <li>
-                        {`Гід - ${guide.name}`}
-                      </li>
-                      <li>
-                        <a href={guide.links.facebook} target="_blank" rel="noreferrer">
-                          <img src={facebookIcon} alt="" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href={guide.links.instagram} target="_blank" rel="noreferrer">
-                          <img src={instagramIcon} alt="" />
-                        </a>
-                      </li>
-                    </ul>
-                  ))}
-                </Item>
-                <Divider />
-              </>
+              <Item className="event-information__dates">
+                <span>
+                  {`Дата - ${moment.unix(item.date).locale('uk').format('L')}`}
+                </span>
+                <span>
+                  {`Вільних місць - ${item.freePlaces.soloKayaks + item.freePlaces.doubleKayaks}.`}
+                </span>
+                <ul key={item.instructor.key} className="event-information__dates-guide">
+                  <li>
+                    {`Гід - ${item.instructor.name}`}
+                  </li>
+                  <li>
+                    <a href={item.instructor?.links?.facebook} target="_blank" rel="noreferrer">
+                      <img src={facebookIcon} alt="" />
+                    </a>
+                  </li>
+                  <li>
+                    <a href={item.instructor?.links?.instagram} target="_blank" rel="noreferrer">
+                      <img src={instagramIcon} alt="" />
+                    </a>
+                  </li>
+                </ul>
+              </Item>
             )}
           />
         </div>

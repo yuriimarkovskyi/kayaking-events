@@ -5,9 +5,12 @@
   },
   "extends": [
     "plugin:react/recommended",
-    "airbnb"
+    "airbnb",
+    "airbnb/hooks",
+    "airbnb-typescript"
   ],
   "parserOptions": {
+    "project": "./tsconfig.json",
     "ecmaFeatures": {
       "jsx": true
     },
@@ -37,7 +40,8 @@
       {
         "extensions": [
           ".js",
-          ".jsx"
+          ".jsx",
+          ".tsx"
         ]
       }
     ]

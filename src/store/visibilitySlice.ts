@@ -1,8 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+type VisibilityState = boolean;
+
 const visibilitySlice = createSlice({
   name: 'visibility',
-  initialState: false,
+  initialState: false as VisibilityState,
   reducers: {
     changeVisibility: (state) => !state,
   },

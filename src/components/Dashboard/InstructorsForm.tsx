@@ -1,20 +1,21 @@
 import React from 'react';
 import { Form, Input, message } from 'antd';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { pushDataToDb } from '../../helpers/pushDataToDb';
 import { firebaseDb } from '../../firebase/firebase';
 import { changeVisibility } from '../../store/visibilitySlice';
+import { IInstructor } from '../../types/types';
 
-function InstructorsForm() {
+function InstructorsForm(): JSX.Element {
   const [form] = Form.useForm();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const onFinish = (values) => {
+  const onFinish = (values: any) => {
     const {
       name, facebook, instagram,
     } = values;
 
-    const instructor = {
+    const instructor: IInstructor = {
       key: Date.now(),
       name,
       links: {
@@ -63,7 +64,6 @@ function InstructorsForm() {
         name="facebook"
         label="Facebook:"
         rules={[
-          { required: true, message: 'Поле є обов\'язковим для заповнення' },
           { whitespace: true, message: 'Поле не може містити у собі лише пробіли' },
           { pattern: /[A-Za-zА\d]/, message: 'У полі присутні неприпустимі символи' },
         ]}
@@ -78,7 +78,6 @@ function InstructorsForm() {
         name="instagram"
         label="Instagram:"
         rules={[
-          { required: true, message: 'Поле є обов\'язковим для заповнення' },
           { whitespace: true, message: 'Поле не може містити у собі лише пробіли' },
           { pattern: /[A-Za-zА\d]/, message: 'У полі присутні неприпустимі символи' },
         ]}

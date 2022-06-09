@@ -6,10 +6,10 @@ import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
 import { firebaseDb } from '../../firebase/firebase';
 import { useFilter } from '../../hooks/useFilter';
-import { registrationsColumns } from '../../constants/tableColumns';
 import { ICustomerTransformed } from '../../types/types';
+import { registrationsColumns } from '../../constants/registrationsColumns';
 
-function Registrations(): JSX.Element {
+function RegistrationsTable() {
   const [registrationsValues, loading, error] = useListVals<ICustomerTransformed>(ref(firebaseDb, 'registrations'), {
     transform: (val) => ({
       ...val,
@@ -41,4 +41,4 @@ function Registrations(): JSX.Element {
   );
 }
 
-export default Registrations;
+export default RegistrationsTable;

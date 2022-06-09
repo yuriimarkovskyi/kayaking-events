@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap';
 import { Button, Result } from 'antd';
 import { Link } from 'react-router-dom';
 
-function NoMatch(): JSX.Element {
+function NoMatch() {
   return (
     <Container>
       <Result

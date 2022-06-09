@@ -1,13 +1,13 @@
+import { ColumnsType } from 'antd/lib/table';
 import {
   Badge, Button, Dropdown, Menu, Popconfirm, Tag, Tooltip,
 } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import type { ColumnsType } from 'antd/lib/table';
 import React from 'react';
-import { firebaseDb } from '../firebase/firebase';
+import { ICustomerTransformed } from '../types/types';
 import { updateDataInDb } from '../helpers/updateDataInDb';
+import { firebaseDb } from '../firebase/firebase';
 import { deleteDataInDb } from '../helpers/deleteDataInDb';
-import { ICustomerTransformed, IInstructor } from '../types/types';
 
 const updateIsCompleted = (callback: string | number) => (
   updateDataInDb(firebaseDb, 'registrations', 'key', { isCompleted: true }, callback)
@@ -19,10 +19,6 @@ const updateIsRejected = (callback: string | number) => (
 
 const deleteRegistration = (callback: string | number) => (
   deleteDataInDb(firebaseDb, 'registrations', 'key', callback)
-);
-
-const deleteInstructor = (callback: string | number) => (
-  deleteDataInDb(firebaseDb, 'instructors', 'key', callback)
 );
 
 const registrationsColumns: ColumnsType<ICustomerTransformed> = [
@@ -184,7 +180,7 @@ const registrationsColumns: ColumnsType<ICustomerTransformed> = [
               },
             ]}
           />
-      )}
+                )}
       >
         <Button type="dashed">
           Список дій
@@ -195,46 +191,4 @@ const registrationsColumns: ColumnsType<ICustomerTransformed> = [
   },
 ];
 
-const instructorsColumns: ColumnsType<IInstructor> = [
-  {
-    title: 'ПІБ',
-    dataIndex: 'name',
-  },
-  {
-    title: 'Facebook',
-    render: (_, record) => (
-      <a href={record?.links?.facebook} target="_blank" rel="noreferrer">
-        {record?.links?.facebook}
-      </a>
-    ),
-  },
-  {
-    title: 'Instagram',
-    render: (_, record) => (
-      <a href={record?.links?.instagram} target="_blank" rel="noreferrer">
-        {record?.links?.instagram}
-      </a>
-    ),
-  },
-  {
-    title: 'Дії',
-    dataIndex: 'actions',
-    render: (_, record) => (
-      <Popconfirm
-        placement="left"
-        title="Ви впевнені?"
-        okText="Так"
-        cancelText="Ні"
-        onConfirm={() => deleteInstructor(record.key)}
-      >
-        <Button block danger>
-          Видалити
-        </Button>
-      </Popconfirm>
-    ),
-  },
-];
-
-export {
-  registrationsColumns, instructorsColumns,
-};
+export { registrationsColumns };

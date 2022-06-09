@@ -1,10 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { IEvent } from '../types/types';
 
-const initialState: IEvent[] = [
+const initialState = [
   {
-    id: 1,
-    name: 'Острів Муромець',
+    key: 1,
+    eventName: 'Острів Муромець',
     link: 'ostriv-muromec',
     title: 'Похід на каяках довкола острова Муромець',
     description: 'Друзі, запрошуємо вас на прогулянку каяками довкола острова Муромець!',
@@ -51,12 +50,10 @@ const initialState: IEvent[] = [
     ],
     price: [
       {
-        key: 'soloKayak',
         title: 'Одномісний каяк:',
         price: 730,
       },
       {
-        key: 'doubleKayak',
         title: 'Двомісний каяк:',
         price: 570,
       },
@@ -80,8 +77,8 @@ const initialState: IEvent[] = [
     ],
   },
   {
-    id: 2,
-    name: 'Серцем Києва',
+    key: 2,
+    eventName: 'Серцем Києва',
     link: 'sercem-kyjeva',
     title: 'Похід на каяках “Серцем Києва”',
     description: 'Друзі, запрошуємо вас у похід, що проходить у самому центрі нашого з вами улюбленого міста! Якщо ви новенький у місті або хочете побачити його з нової точки зору, цей сплав саме для вас!',
@@ -128,12 +125,10 @@ const initialState: IEvent[] = [
     ],
     price: [
       {
-        key: 'soloKayak',
         title: 'Одномісний каяк:',
         price: 730,
       },
       {
-        key: 'doubleKayak',
         title: 'Двомісний каяк:',
         price: 570,
       },
@@ -156,8 +151,8 @@ const initialState: IEvent[] = [
     ],
   },
   {
-    id: 3,
-    name: 'Жуків Острів',
+    key: 3,
+    eventName: 'Жуків Острів',
     link: 'zhukiv-ostriv',
     title: 'Похід на Жуків острів',
     description: 'Друзі, запрошуємо вас у похід, що проходить у самому центрі нашого з вами улюбленого міста! Якщо ви новенький у місті або хочете побачити його з нової точки зору, цей сплав саме для вас!',
@@ -204,12 +199,10 @@ const initialState: IEvent[] = [
     ],
     price: [
       {
-        key: 'soloKayak',
         title: 'Одномісний каяк:',
         price: 730,
       },
       {
-        key: 'doubleKayak',
         title: 'Двомісний каяк:',
         price: 570,
       },

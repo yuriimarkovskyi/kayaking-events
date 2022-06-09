@@ -1,43 +1,16 @@
 import { Key } from 'react';
 
-interface IPlaces {
-  soloKayaks: number;
-  doubleKayaks: number;
-}
-
-export interface IInstructor {
-  key: Key;
-  name: string;
-  links?: {
-    facebook?: string;
-    instagram?: string;
-  };
-}
-
-interface IDates {
-  date: number;
-  totalPlaces: IPlaces;
-  freePlaces: IPlaces;
-  instructor: IInstructor;
-}
-
-interface IPrice {
-  key: Key;
-  title: string;
-  price: number;
-}
-
 export interface IEvent {
-  id: number;
-  name: string;
+  key: number;
+  eventName: string;
   link: string;
   title: string;
   description: string;
+  descriptionFeatures: string[];
   imageCover: string;
+  imagesSlider: string[];
   dates: IDates[];
   price: IPrice[];
-  imagesSlider: string[];
-  descriptionFeatures: string[];
 }
 
 export interface ICustomer {
@@ -76,4 +49,59 @@ export interface ICustomerTransformed {
   isCompleted: boolean,
   isRejected: boolean,
   rejectedReason?: string;
+}
+
+// export interface IEvent {
+//   key: number;
+//   eventName: string;
+//   link: string;
+//   title: string;
+//   description: string;
+//   descriptionFeatures: string[];
+//   imageCover: string;
+//   imagesSlider: string[];
+// }
+
+export interface IInstructor {
+  key: Key;
+  name: string;
+  links?: {
+    facebook?: string;
+    instagram?: string;
+  };
+}
+
+interface IPlaces {
+  soloKayaks: number;
+  doubleKayaks: number;
+}
+
+export interface IDates {
+  event: string;
+  date: number;
+  totalPlaces: IPlaces;
+  freePlaces: IPlaces;
+  instructor: IInstructor;
+}
+
+// export interface IPrice {
+// //   event: string;
+// //   soloKayak: {
+// //     title: string;
+// //     price: number;
+// //   };
+// //   doubleKayak: {
+// //     title: string;
+// //     price: number;
+// //   };
+// // }
+
+interface IPrice {
+  title: string;
+  price: number;
+}
+
+export interface IRentals {
+  rentalName: string;
+  totalPlaces: IPlaces;
 }

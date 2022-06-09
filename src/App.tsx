@@ -5,7 +5,7 @@ import Dashboard from './pages/protected/Dashboard';
 import NoMatch from './components/NoMatch';
 import Event from './pages/Event';
 
-function App(): JSX.Element {
+function App() {
   return (
     <Routes>
       <Route path="/" element={<Events />} />

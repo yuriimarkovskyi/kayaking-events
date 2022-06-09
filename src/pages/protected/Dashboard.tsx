@@ -4,13 +4,14 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { LogoutOutlined } from '@ant-design/icons';
 import { getAuth, signOut } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import Registrations from '../../components/Dashboard/Registrations';
+import RegistrationsTable from '../../components/Dashboard/RegistrationsTable';
 import AuthorizationForm from '../../components/Dashboard/AuthorizationForm';
 import { firebaseApp } from '../../firebase/firebase';
 import Loader from '../../components/Loader';
-import Instructors from '../../components/Dashboard/Instructors';
+import InstructorsTable from '../../components/Dashboard/InstructorsTable';
+import EventsTable from '../../components/Dashboard/EventsTable';
 
-function Dashboard(): JSX.Element {
+function Dashboard() {
   const { TabPane } = Tabs;
   const { Header, Content } = Layout;
 
@@ -47,10 +48,22 @@ function Dashboard(): JSX.Element {
           <Content>
             <Tabs centered size="large">
               <TabPane tab="Реєстрації" key="1">
-                <Registrations />
+                <RegistrationsTable />
               </TabPane>
-              <TabPane tab="Інструктори" key="2">
-                <Instructors />
+              <TabPane tab="Івенти" key="2">
+                <EventsTable />
+              </TabPane>
+              <TabPane tab="Інструктори" key="3">
+                <InstructorsTable />
+              </TabPane>
+              <TabPane tab="Дати" key="4">
+                Дати
+              </TabPane>
+              <TabPane tab="Ціни" key="5">
+                Ціни
+              </TabPane>
+              <TabPane tab="Прокати" key="6">
+                Прокати
               </TabPane>
             </Tabs>
           </Content>

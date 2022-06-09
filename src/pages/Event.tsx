@@ -6,7 +6,7 @@ import { useAppSelector } from '../hooks/useAppSelector';
 import EventSlider from '../components/Event/EventSlider';
 import EventInformation from '../components/Event/EventInformation';
 
-function Event(): JSX.Element {
+function Event() {
   const { Title } = Typography;
   const { link } = useParams();
 

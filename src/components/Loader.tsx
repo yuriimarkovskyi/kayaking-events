@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Loader(): JSX.Element {
+function Loader() {
   return (
     <div className="loader">
       <div className="loader__line-wrapper">

@@ -1,14 +1,15 @@
 import React from 'react';
 import { Form, Input, message } from 'antd';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { pushDataToDb } from '../../helpers/pushDataToDb';
 import { firebaseDb } from '../../firebase/firebase';
-import { changeVisibility } from '../../store/visibilitySlice';
 import { IInstructor } from '../../types/types';
 
-function InstructorsForm(): JSX.Element {
+interface InstructorsFormProps {
+  closeDrawer: () => void
+}
+
+function InstructorsForm({ closeDrawer }: InstructorsFormProps) {
   const [form] = Form.useForm();
-  const dispatch = useAppDispatch();
 
   const onFinish = (values: any) => {
     const {
@@ -25,6 +26,7 @@ function InstructorsForm(): JSX.Element {
     };
 
     form.resetFields();
+
     pushDataToDb(firebaseDb, 'instructors', instructor);
     message.success({
       content: 'Інструктор доданий',
@@ -33,7 +35,8 @@ function InstructorsForm(): JSX.Element {
         marginTop: '30vh',
       },
     });
-    dispatch(changeVisibility());
+
+    closeDrawer();
   };
 
   return (
@@ -54,7 +57,7 @@ function InstructorsForm(): JSX.Element {
           { whitespace: true, message: 'Поле не може містити у собі лише пробіли' },
           { min: 6, message: 'Поле має містити у собі мінімум 6 символів' },
           { max: 120, message: 'Поле може містити у собі максимум 120 символів' },
-          { pattern: /[A-Za-zА-Яа-яїЇёЁ]/, message: 'У полі присутні неприпустимі символи' },
+          { pattern: /[А-Яа-яїЇ]/, message: 'У полі присутні неприпустимі символи' },
         ]}
       >
         <Input />

@@ -1,28 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Drawer, Table } from 'antd';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
-import { useAppSelector } from '../../hooks/useAppSelector';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { instructorsColumns } from '../../constants/tableColumns';
-import { changeVisibility } from '../../store/visibilitySlice';
 import InstructorsForm from './InstructorsForm';
 import { firebaseDb } from '../../firebase/firebase';
 import { IInstructor } from '../../types/types';
+import { instructorsColumns } from '../../constants/instructorsColumns';
 
-function Instructors(): JSX.Element {
-  const dispatch = useAppDispatch();
-  const isVisible = useAppSelector((state) => state.visibility);
+function InstructorsTable() {
+  const [isVisible, setIsVisible] = useState(false);
+  const [instructors, loading, error] = useListVals<IInstructor>(ref(firebaseDb, 'instructors'));
 
-  const [instructorsValues, loading, error] = useListVals<IInstructor>(ref(firebaseDb, 'instructors'));
-
-  const showDrawer = () => {
-    dispatch(changeVisibility());
-  };
-
-  const closeDrawer = () => {
-    dispatch(changeVisibility());
-  };
+  const showDrawer = () => setIsVisible(true);
+  const closeDrawer = () => setIsVisible(false);
 
   if (error) console.error(error);
 
@@ -33,7 +23,7 @@ function Instructors(): JSX.Element {
         bordered
         pagination={false}
         loading={loading}
-        dataSource={instructorsValues}
+        dataSource={instructors}
         columns={instructorsColumns}
         /* eslint-disable-next-line react/no-unstable-nested-components */
         footer={() => (
@@ -42,7 +32,7 @@ function Instructors(): JSX.Element {
             htmlType="button"
             onClick={showDrawer}
           >
-            Додати
+            Додати інструктора
           </Button>
         )}
       />
@@ -61,10 +51,10 @@ function Instructors(): JSX.Element {
           </Button>
           )}
       >
-        <InstructorsForm />
+        <InstructorsForm closeDrawer={closeDrawer} />
       </Drawer>
     </>
   );
 }
 
-export default Instructors;
+export default InstructorsTable;

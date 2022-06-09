@@ -9,11 +9,11 @@ import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import React from 'react';
 import { firebaseApp } from '../../firebase/firebase';
 
-function AuthorizationForm(): JSX.Element {
+function AuthorizationForm() {
   const auth = getAuth(firebaseApp);
   const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
   const [form] = Form.useForm();
-  const isRemember = Form.useWatch('remember', form);
+  const isRemember = Form.useWatch('isRemember', form);
 
   const onFinish = (values: any) => {
     const { email, password } = values;
@@ -56,7 +56,7 @@ function AuthorizationForm(): JSX.Element {
         <Input.Password prefix={<LockOutlined />} placeholder="Пароль" />
       </Form.Item>
       <Form.Item
-        name="remember"
+        name="isRemember"
         valuePropName="checked"
         initialValue={false}
       >

@@ -4,7 +4,7 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { Card, Layout, Typography } from 'antd';
 import { useAppSelector } from '../hooks/useAppSelector';
 
-function Events(): JSX.Element {
+function Events() {
   const { Title } = Typography;
   const { Meta } = Card;
   const { Content } = Layout;
@@ -20,11 +20,11 @@ function Events(): JSX.Element {
           </Title>
           <Row className="events">
             {events.map((event) => (
-              <Col key={event.id} sm={12} lg={6} xl={4}>
+              <Col key={event.key} sm={12} lg={6} xl={4}>
                 <Link to={`event/${event.link}`}>
                   <Card
                     hoverable
-                    cover={<img src={event.imageCover} alt={event.name} />}
+                    cover={<img src={event.imageCover} alt={event.eventName} />}
                   >
                     <Meta title={event.title} />
                   </Card>

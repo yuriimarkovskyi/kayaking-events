@@ -1,38 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, List, Modal } from 'antd';
 import Item from 'antd/es/list/Item';
 import moment from 'moment';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
 import 'moment/locale/uk';
 // @ts-ignore
 import facebookIcon from '../../images/icons/facebook.png';
 // @ts-ignore
 import instagramIcon from '../../images/icons/instagram.png';
-import { changeVisibility } from '../../store/visibilitySlice';
 import RegistrationForm from './RegistrationForm';
 
-function EventInformation(): JSX.Element {
+function EventInformation() {
   const { link } = useParams();
-  const dispatch = useAppDispatch();
-
-  const isVisible = useAppSelector((state) => state.visibility);
+  const [isVisible, setIsVisible] = useState(false);
   const events = useAppSelector((state) => state.events);
+
   const currentEvent = events.filter((el) => el.link === link);
 
-  const showModal = () => {
-    dispatch(changeVisibility());
-  };
-
-  const closeModal = () => {
-    dispatch(changeVisibility());
-  };
+  const showModal = () => setIsVisible(true);
+  const closeModal = () => setIsVisible(false);
 
   return (
     <div className="event-information">
       {currentEvent.map((el) => (
-        <div key={el.id}>
+        <div key={el.key}>
           <List
             size="small"
             header={(
@@ -112,7 +104,7 @@ function EventInformation(): JSX.Element {
         visible={isVisible}
         onCancel={closeModal}
       >
-        <RegistrationForm />
+        <RegistrationForm closeModal={closeModal} />
       </Modal>
     </div>
   );

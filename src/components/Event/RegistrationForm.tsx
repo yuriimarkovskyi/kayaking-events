@@ -5,29 +5,29 @@ import {
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
 import 'moment/locale/uk';
-import { changeVisibility } from '../../store/visibilitySlice';
 import { firebaseDb } from '../../firebase/firebase';
 import { pushDataToDb } from '../../helpers/pushDataToDb';
 import { ICustomer } from '../../types/types';
 
-function RegistrationForm(): JSX.Element {
+interface RegistrationFormProps {
+  closeModal: () => void
+}
+
+function RegistrationForm({ closeModal }: RegistrationFormProps) {
   const [form] = Form.useForm();
   const { Option } = Select;
   const { Text } = Typography;
 
   const { link } = useParams();
-  const dispatch = useAppDispatch();
   const dateWatcher = Form.useWatch('eventDate', form);
   const soloKayaksWatcher = Form.useWatch('soloKayaks', form);
   const doubleKayaksWatcher = Form.useWatch('doubleKayaks', form);
   const isChildrenWatcher = Form.useWatch('isChildren', form);
   const childrenAmountWatcher = Form.useWatch('childrenAmount', form);
-
   const events = useAppSelector((state) => state.events);
   const currentEvent = events.filter((el) => el.link === link);
-  const eventName = currentEvent.map((el) => el.name).toString();
+  const eventName = currentEvent.map((el) => el.eventName).toString();
 
   const selectedDate = currentEvent.map((el) => (
     el.dates.filter((date) => date.date === dateWatcher)));
@@ -36,9 +36,9 @@ function RegistrationForm(): JSX.Element {
   const freePlacesDoubleKayaks = Number(selectedDate.flat().map((el) => (
     el.freePlaces.doubleKayaks)));
   const price = currentEvent.flatMap((el) => el.price);
-  const priceSoloKayak = Number(price.filter((el) => el.key === 'soloKayak').map((item) => (
+  const priceSoloKayak = Number(price.filter((el) => el.title === 'Одномісний каяк:').map((item) => (
     item.price)));
-  const priceDoubleKayak = Number(price.filter((el) => el.key === 'doubleKayak').map((item) => (
+  const priceDoubleKayak = Number(price.filter((el) => el.title === 'Двомісний каяк:').map((item) => (
     item.price)));
 
   const priceTotal = (
@@ -60,6 +60,7 @@ function RegistrationForm(): JSX.Element {
       childrenAmount,
       notes,
     } = values;
+
     const customer: ICustomer = {
       key: Date.now(),
       eventName,
@@ -80,6 +81,7 @@ function RegistrationForm(): JSX.Element {
     };
 
     form.resetFields();
+
     pushDataToDb(firebaseDb, 'registrations', customer);
     message.success({
       content: 'Ви успішно зареєструвались',
@@ -88,7 +90,8 @@ function RegistrationForm(): JSX.Element {
         marginTop: '30vh',
       },
     });
-    dispatch(changeVisibility());
+
+    closeModal();
   };
 
   return (
@@ -99,6 +102,12 @@ function RegistrationForm(): JSX.Element {
       name="registration-form"
       onFinish={onFinish}
       scrollToFirstError
+      initialValues={{
+        soloKayaks: 0,
+        doubleKayaks: 0,
+        isChildren: false,
+        childrenAmount: 1,
+      }}
     >
       <Form.Item
         className="form__item"
@@ -109,7 +118,7 @@ function RegistrationForm(): JSX.Element {
           { whitespace: true, message: 'Поле не може містити у собі лише пробіли' },
           { min: 6, message: 'Поле має містити у собі мінімум 6 символів' },
           { max: 120, message: 'Поле може містити у собі максимум 120 символів' },
-          { pattern: /[A-Za-zА-Яа-яїЇёЁ]/, message: 'У полі присутні неприпустимі символи' },
+          { pattern: /[A-Za-zА-Яа-яїЇ]/, message: 'У полі присутні неприпустимі символи' },
         ]}
       >
         <Input />
@@ -159,7 +168,6 @@ function RegistrationForm(): JSX.Element {
           name="soloKayaks"
           label="Одномісних каяків:"
           extra={dateWatcher ? `На обрану дату доступно ${freePlacesSoloKayaks} одномісних каяків` : null}
-          initialValue={0}
           rules={[
             { required: true, message: 'Поле є обов\'язковим для заповнення' },
           ]}
@@ -172,7 +180,6 @@ function RegistrationForm(): JSX.Element {
         </Form.Item>
         <Form.Item
           name="doubleKayaks"
-          initialValue={0}
           label="Двомісних каяків:"
           extra={dateWatcher ? `На обрану дату доступно ${freePlacesDoubleKayaks} двомісних каяків` : null}
           rules={[
@@ -189,7 +196,6 @@ function RegistrationForm(): JSX.Element {
       <Form.Item
         className="form__item"
         name="isChildren"
-        initialValue={false}
         valuePropName="checked"
       >
         <Checkbox disabled={!doubleKayaksWatcher}>
@@ -200,7 +206,6 @@ function RegistrationForm(): JSX.Element {
         className="form__item"
         name="childrenAmount"
         hidden={!isChildrenWatcher}
-        initialValue={1}
         label="Кількість дітей:"
         tooltip="Сидіння ставиться між переднім та заднім сидіннями у каяку. На дитину діє знижка у розмірі 50% від вартості місця"
         rules={[
@@ -224,7 +229,6 @@ function RegistrationForm(): JSX.Element {
       <Form.Item
         className="form__item"
         name="notes"
-        initialValue={null}
         label="Примітки:"
         rules={[
           { whitespace: true, message: 'Поле не може містити у собі лише пробіли' },

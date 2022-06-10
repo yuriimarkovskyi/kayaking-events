@@ -2,9 +2,9 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Typography } from 'antd';
-import { useAppSelector } from '../hooks/useAppSelector';
-import EventSlider from '../components/Event/EventSlider';
-import EventInformation from '../components/Event/EventInformation';
+import EventSlider from 'components/Event/EventSlider';
+import EventInformation from 'components/Event/EventInformation';
+import { useAppSelector } from 'hooks/useAppSelector';
 
 function Event() {
   const { Title } = Typography;

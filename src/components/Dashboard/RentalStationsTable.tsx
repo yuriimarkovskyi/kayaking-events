@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
+import { Button, Drawer, Table } from 'antd';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
-import { Button, Drawer, Table } from 'antd';
-import { IEvent } from 'types';
+import { rentalStationsColumns } from 'constants/rentalStationsColumns';
+import { IRentalStation } from 'types';
 import { firebaseDb } from 'firebaseConfig';
-import { eventsColumns } from 'constants/eventsColumns';
-import EventsForm from './EventsForm';
+import RentalStationsForm from './RentalStationsForm';
 
-function EventsTable() {
+function RentalStationsTable() {
   const [isVisible, setIsVisible] = useState(false);
-  const [events, loading, error] = useListVals<IEvent>(ref(firebaseDb, 'events'));
+  const [rentalStations, loading, error] = useListVals<IRentalStation>(ref(firebaseDb, 'rentalStations'));
 
   const showDrawer = () => setIsVisible(true);
   const closeDrawer = () => setIsVisible(false);
@@ -23,39 +23,38 @@ function EventsTable() {
         bordered
         pagination={false}
         loading={loading}
-        dataSource={events}
-        columns={eventsColumns}
-        /* eslint-disable-next-line react/no-unstable-nested-components */
+        dataSource={rentalStations}
+        columns={rentalStationsColumns}
+            /* eslint-disable-next-line react/no-unstable-nested-components */
         footer={() => (
           <Button
             type="primary"
             htmlType="button"
             onClick={showDrawer}
           >
-            Додати івент
+            Додати станцію прокату
           </Button>
         )}
       />
       <Drawer
-        title="Новий івент"
-        placement="right"
-        width="600"
+        title="Нова станція прокату"
+        placement="bottom"
         onClose={closeDrawer}
         visible={isVisible}
         extra={(
           <Button
             htmlType="submit"
             type="primary"
-            form="events-form"
+            form="rental-stations-form"
           >
             Додати
           </Button>
             )}
       >
-        <EventsForm closeDrawer={closeDrawer} />
+        <RentalStationsForm closeDrawer={closeDrawer} />
       </Drawer>
     </>
   );
 }
 
-export default EventsTable;
+export default RentalStationsTable;

@@ -1,5 +1,5 @@
 import type { ColumnsType } from 'antd/lib/table';
-import { IEvent } from '../types/types';
+import { IEvent } from 'types';
 
 const eventsColumns: ColumnsType<IEvent> = [
   {

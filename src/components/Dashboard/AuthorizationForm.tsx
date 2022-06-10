@@ -7,7 +7,7 @@ import {
 } from 'firebase/auth';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import React from 'react';
-import { firebaseApp } from '../../firebase/firebase';
+import { firebaseApp } from 'firebaseConfig';
 
 function AuthorizationForm() {
   const auth = getAuth(firebaseApp);
@@ -40,8 +40,9 @@ function AuthorizationForm() {
         className="form__item"
         name="email"
         rules={[
-          { type: 'email', message: 'Введіть коректний E-mail' },
           { required: true, message: 'Поле є обов\'язковим для заповнення' },
+          { type: 'email', message: 'Введіть коректний E-mail' },
+          { whitespace: true, message: 'Поле не може бути пустим' },
         ]}
       >
         <Input prefix={<UserOutlined />} placeholder="E-mail" />
@@ -51,6 +52,7 @@ function AuthorizationForm() {
         name="password"
         rules={[
           { required: true, message: 'Поле є обов\'язковим для заповнення' },
+          { whitespace: true, message: 'Поле не може бути пустим' },
         ]}
       >
         <Input.Password prefix={<LockOutlined />} placeholder="Пароль" />

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Card, Layout, Typography } from 'antd';
-import { useAppSelector } from '../hooks/useAppSelector';
+import { useAppSelector } from 'hooks/useAppSelector';
 
 function Events() {
   const { Title } = Typography;

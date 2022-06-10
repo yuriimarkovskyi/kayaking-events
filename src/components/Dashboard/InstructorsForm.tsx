@@ -1,8 +1,8 @@
 import React from 'react';
 import { Form, Input, message } from 'antd';
-import { pushDataToDb } from '../../helpers/pushDataToDb';
-import { firebaseDb } from '../../firebase/firebase';
-import { IInstructor } from '../../types/types';
+import { pushDataToDb } from 'helpers/pushDataToDb';
+import { firebaseDb } from 'firebaseConfig';
+import { IInstructor } from 'types';
 
 interface InstructorsFormProps {
   closeDrawer: () => void

@@ -1,11 +1,11 @@
 import { Button, Popconfirm } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
-import React from 'react';
-import { firebaseDb } from '../firebase/firebase';
-import { deleteDataInDb } from '../helpers/deleteDataInDb';
-import { IInstructor } from '../types/types';
+import React, { Key } from 'react';
+import { firebaseDb } from 'firebaseConfig';
+import { deleteDataInDb } from 'helpers/deleteDataInDb';
+import { IInstructor } from 'types';
 
-const deleteInstructor = (e: string | number) => (
+const deleteInstructor = (e: Key) => (
   deleteDataInDb(firebaseDb, 'instructors', 'key', e)
 );
 
@@ -16,17 +16,17 @@ const instructorsColumns: ColumnsType<IInstructor> = [
   },
   {
     title: 'Facebook',
-    render: (_, record) => (
-      <a href={record?.links?.facebook} target="_blank" rel="noreferrer">
-        {record?.links?.facebook}
+    render: (value) => (
+      <a href={value?.links?.facebook} target="_blank" rel="noreferrer">
+        {value?.links?.facebook}
       </a>
     ),
   },
   {
     title: 'Instagram',
-    render: (_, record) => (
-      <a href={record?.links?.instagram} target="_blank" rel="noreferrer">
-        {record?.links?.instagram}
+    render: (value) => (
+      <a href={value?.links?.instagram} target="_blank" rel="noreferrer">
+        {value?.links?.instagram}
       </a>
     ),
   },

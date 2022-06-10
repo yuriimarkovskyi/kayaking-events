@@ -4,12 +4,14 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { LogoutOutlined } from '@ant-design/icons';
 import { getAuth, signOut } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import RegistrationsTable from '../../components/Dashboard/RegistrationsTable';
-import AuthorizationForm from '../../components/Dashboard/AuthorizationForm';
-import { firebaseApp } from '../../firebase/firebase';
-import Loader from '../../components/Loader';
-import InstructorsTable from '../../components/Dashboard/InstructorsTable';
-import EventsTable from '../../components/Dashboard/EventsTable';
+import RegistrationsTable from 'components/Dashboard/RegistrationsTable';
+import { firebaseApp } from 'firebaseConfig';
+import AuthorizationForm from 'components/Dashboard/AuthorizationForm';
+import Loader from 'components/Loader';
+import InstructorsTable from 'components/Dashboard/InstructorsTable';
+import EventsTable from 'components/Dashboard/EventsTable';
+import RentalStationsTable from 'components/Dashboard/RentalStationsTable';
+import PricesTable from 'components/Dashboard/PricesTable';
 
 function Dashboard() {
   const { TabPane } = Tabs;
@@ -60,10 +62,10 @@ function Dashboard() {
                 Дати
               </TabPane>
               <TabPane tab="Ціни" key="5">
-                Ціни
+                <PricesTable />
               </TabPane>
               <TabPane tab="Прокати" key="6">
-                Прокати
+                <RentalStationsTable />
               </TabPane>
             </Tabs>
           </Content>

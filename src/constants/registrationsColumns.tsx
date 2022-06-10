@@ -3,22 +3,22 @@ import {
   Badge, Button, Dropdown, Menu, Popconfirm, Tag, Tooltip,
 } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import React from 'react';
-import { ICustomerTransformed } from '../types/types';
-import { updateDataInDb } from '../helpers/updateDataInDb';
-import { firebaseDb } from '../firebase/firebase';
-import { deleteDataInDb } from '../helpers/deleteDataInDb';
+import React, { Key } from 'react';
+import { ICustomerTransformed } from 'types';
+import { updateDataInDb } from 'helpers/updateDataInDb';
+import { firebaseDb } from 'firebaseConfig';
+import { deleteDataInDb } from 'helpers/deleteDataInDb';
 
-const updateIsCompleted = (callback: string | number) => (
-  updateDataInDb(firebaseDb, 'registrations', 'key', { isCompleted: true }, callback)
+const updateIsCompleted = (e: Key) => (
+  updateDataInDb(firebaseDb, 'registrations', 'key', { isCompleted: true }, e)
 );
 
-const updateIsRejected = (callback: string | number) => (
-  updateDataInDb(firebaseDb, 'registrations', 'key', { isCompleted: false, isRejected: true }, callback)
+const updateIsRejected = (e: Key) => (
+  updateDataInDb(firebaseDb, 'registrations', 'key', { isCompleted: false, isRejected: true }, e)
 );
 
-const deleteRegistration = (callback: string | number) => (
-  deleteDataInDb(firebaseDb, 'registrations', 'key', callback)
+const deleteRegistration = (e: Key) => (
+  deleteDataInDb(firebaseDb, 'registrations', 'key', e)
 );
 
 const registrationsColumns: ColumnsType<ICustomerTransformed> = [

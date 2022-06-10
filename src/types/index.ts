@@ -58,6 +58,7 @@ export interface ICustomerTransformed {
 //   title: string;
 //   description: string;
 //   descriptionFeatures: string[];
+//   routeMap: string;
 //   imageCover: string;
 //   imagesSlider: string[];
 // }
@@ -84,24 +85,16 @@ export interface IDates {
   instructor: IInstructor;
 }
 
-// export interface IPrice {
-// //   event: string;
-// //   soloKayak: {
-// //     title: string;
-// //     price: number;
-// //   };
-// //   doubleKayak: {
-// //     title: string;
-// //     price: number;
-// //   };
-// // }
-
-interface IPrice {
-  title: string;
-  price: number;
+export interface IPrice {
+  key: Key;
+  eventName: string;
+  soloKayak: number
+  doubleKayak: number
 }
 
-export interface IRentals {
+export interface IRentalStation {
+  key: Key;
   rentalName: string;
+  address: string;
   totalPlaces: IPlaces;
 }

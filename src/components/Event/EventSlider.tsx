@@ -1,7 +1,7 @@
 import React from 'react';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { useParams } from 'react-router-dom';
-import { useAppSelector } from '../../hooks/useAppSelector';
+import { useAppSelector } from 'hooks/useAppSelector';
 
 function EventSlider() {
   const { link } = useParams();

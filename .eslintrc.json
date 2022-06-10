@@ -9,6 +9,14 @@
     "airbnb/hooks",
     "airbnb-typescript"
   ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
   "parserOptions": {
     "project": "./tsconfig.json",
     "ecmaFeatures": {

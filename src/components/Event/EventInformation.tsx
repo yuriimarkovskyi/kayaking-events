@@ -3,12 +3,8 @@ import { useParams } from 'react-router-dom';
 import { Button, List, Modal } from 'antd';
 import Item from 'antd/es/list/Item';
 import moment from 'moment';
-import { useAppSelector } from '../../hooks/useAppSelector';
+import { useAppSelector } from 'hooks/useAppSelector';
 import 'moment/locale/uk';
-// @ts-ignore
-import facebookIcon from '../../images/icons/facebook.png';
-// @ts-ignore
-import instagramIcon from '../../images/icons/instagram.png';
 import RegistrationForm from './RegistrationForm';
 
 function EventInformation() {
@@ -75,12 +71,12 @@ function EventInformation() {
                   </li>
                   <li>
                     <a href={item.instructor?.links?.facebook} target="_blank" rel="noreferrer">
-                      <img src={facebookIcon} alt="" />
+                      <img src="https://img.icons8.com/officexs/16/undefined/facebook-new.png" alt="facebook-icon" />
                     </a>
                   </li>
                   <li>
                     <a href={item.instructor?.links?.instagram} target="_blank" rel="noreferrer">
-                      <img src={instagramIcon} alt="" />
+                      <img src="https://img.icons8.com/officexs/16/undefined/instagram-new.png" alt="instagram-icon" />
                     </a>
                   </li>
                 </ul>

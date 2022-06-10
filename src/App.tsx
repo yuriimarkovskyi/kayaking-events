@@ -1,9 +1,9 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Events from './pages/Events';
-import Dashboard from './pages/protected/Dashboard';
-import NoMatch from './components/NoMatch';
-import Event from './pages/Event';
+import NoMatch from 'components/NoMatch';
+import Events from 'pages/Events';
+import Dashboard from 'pages/protected/Dashboard';
+import Event from 'pages/Event';
 
 function App() {
   return (

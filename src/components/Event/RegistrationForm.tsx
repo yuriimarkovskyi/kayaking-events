@@ -4,11 +4,11 @@ import {
 } from 'antd';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
-import { useAppSelector } from '../../hooks/useAppSelector';
+import { useAppSelector } from 'hooks/useAppSelector';
 import 'moment/locale/uk';
-import { firebaseDb } from '../../firebase/firebase';
-import { pushDataToDb } from '../../helpers/pushDataToDb';
-import { ICustomer } from '../../types/types';
+import { firebaseDb } from 'firebaseConfig';
+import { pushDataToDb } from 'helpers/pushDataToDb';
+import { ICustomer } from 'types';
 
 interface RegistrationFormProps {
   closeModal: () => void
@@ -115,7 +115,7 @@ function RegistrationForm({ closeModal }: RegistrationFormProps) {
         label="ПІБ:"
         rules={[
           { required: true, message: 'Поле є обов\'язковим для заповнення' },
-          { whitespace: true, message: 'Поле не може містити у собі лише пробіли' },
+          { whitespace: true, message: 'Поле не може бути пустим' },
           { min: 6, message: 'Поле має містити у собі мінімум 6 символів' },
           { max: 120, message: 'Поле може містити у собі максимум 120 символів' },
           { pattern: /[A-Za-zА-Яа-яїЇ]/, message: 'У полі присутні неприпустимі символи' },
@@ -231,7 +231,7 @@ function RegistrationForm({ closeModal }: RegistrationFormProps) {
         name="notes"
         label="Примітки:"
         rules={[
-          { whitespace: true, message: 'Поле не може містити у собі лише пробіли' },
+          { whitespace: true, message: 'Поле не може бути пустим' },
         ]}
       >
         <Input.TextArea />

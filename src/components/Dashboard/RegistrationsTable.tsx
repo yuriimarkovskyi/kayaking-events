@@ -4,10 +4,10 @@ import moment from 'moment';
 import 'moment/locale/uk';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
-import { firebaseDb } from '../../firebase/firebase';
-import { useFilter } from '../../hooks/useFilter';
-import { ICustomerTransformed } from '../../types/types';
-import { registrationsColumns } from '../../constants/registrationsColumns';
+import { registrationsColumns } from 'constants/registrationsColumns';
+import { firebaseDb } from 'firebaseConfig';
+import { useFilter } from 'hooks/useFilter';
+import { ICustomerTransformed } from 'types';
 
 function RegistrationsTable() {
   const [registrationsValues, loading, error] = useListVals<ICustomerTransformed>(ref(firebaseDb, 'registrations'), {

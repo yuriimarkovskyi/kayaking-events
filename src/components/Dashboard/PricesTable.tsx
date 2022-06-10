@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
 import { Button, Drawer, Table } from 'antd';
-import { IEvent } from 'types';
+import { IPrice } from 'types';
 import { firebaseDb } from 'firebaseConfig';
-import { eventsColumns } from 'constants/eventsColumns';
-import EventsForm from './EventsForm';
+import { pricesColumns } from 'constants/pricesColumns';
+import PricesForm from './PricesForm';
 
-function EventsTable() {
+function PricesTable() {
   const [isVisible, setIsVisible] = useState(false);
-  const [events, loading, error] = useListVals<IEvent>(ref(firebaseDb, 'events'));
+  const [prices, loading, error] = useListVals<IPrice>(ref(firebaseDb, 'prices'));
 
   const showDrawer = () => setIsVisible(true);
   const closeDrawer = () => setIsVisible(false);
@@ -23,39 +23,38 @@ function EventsTable() {
         bordered
         pagination={false}
         loading={loading}
-        dataSource={events}
-        columns={eventsColumns}
-        /* eslint-disable-next-line react/no-unstable-nested-components */
+        dataSource={prices}
+        columns={pricesColumns}
+            /* eslint-disable-next-line react/no-unstable-nested-components */
         footer={() => (
           <Button
             type="primary"
             htmlType="button"
             onClick={showDrawer}
           >
-            Додати івент
+            Додати прайс
           </Button>
         )}
       />
       <Drawer
-        title="Новий івент"
-        placement="right"
-        width="600"
+        title="Новий прайс"
+        placement="bottom"
         onClose={closeDrawer}
         visible={isVisible}
         extra={(
           <Button
             htmlType="submit"
             type="primary"
-            form="events-form"
+            form="prices-form"
           >
             Додати
           </Button>
             )}
       >
-        <EventsForm closeDrawer={closeDrawer} />
+        <PricesForm closeDrawer={closeDrawer} />
       </Drawer>
     </>
   );
 }
 
-export default EventsTable;
+export default PricesTable;

@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Button, Drawer, Table } from 'antd';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
+import { firebaseDb } from 'firebaseConfig';
+import { IInstructor } from 'types';
+import { instructorsColumns } from 'constants/instructorsColumns';
 import InstructorsForm from './InstructorsForm';
-import { firebaseDb } from '../../firebase/firebase';
-import { IInstructor } from '../../types/types';
-import { instructorsColumns } from '../../constants/instructorsColumns';
 
 function InstructorsTable() {
   const [isVisible, setIsVisible] = useState(false);

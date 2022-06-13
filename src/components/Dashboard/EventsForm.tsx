@@ -1,7 +1,12 @@
 import React from 'react';
-import { Form, Input, message } from 'antd';
+import {
+  Form, Input, message, Select,
+} from 'antd';
 import { pushDataToDb } from 'helpers/pushDataToDb';
 import { firebaseDb } from 'firebaseConfig';
+import { useListVals } from 'react-firebase-hooks/database';
+import { ref } from 'firebase/database';
+import { IRentalStation } from 'types';
 
 interface EventsFormProps {
   closeDrawer: () => void
@@ -9,15 +14,19 @@ interface EventsFormProps {
 
 function EventsForm({ closeDrawer }: EventsFormProps) {
   const [form] = Form.useForm();
+  const { Option } = Select;
+
+  const [rentalStations] = useListVals<IRentalStation>(ref(firebaseDb, 'rentalStations'));
 
   const onFinish = (values: any) => {
     const {
-      eventName, link, title, description,
+      eventName, rentalStation, link, title, description,
     } = values;
 
     const event = {
       key: Date.now(),
       eventName,
+      rentalStation,
       link,
       title,
       description,
@@ -50,12 +59,13 @@ function EventsForm({ closeDrawer }: EventsFormProps) {
       <Form.Item
         className="form__item"
         name="eventName"
-        label="Івент:"
+        label="Подія:"
+        tooltip="Коротка узагальнююча назва, повну назву необхідно буде вказати у полі 'Заголовок'"
         rules={[
           { required: true, message: 'Поле є обов\'язковим для заповнення' },
           { whitespace: true, message: 'Поле не може бути пустим' },
-          { min: 4, message: 'Поле має містити у собі мінімум 4 символів' },
-          { max: 20, message: 'Поле може містити у собі максимум 20 символів' },
+          { min: 4, message: 'Поле має містити у собі мінімум 4 символи' },
+          { max: 25, message: 'Поле може містити у собі максимум 25 символів' },
           { pattern: /[А-Яа-яїЇ]/, message: 'У полі присутні неприпустимі символи' },
         ]}
       >
@@ -63,12 +73,29 @@ function EventsForm({ closeDrawer }: EventsFormProps) {
       </Form.Item>
       <Form.Item
         className="form__item"
+        name="rentalStation"
+        label="Станція проведення:"
+        rules={[
+          { required: true, message: 'Необхідно обрати івент' },
+        ]}
+      >
+        <Select>
+          {rentalStations?.map((val) => (
+            <Option key={val.key} value={val.rentalName}>
+              {val.rentalName}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+      <Form.Item
+        className="form__item"
         name="link"
         label="Лінк:"
+        tooltip="Лінк за яким буде доступна сторінка події на сайті"
         rules={[
           { required: true, message: 'Поле є обов\'язковим для заповнення' },
-          { min: 4, message: 'Поле має містити у собі мінімум 4 символів' },
-          { max: 20, message: 'Поле може містити у собі максимум 20 символів' },
+          { min: 4, message: 'Поле має містити у собі мінімум 4 символи' },
+          { max: 25, message: 'Поле може містити у собі максимум 25 символів' },
           { whitespace: true, message: 'Поле не може бути пустим' },
           { pattern: /[A-Za-z]/, message: 'У полі присутні неприпустимі символи' },
         ]}

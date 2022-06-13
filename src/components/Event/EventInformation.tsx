@@ -95,7 +95,6 @@ function EventInformation() {
       <Modal
         title="Форма реєстрації"
         centered
-        width="500"
         footer={null}
         visible={isVisible}
         onCancel={closeModal}

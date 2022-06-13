@@ -5,23 +5,15 @@ import {
 import { IEvent, IPrice } from 'types';
 import { pushDataToDb } from 'helpers/pushDataToDb';
 import { firebaseDb } from 'firebaseConfig';
-import { useListVals } from 'react-firebase-hooks/database';
-import { ref } from 'firebase/database';
 
 interface PricesFormProps {
   closeDrawer: () => void
+  filteredEvents: IEvent[] | undefined
 }
 
-function PricesForm({ closeDrawer }: PricesFormProps) {
+function PricesForm({ closeDrawer, filteredEvents }: PricesFormProps) {
   const [form] = Form.useForm();
   const { Option } = Select;
-
-  const [prices] = useListVals<IPrice>(ref(firebaseDb, 'prices'));
-  const [events] = useListVals<IEvent>(ref(firebaseDb, 'events'));
-
-  const filteredEvents = events?.filter((event) => (
-    prices?.every((val) => val.eventName !== event.eventName)
-  ));
 
   const onFinish = (values: any) => {
     const {
@@ -62,7 +54,7 @@ function PricesForm({ closeDrawer }: PricesFormProps) {
       <Form.Item
         className="form__item"
         name="eventName"
-        label="Івент:"
+        label="Подія:"
         rules={[
           { required: true, message: 'Необхідно обрати івент' },
         ]}
@@ -78,22 +70,22 @@ function PricesForm({ closeDrawer }: PricesFormProps) {
       <div className="registration-form__items-group">
         <Form.Item
           name="soloKayak"
-          label="За одномісний:"
+          label="Одномісний каяк:"
           rules={[
             { required: true, message: 'Поле є обов\'язковим для заповнення' },
           ]}
         >
-          <InputNumber min="1" />
+          <InputNumber min={1} />
         </Form.Item>
         <Form.Item
           name="doubleKayak"
-          label="За двомісний:"
-          tooltip="Для дитини (на дитячому сидінні) вартість буде становити від половини вказаної вартості"
+          label="Двомісний каяк:"
+          tooltip="Для дитини (на дитячому сидінні) вартість буде становити половину від вказаної вартості"
           rules={[
             { required: true, message: 'Поле є обов\'язковим для заповнення' },
           ]}
         >
-          <InputNumber min="1" />
+          <InputNumber min={1} />
         </Form.Item>
       </div>
     </Form>

@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
-import { Button, Drawer, Table } from 'antd';
+import React, { Key, useMemo, useState } from 'react';
+import {
+  Button, Drawer, Popconfirm, Table,
+} from 'antd';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
-import { rentalStationsColumns } from 'constants/rentalStationsColumns';
 import { IRentalStation } from 'types';
 import { firebaseDb } from 'firebaseConfig';
+import { ColumnsType } from 'antd/lib/table';
+import { deleteDataInDb } from 'helpers/deleteDataInDb';
 import RentalStationsForm from './RentalStationsForm';
 
 function RentalStationsTable() {
@@ -13,6 +16,73 @@ function RentalStationsTable() {
 
   const showDrawer = () => setIsVisible(true);
   const closeDrawer = () => setIsVisible(false);
+
+  const deleteStation = (e: Key) => (
+    deleteDataInDb(firebaseDb, 'rentalStations', 'key', e)
+  );
+
+  const columns: ColumnsType<IRentalStation> = [
+    {
+      title: 'Станція',
+      dataIndex: 'rentalName',
+    },
+    {
+      title: 'Адреса',
+      render: (value) => (
+        <a href={value.address} target="_blank" rel="noreferrer">
+          {value.address}
+        </a>
+      ),
+    },
+    {
+      title: 'Кількість каяків',
+      children: [
+        {
+          title: 'Одномісних',
+          render: (value) => (
+            <span>
+              {value.totalPlaces.soloKayaks}
+            </span>
+          ),
+        },
+        {
+          title: 'Двомісних',
+          render: (value) => (
+            <span>
+              {value.totalPlaces.doubleKayaks}
+            </span>
+          ),
+        },
+      ],
+    },
+    {
+      title: 'Дії',
+      dataIndex: 'actions',
+      render: (_, record) => (
+        <Popconfirm
+          placement="left"
+          title="Ви впевнені?"
+          okText="Так"
+          cancelText="Ні"
+          onConfirm={() => deleteStation(record.key)}
+        >
+          <Button block danger>
+            Видалити
+          </Button>
+        </Popconfirm>
+      ),
+    },
+  ];
+
+  const memoizedFooter = useMemo(() => (
+    <Button
+      type="primary"
+      htmlType="button"
+      onClick={showDrawer}
+    >
+      Додати станцію прокату
+    </Button>
+  ), []);
 
   if (error) console.error(error);
 
@@ -24,17 +94,8 @@ function RentalStationsTable() {
         pagination={false}
         loading={loading}
         dataSource={rentalStations}
-        columns={rentalStationsColumns}
-            /* eslint-disable-next-line react/no-unstable-nested-components */
-        footer={() => (
-          <Button
-            type="primary"
-            htmlType="button"
-            onClick={showDrawer}
-          >
-            Додати станцію прокату
-          </Button>
-        )}
+        columns={columns}
+        footer={() => memoizedFooter}
       />
       <Drawer
         title="Нова станція прокату"

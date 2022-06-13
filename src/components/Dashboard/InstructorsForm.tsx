@@ -20,14 +20,15 @@ function InstructorsForm({ closeDrawer }: InstructorsFormProps) {
       key: Date.now(),
       name,
       links: {
-        facebook: `https://www.facebook.com/${facebook}`,
-        instagram: `https://www.instagram.com/${instagram}`,
+        facebook: facebook ? `https://www.facebook.com/${facebook}` : '-',
+        instagram: instagram ? `https://www.instagram.com/${instagram}` : '-',
       },
     };
 
     form.resetFields();
 
     pushDataToDb(firebaseDb, 'instructors', instructor);
+
     message.success({
       content: 'Інструктор доданий',
       duration: 3,

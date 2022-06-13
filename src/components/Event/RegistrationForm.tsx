@@ -74,7 +74,7 @@ function RegistrationForm({ closeModal }: RegistrationFormProps) {
       isChildren,
       childrenAmount: isChildrenWatcher ? childrenAmount : 0,
       amount,
-      notes,
+      notes: notes || '',
       isCompleted: false,
       isRejected: false,
       rejectedReason: '',
@@ -83,6 +83,7 @@ function RegistrationForm({ closeModal }: RegistrationFormProps) {
     form.resetFields();
 
     pushDataToDb(firebaseDb, 'registrations', customer);
+
     message.success({
       content: 'Ви успішно зареєструвались',
       duration: 3,
@@ -227,14 +228,13 @@ function RegistrationForm({ closeModal }: RegistrationFormProps) {
         </Text>
       </Form.Item>
       <Form.Item
-        className="form__item"
         name="notes"
-        label="Примітки:"
+        label="Нотатки:"
         rules={[
           { whitespace: true, message: 'Поле не може бути пустим' },
         ]}
       >
-        <Input.TextArea />
+        <Input.TextArea showCount maxLength={75} />
       </Form.Item>
       <Form.Item>
         <Button

@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
-import { Button, Drawer, Table } from 'antd';
+import React, { Key, useMemo, useState } from 'react';
+import {
+  Button, Drawer, Popconfirm, Table,
+} from 'antd';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
 import { firebaseDb } from 'firebaseConfig';
 import { IInstructor } from 'types';
-import { instructorsColumns } from 'constants/instructorsColumns';
+import { ColumnsType } from 'antd/lib/table';
+import { deleteDataInDb } from 'helpers/deleteDataInDb';
 import InstructorsForm from './InstructorsForm';
 
 function InstructorsTable() {
@@ -13,6 +16,65 @@ function InstructorsTable() {
 
   const showDrawer = () => setIsVisible(true);
   const closeDrawer = () => setIsVisible(false);
+
+  const deleteInstructor = (e: Key) => (
+    deleteDataInDb(firebaseDb, 'instructors', 'key', e)
+  );
+
+  const columns: ColumnsType<IInstructor> = [
+    {
+      title: 'ПІБ',
+      dataIndex: 'name',
+    },
+    {
+      title: 'Соціальні мережі',
+      children: [
+        {
+          title: 'Facebook',
+          render: (value) => (
+            <a href={value?.links?.facebook} target="_blank" rel="noreferrer">
+              {value?.links?.facebook}
+            </a>
+          ),
+        },
+        {
+          title: 'Instagram',
+          render: (value) => (
+            <a href={value?.links?.instagram} target="_blank" rel="noreferrer">
+              {value?.links?.instagram}
+            </a>
+          ),
+        },
+      ],
+    },
+    {
+      title: 'Дії',
+      dataIndex: 'actions',
+      render: (_, record) => (
+        <Popconfirm
+          placement="left"
+          title="Ви впевнені?"
+          okText="Так"
+          cancelText="Ні"
+          onConfirm={() => deleteInstructor(record.key)}
+        >
+          <Button block danger>
+            Видалити
+          </Button>
+        </Popconfirm>
+      ),
+    },
+  ];
+
+  const memoizedFooter = useMemo(() => (
+    <Button
+      type="primary"
+      htmlType="button"
+      onClick={showDrawer}
+    >
+      Додати інструктора
+    </Button>
+  ), []);
 
   if (error) console.error(error);
 
@@ -24,17 +86,8 @@ function InstructorsTable() {
         pagination={false}
         loading={loading}
         dataSource={instructors}
-        columns={instructorsColumns}
-        /* eslint-disable-next-line react/no-unstable-nested-components */
-        footer={() => (
-          <Button
-            type="primary"
-            htmlType="button"
-            onClick={showDrawer}
-          >
-            Додати інструктора
-          </Button>
-        )}
+        columns={columns}
+        footer={() => memoizedFooter}
       />
       <Drawer
         title="Новий інструктор"

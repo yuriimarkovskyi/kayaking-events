@@ -86,10 +86,7 @@ function RentalStationsForm({ closeDrawer }: RentalStationsFormProps) {
             { required: true, message: 'Поле є обов\'язковим для заповнення' },
           ]}
         >
-          <InputNumber
-            min="0"
-            max="100"
-          />
+          <InputNumber min={0} />
         </Form.Item>
         <Form.Item
           name="doubleKayaks"
@@ -98,10 +95,7 @@ function RentalStationsForm({ closeDrawer }: RentalStationsFormProps) {
             { required: true, message: 'Поле є обов\'язковим для заповнення' },
           ]}
         >
-          <InputNumber
-            min="0"
-            max="100"
-          />
+          <InputNumber min={0} />
         </Form.Item>
       </div>
     </Form>

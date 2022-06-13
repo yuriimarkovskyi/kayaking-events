@@ -12,6 +12,7 @@ import InstructorsTable from 'components/Dashboard/InstructorsTable';
 import EventsTable from 'components/Dashboard/EventsTable';
 import RentalStationsTable from 'components/Dashboard/RentalStationsTable';
 import PricesTable from 'components/Dashboard/PricesTable';
+import DatesTable from 'components/Dashboard/DatesTable';
 
 function Dashboard() {
   const { TabPane } = Tabs;
@@ -59,7 +60,7 @@ function Dashboard() {
                 <InstructorsTable />
               </TabPane>
               <TabPane tab="Дати" key="4">
-                Дати
+                <DatesTable />
               </TabPane>
               <TabPane tab="Ціни" key="5">
                 <PricesTable />

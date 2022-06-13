@@ -3,13 +3,14 @@ import { Key } from 'react';
 export interface IEvent {
   key: number;
   eventName: string;
+  rentalStation: string;
   link: string;
   title: string;
   description: string;
   descriptionFeatures: string[];
   imageCover: string;
   imagesSlider: string[];
-  dates: IDates[];
+  dates: IDate[];
   price: IPrice[];
 }
 
@@ -40,7 +41,7 @@ export interface ICustomerTransformed {
   email: string;
   phone: string;
   eventDate: string;
-  soloKayaks: number;
+  soloKayaks: number | string;
   doubleKayaks: number | string;
   isChildren: string;
   childrenAmount: number | string;
@@ -54,6 +55,7 @@ export interface ICustomerTransformed {
 // export interface IEvent {
 //   key: number;
 //   eventName: string;
+//   rentalStation: string;
 //   link: string;
 //   title: string;
 //   description: string;
@@ -77,12 +79,22 @@ interface IPlaces {
   doubleKayaks: number;
 }
 
-export interface IDates {
-  event: string;
+export interface IDate {
+  key: Key;
+  eventName: string;
   date: number;
   totalPlaces: IPlaces;
   freePlaces: IPlaces;
-  instructor: IInstructor;
+  instructor: string;
+}
+
+export interface IDateTransformed {
+  key: Key;
+  eventName: string;
+  date: string;
+  totalPlaces: IPlaces;
+  freePlaces: IPlaces;
+  instructor: string;
 }
 
 export interface IPrice {

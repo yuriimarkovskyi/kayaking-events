@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
 import { Button, Drawer, Table } from 'antd';
 import { IEvent } from 'types';
 import { firebaseDb } from 'firebaseConfig';
-import { eventsColumns } from 'constants/eventsColumns';
+import { ColumnsType } from 'antd/lib/table';
 import EventsForm from './EventsForm';
 
 function EventsTable() {
@@ -13,6 +13,51 @@ function EventsTable() {
 
   const showDrawer = () => setIsVisible(true);
   const closeDrawer = () => setIsVisible(false);
+
+  const columns: ColumnsType<IEvent> = [
+    {
+      title: 'Подія',
+      dataIndex: 'eventName',
+    },
+    {
+      title: 'Станція старту',
+      dataIndex: 'rentalStation',
+    },
+    {
+      title: 'Лінк',
+      dataIndex: 'link',
+    },
+    {
+      title: 'Заголовок',
+      dataIndex: 'title',
+    },
+    {
+      title: 'Опис',
+      dataIndex: 'description',
+    },
+    {
+      title: 'Обкладинка',
+      dataIndex: 'imageCover',
+    },
+    {
+      title: 'Фото для слайдеру',
+      dataIndex: 'imagesSlider',
+    },
+    {
+      title: 'Ключові особливості',
+      dataIndex: 'descriptionFeatures',
+    },
+  ];
+
+  const memoizedFooter = useMemo(() => (
+    <Button
+      type="primary"
+      htmlType="button"
+      onClick={showDrawer}
+    >
+      Додати івент
+    </Button>
+  ), []);
 
   if (error) console.error(error);
 
@@ -24,17 +69,8 @@ function EventsTable() {
         pagination={false}
         loading={loading}
         dataSource={events}
-        columns={eventsColumns}
-        /* eslint-disable-next-line react/no-unstable-nested-components */
-        footer={() => (
-          <Button
-            type="primary"
-            htmlType="button"
-            onClick={showDrawer}
-          >
-            Додати івент
-          </Button>
-        )}
+        columns={columns}
+        footer={() => memoizedFooter}
       />
       <Drawer
         title="Новий івент"

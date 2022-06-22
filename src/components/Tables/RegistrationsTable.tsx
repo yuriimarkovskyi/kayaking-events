@@ -1,4 +1,4 @@
-import React, { Key } from 'react';
+import React from 'react';
 import {
   Badge, Button, Dropdown, Menu, Popconfirm, Table, Tag,
 } from 'antd';
@@ -6,8 +6,8 @@ import moment from 'moment';
 import 'moment/locale/uk';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
-import { firebaseDb } from 'firebaseConfig';
-import { ICustomerTransformed } from 'types';
+import { db } from 'config/firebase';
+import { ICustomerUI } from 'types';
 import { ColumnsType } from 'antd/lib/table';
 import { DownOutlined } from '@ant-design/icons';
 import { updateDataInDb } from 'helpers/updateDataInDb';
@@ -15,32 +15,30 @@ import { deleteDataInDb } from 'helpers/deleteDataInDb';
 import { isEqual, uniqWith } from 'lodash';
 
 function RegistrationsTable() {
-  const [registrationsValues, loading, error] = useListVals<ICustomerTransformed>(ref(firebaseDb, 'registrations'), {
+  const [registrationsValues, loading, error] = useListVals<ICustomerUI>(ref(db, 'registrations'), {
     transform: (val) => ({
       ...val,
       registrationTime: moment(val.registrationTime).startOf('seconds').fromNow(),
       phone: `+380${val.phone}`,
       eventDate: moment.unix(val.eventDate).locale('uk').format('L'),
-      soloKayaks: val.soloKayaks ? val.soloKayaks : '-',
-      doubleKayaks: val.doubleKayaks ? val.doubleKayaks : '-',
       isChildren: val.isChildren ? 'Так' : 'Ні',
       childrenAmount: val.childrenAmount ? val.childrenAmount : '-',
     }),
   });
 
-  const updateIsCompleted = (e: Key) => (
-    updateDataInDb(firebaseDb, 'registrations', 'key', { isCompleted: true }, e)
+  const updateIsCompleted = (e: number) => (
+    updateDataInDb(db, 'registrations', 'key', { isCompleted: true }, e)
   );
 
-  const updateIsRejected = (e: Key) => (
-    updateDataInDb(firebaseDb, 'registrations', 'key', { isCompleted: false, isRejected: true }, e)
+  const updateIsRejected = (e: number) => (
+    updateDataInDb(db, 'registrations', 'key', { isCompleted: false, isRejected: true }, e)
   );
 
-  const deleteRegistration = (e: Key) => (
-    deleteDataInDb(firebaseDb, 'registrations', 'key', e)
+  const deleteRegistration = (e: number) => (
+    deleteDataInDb(db, 'registrations', 'key', e)
   );
 
-  const columns: ColumnsType<ICustomerTransformed> = [
+  const columns: ColumnsType<ICustomerUI> = [
     {
       title: 'Подія',
       dataIndex: 'eventName',
@@ -77,7 +75,7 @@ function RegistrationsTable() {
       dataIndex: 'registrationTime',
       sortDirections: ['ascend', 'descend', 'ascend'],
       defaultSortOrder: 'descend',
-      sorter: (a, b) => (a.key as number) - (b.key as number),
+      sorter: (a, b) => a.key - b.key,
     },
     {
       title: 'Дата',

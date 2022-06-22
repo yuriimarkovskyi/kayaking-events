@@ -1,4 +1,10 @@
 .form {
+  &__list {
+    display: flex;
+    align-items: baseline;
+    column-gap: 20px;
+  }
+
   &__item {
     margin-bottom: 10px;
   }

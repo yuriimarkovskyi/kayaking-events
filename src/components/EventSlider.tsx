@@ -1,13 +1,15 @@
 import React from 'react';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { useParams } from 'react-router-dom';
-import { useAppSelector } from 'hooks/useAppSelector';
+import { ref } from 'firebase/storage';
+import { storage } from 'config/firebase';
+import useFirebaseStorage from 'hooks/useFirebaseStorage';
 
 function EventSlider() {
   const { link } = useParams();
 
-  const events = useAppSelector((state) => state.events);
-  const currentEvent = events.filter((el) => el.link === link);
+  const sliderImagesRef = ref(storage, `images/slider/${link}`);
+  const slides = useFirebaseStorage(sliderImagesRef);
 
   return (
     <Splide
@@ -20,11 +22,11 @@ function EventSlider() {
         interval: 3000,
       }}
     >
-      {currentEvent.map((el) => el.imagesSlider.map((image) => (
-        <SplideSlide key={image}>
-          <img src={image} alt="" className="event-slider__image" />
+      {slides.map((slide) => (
+        <SplideSlide key={slide}>
+          <img src={slide} alt="" className="event-slider__image" />
         </SplideSlide>
-      )))}
+      ))}
     </Splide>
   );
 }

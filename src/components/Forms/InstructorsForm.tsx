@@ -1,19 +1,21 @@
 import React from 'react';
 import { Form, Input, message } from 'antd';
 import { pushDataToDb } from 'helpers/pushDataToDb';
-import { firebaseDb } from 'firebaseConfig';
+import { db } from 'config/firebase';
 import { IInstructor } from 'types';
 
-interface InstructorsFormProps {
-  closeDrawer: () => void
+interface Props {
+  closeDrawer: () => void;
 }
 
-function InstructorsForm({ closeDrawer }: InstructorsFormProps) {
+function InstructorsForm({ closeDrawer }: Props) {
   const [form] = Form.useForm();
 
   const onFinish = (values: any) => {
     const {
-      name, facebook, instagram,
+      name,
+      facebook,
+      instagram,
     } = values;
 
     const instructor: IInstructor = {
@@ -27,7 +29,7 @@ function InstructorsForm({ closeDrawer }: InstructorsFormProps) {
 
     form.resetFields();
 
-    pushDataToDb(firebaseDb, 'instructors', instructor);
+    pushDataToDb(db, 'instructors', instructor);
 
     message.success({
       content: 'Інструктор доданий',
@@ -54,11 +56,26 @@ function InstructorsForm({ closeDrawer }: InstructorsFormProps) {
         name="name"
         label="ПІБ:"
         rules={[
-          { required: true, message: 'Поле є обов\'язковим для заповнення' },
-          { whitespace: true, message: 'Поле не може містити у собі лише пробіли' },
-          { min: 6, message: 'Поле має містити у собі мінімум 6 символів' },
-          { max: 120, message: 'Поле може містити у собі максимум 120 символів' },
-          { pattern: /[А-Яа-яїЇ]/, message: 'У полі присутні неприпустимі символи' },
+          {
+            required: true,
+            message: 'Поле є обов\'язковим для заповнення',
+          },
+          {
+            whitespace: true,
+            message: 'Поле не може містити у собі лише пробіли',
+          },
+          {
+            min: 6,
+            message: 'Поле має містити у собі мінімум 6 символів',
+          },
+          {
+            max: 120,
+            message: 'Поле може містити у собі максимум 120 символів',
+          },
+          {
+            pattern: /[А-Яа-яїЇ]/,
+            message: 'У полі присутні неприпустимі символи',
+          },
         ]}
       >
         <Input />
@@ -68,8 +85,14 @@ function InstructorsForm({ closeDrawer }: InstructorsFormProps) {
         name="facebook"
         label="Facebook:"
         rules={[
-          { whitespace: true, message: 'Поле не може містити у собі лише пробіли' },
-          { pattern: /[A-Za-zА\d]/, message: 'У полі присутні неприпустимі символи' },
+          {
+            whitespace: true,
+            message: 'Поле не може містити у собі лише пробіли',
+          },
+          {
+            pattern: /[A-Za-zА\d]/,
+            message: 'У полі присутні неприпустимі символи',
+          },
         ]}
       >
         <Input
@@ -82,8 +105,14 @@ function InstructorsForm({ closeDrawer }: InstructorsFormProps) {
         name="instagram"
         label="Instagram:"
         rules={[
-          { whitespace: true, message: 'Поле не може містити у собі лише пробіли' },
-          { pattern: /[A-Za-zА\d]/, message: 'У полі присутні неприпустимі символи' },
+          {
+            whitespace: true,
+            message: 'Поле не може містити у собі лише пробіли',
+          },
+          {
+            pattern: /[A-Za-zА\d]/,
+            message: 'У полі присутні неприпустимі символи',
+          },
         ]}
       >
         <Input

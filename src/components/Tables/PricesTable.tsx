@@ -1,21 +1,19 @@
-import React, {
-  useMemo, useState, Key,
-} from 'react';
+import React, { useMemo, useState } from 'react';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
 import {
   Button, Drawer, Popconfirm, Table, Tooltip,
 } from 'antd';
 import { IEvent, IPrice } from 'types';
-import { firebaseDb } from 'firebaseConfig';
+import { db } from 'config/firebase';
 import { ColumnsType } from 'antd/lib/table';
 import { deleteDataInDb } from 'helpers/deleteDataInDb';
-import PricesForm from './PricesForm';
+import PricesForm from '../Forms/PricesForm';
 
 function PricesTable() {
   const [isVisible, setIsVisible] = useState(false);
-  const [prices, loading, error] = useListVals<IPrice>(ref(firebaseDb, 'prices'));
-  const [events] = useListVals<IEvent>(ref(firebaseDb, 'events'));
+  const [prices, loading, error] = useListVals<IPrice>(ref(db, 'prices'));
+  const [events] = useListVals<IEvent>(ref(db, 'events'));
 
   const filteredEvents = events?.filter((event) => (
     prices?.every((val) => val.eventName !== event.eventName)
@@ -24,8 +22,8 @@ function PricesTable() {
   const showDrawer = () => setIsVisible(true);
   const closeDrawer = () => setIsVisible(false);
 
-  const deletePrice = (e: Key) => (
-    deleteDataInDb(firebaseDb, 'prices', 'key', e)
+  const deletePrice = (e: number) => (
+    deleteDataInDb(db, 'prices', 'key', e)
   );
 
   const columns: ColumnsType<IPrice> = [
@@ -103,7 +101,7 @@ function PricesTable() {
           </Button>
             )}
       >
-        <PricesForm closeDrawer={closeDrawer} filteredEvents={filteredEvents} />
+        <PricesForm closeDrawer={closeDrawer} events={filteredEvents} />
       </Drawer>
     </>
   );

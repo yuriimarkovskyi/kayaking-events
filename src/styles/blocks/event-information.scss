@@ -3,14 +3,11 @@
     font-weight: bold;
   }
 
-  &__dates {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  &__list{}
 
-  &__dates-guide {
-    display: flex;
-    column-gap: 3px;
+  &__list-item {
+    span {
+      font-style: italic;
+    }
   }
 }

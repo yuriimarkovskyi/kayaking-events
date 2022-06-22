@@ -4,20 +4,25 @@ import {
 } from 'antd';
 import { IEvent, IPrice } from 'types';
 import { pushDataToDb } from 'helpers/pushDataToDb';
-import { firebaseDb } from 'firebaseConfig';
+import { db } from 'config/firebase';
 
-interface PricesFormProps {
-  closeDrawer: () => void
-  filteredEvents: IEvent[] | undefined
+interface Props {
+  closeDrawer: () => void;
+  events: IEvent[] | undefined;
 }
 
-function PricesForm({ closeDrawer, filteredEvents }: PricesFormProps) {
+function PricesForm({
+  closeDrawer,
+  events,
+}: Props) {
   const [form] = Form.useForm();
   const { Option } = Select;
 
   const onFinish = (values: any) => {
     const {
-      eventName, soloKayak, doubleKayak,
+      eventName,
+      soloKayak,
+      doubleKayak,
     } = values;
 
     const price: IPrice = {
@@ -29,7 +34,7 @@ function PricesForm({ closeDrawer, filteredEvents }: PricesFormProps) {
 
     form.resetFields();
 
-    pushDataToDb(firebaseDb, 'prices', price);
+    pushDataToDb(db, 'prices', price);
 
     message.success({
       content: 'Прайс доданий',
@@ -56,11 +61,14 @@ function PricesForm({ closeDrawer, filteredEvents }: PricesFormProps) {
         name="eventName"
         label="Подія:"
         rules={[
-          { required: true, message: 'Необхідно обрати івент' },
+          {
+            required: true,
+            message: 'Необхідно обрати івент',
+          },
         ]}
       >
         <Select>
-          {filteredEvents?.map((val) => (
+          {events?.map((val) => (
             <Option key={val.key} value={val.eventName}>
               {val.eventName}
             </Option>
@@ -72,7 +80,10 @@ function PricesForm({ closeDrawer, filteredEvents }: PricesFormProps) {
           name="soloKayak"
           label="Одномісний каяк:"
           rules={[
-            { required: true, message: 'Поле є обов\'язковим для заповнення' },
+            {
+              required: true,
+              message: 'Поле є обов\'язковим для заповнення',
+            },
           ]}
         >
           <InputNumber min={1} />
@@ -82,7 +93,10 @@ function PricesForm({ closeDrawer, filteredEvents }: PricesFormProps) {
           label="Двомісний каяк:"
           tooltip="Для дитини (на дитячому сидінні) вартість буде становити половину від вказаної вартості"
           rules={[
-            { required: true, message: 'Поле є обов\'язковим для заповнення' },
+            {
+              required: true,
+              message: 'Поле є обов\'язковим для заповнення',
+            },
           ]}
         >
           <InputNumber min={1} />

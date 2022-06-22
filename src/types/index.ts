@@ -1,26 +1,20 @@
-import { Key } from 'react';
-
-export interface IEvent {
+interface ICategory {
   key: number;
-  eventName: string;
-  rentalStation: string;
+  categoryName: string;
   link: string;
-  title: string;
-  description: string;
-  descriptionFeatures: string[];
-  imageCover: string;
-  imagesSlider: string[];
-  dates: IDate[];
-  price: IPrice[];
 }
 
-export interface ICustomer {
-  key: Key;
+interface ICategoryImages {
+  imageCover: string;
+}
+
+interface ICustomer {
+  key: number;
   eventName: string;
   registrationTime: number;
   fullName: string;
   email: string;
-  phone: number;
+  phone: number | string;
   eventDate: number;
   soloKayaks: number;
   doubleKayaks: number;
@@ -33,40 +27,34 @@ export interface ICustomer {
   rejectedReason?: string;
 }
 
-export interface ICustomerTransformed {
-  key: Key;
-  eventName: string;
-  registrationTime: number;
-  fullName: string;
-  email: string;
+interface ICustomerUI
+  extends Omit<ICustomer, 'registrationTime' | 'phone' | 'eventDate' | 'isChildren' | 'childrenAmount'> {
+  registrationTime: string;
   phone: string;
   eventDate: string;
-  soloKayaks: number | string;
-  doubleKayaks: number | string;
   isChildren: string;
   childrenAmount: number | string;
-  amount: number;
-  notes: string;
-  isCompleted: boolean,
-  isRejected: boolean,
-  rejectedReason?: string;
 }
 
-// export interface IEvent {
-//   key: number;
-//   eventName: string;
-//   rentalStation: string;
-//   link: string;
-//   title: string;
-//   description: string;
-//   descriptionFeatures: string[];
-//   routeMap: string;
-//   imageCover: string;
-//   imagesSlider: string[];
-// }
+interface IEvent {
+  key: number;
+  eventName: string;
+  rentalStation: string;
+  link: string;
+  routeMap: string;
+  title: string;
+  description: string;
+  features: string[];
+  cover: string;
+}
 
-export interface IInstructor {
-  key: Key;
+interface IEventImages {
+  cover: string;
+  slider: string[];
+}
+
+interface IInstructor {
+  key: number;
   name: string;
   links?: {
     facebook?: string;
@@ -77,10 +65,21 @@ export interface IInstructor {
 interface IPlaces {
   soloKayaks: number;
   doubleKayaks: number;
+  sups?: number;
 }
 
-export interface IDate {
-  key: Key;
+interface IEquipment {
+  childSeats?: number;
+  carbonPaddles?: number;
+  skirts?: {
+    neoprene?: number;
+    nylon?: number;
+  };
+  waterproofCases?: number;
+}
+
+interface IDate {
+  key: number;
   eventName: string;
   date: number;
   totalPlaces: IPlaces;
@@ -88,25 +87,35 @@ export interface IDate {
   instructor: string;
 }
 
-export interface IDateTransformed {
-  key: Key;
-  eventName: string;
+interface IDateUI extends Omit<IDate, 'date'> {
   date: string;
-  totalPlaces: IPlaces;
-  freePlaces: IPlaces;
-  instructor: string;
 }
 
-export interface IPrice {
-  key: Key;
+interface IPrice {
+  key: number;
   eventName: string;
-  soloKayak: number
-  doubleKayak: number
+  soloKayak: number;
+  doubleKayak: number;
 }
 
-export interface IRentalStation {
-  key: Key;
+interface IRentalStation {
+  key: number;
   rentalName: string;
   address: string;
   totalPlaces: IPlaces;
+  equipment: IEquipment;
 }
+
+export type {
+  ICategory,
+  ICategoryImages,
+  IEvent,
+  IEventImages,
+  ICustomer,
+  ICustomerUI,
+  IInstructor,
+  IDate,
+  IDateUI,
+  IPrice,
+  IRentalStation,
+};

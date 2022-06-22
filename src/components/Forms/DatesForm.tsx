@@ -3,7 +3,8 @@ import {
   DatePicker, Form, InputNumber, message, Select,
 } from 'antd';
 import { pushDataToDb } from 'helpers/pushDataToDb';
-import { firebaseDb } from 'firebaseConfig';
+import { db } from 'config/firebase';
+import type { RangePickerProps } from 'antd/es/date-picker';
 import {
   IDate, IEvent, IInstructor, IRentalStation,
 } from 'types';
@@ -11,31 +12,38 @@ import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
 import moment from 'moment';
 
-interface DatesFormProps {
-  closeDrawer: () => void
+interface Props {
+  closeDrawer: () => void;
 }
 
-function DatesForm({ closeDrawer }: DatesFormProps) {
+function DatesForm({ closeDrawer }: Props) {
   const [form] = Form.useForm();
   const { Option } = Select;
   const eventWatcher = Form.useWatch('eventName', form);
 
-  const [events] = useListVals<IEvent>(ref(firebaseDb, 'events'));
-  const [instructors] = useListVals<IInstructor>(ref(firebaseDb, 'instructors'));
-  const [rentalStations] = useListVals<IRentalStation>(ref(firebaseDb, 'rentalStations'));
+  const [events] = useListVals<IEvent>(ref(db, 'events'));
+  const [instructors] = useListVals<IInstructor>(ref(db, 'instructors'));
+  const [rentalStations] = useListVals<IRentalStation>(ref(db, 'rentalStations'));
 
   const currentStation = events?.find((val) => val.eventName === eventWatcher)?.rentalStation;
   const maxPlaces = rentalStations?.find((val) => val.rentalName === currentStation)?.totalPlaces;
 
+  const disabledDate: RangePickerProps['disabledDate'] = (current) => current && current < moment()
+    .endOf('day');
   const onFinish = (values: any) => {
     const {
-      eventName, date, soloKayaks, doubleKayaks, instructor,
+      eventName,
+      date,
+      soloKayaks,
+      doubleKayaks,
+      instructor,
     } = values;
 
     const dateObj: IDate = {
       key: Date.now(),
       eventName,
-      date: Number(moment(date).format('X')),
+      date: Number(moment(date)
+        .format('X')),
       totalPlaces: {
         soloKayaks,
         doubleKayaks,
@@ -49,7 +57,7 @@ function DatesForm({ closeDrawer }: DatesFormProps) {
 
     form.resetFields();
 
-    pushDataToDb(firebaseDb, 'dates', dateObj);
+    pushDataToDb(db, 'dates', dateObj);
 
     message.success({
       content: 'Інструктор доданий',
@@ -76,7 +84,10 @@ function DatesForm({ closeDrawer }: DatesFormProps) {
         name="eventName"
         label="Івент:"
         rules={[
-          { required: true, message: 'Необхідно обрати івент' },
+          {
+            required: true,
+            message: 'Необхідно обрати івент',
+          },
         ]}
       >
         <Select>
@@ -92,10 +103,14 @@ function DatesForm({ closeDrawer }: DatesFormProps) {
         name="date"
         label="Дата проведення:"
         rules={[
-          { type: 'object', required: true, message: 'Необхідно обрати дату' },
+          {
+            type: 'object',
+            required: true,
+            message: 'Необхідно обрати дату',
+          },
         ]}
       >
-        <DatePicker />
+        <DatePicker disabledDate={disabledDate} />
       </Form.Item>
       <div className="registration-form__items-group">
         <Form.Item
@@ -103,7 +118,10 @@ function DatesForm({ closeDrawer }: DatesFormProps) {
           label="Одномісних каяків:"
           extra={eventWatcher ? `Максимальна кількість каяків складає ${maxPlaces?.soloKayaks} од.` : null}
           rules={[
-            { required: true, message: 'Поле є обов\'язковим для заповнення' },
+            {
+              required: true,
+              message: 'Поле є обов\'язковим для заповнення',
+            },
           ]}
         >
           <InputNumber
@@ -116,7 +134,10 @@ function DatesForm({ closeDrawer }: DatesFormProps) {
           label="Двомісних каяків:"
           extra={eventWatcher ? `Максимальна кількість каяків складає ${maxPlaces?.doubleKayaks} од.` : null}
           rules={[
-            { required: true, message: 'Поле є обов\'язковим для заповнення' },
+            {
+              required: true,
+              message: 'Поле є обов\'язковим для заповнення',
+            },
           ]}
         >
           <InputNumber
@@ -130,7 +151,10 @@ function DatesForm({ closeDrawer }: DatesFormProps) {
         name="instructor"
         label="Інструктор:"
         rules={[
-          { required: true, message: 'Необхідно обрати інструктора' },
+          {
+            required: true,
+            message: 'Необхідно обрати інструктора',
+          },
         ]}
       >
         <Select>

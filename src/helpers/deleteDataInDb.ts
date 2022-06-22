@@ -11,7 +11,8 @@ const deleteDataInDb = async (
   const dbRef = ref(db, path);
   const queryConstraints = [orderByChild(orderKey), equalTo(callback)];
   const selectedData = await get(query(dbRef, ...queryConstraints));
-  const summaryRef = ref(db, `${path}/${Object.keys(selectedData.val()).toString()}`);
+  const summaryRef = ref(db, `${path}/${Object.keys(selectedData.val())
+    .toString()}`);
 
   return remove(summaryRef);
 };

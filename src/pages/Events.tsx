@@ -1,39 +1,42 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
-import { Card, Layout, Typography } from 'antd';
-import { useAppSelector } from 'hooks/useAppSelector';
+import { Card, Typography } from 'antd';
+import { useListVals } from 'react-firebase-hooks/database';
+import { ref } from 'firebase/database';
+import { IEvent } from 'types';
+import { db } from 'config/firebase';
+import Loader from 'components/Loader';
 
 function Events() {
   const { Title } = Typography;
   const { Meta } = Card;
-  const { Content } = Layout;
 
-  const events = useAppSelector((state) => state.events);
+  const [events, loading, error] = useListVals<IEvent>(ref(db, 'events'));
+
+  if (loading) return <Loader />;
+  if (error) console.error(error);
 
   return (
-    <Container>
-      <Layout>
-        <Content>
-          <Title className="title" level={2}>
-            Оберіть івент, на який бажаєте зареєструватись
-          </Title>
-          <Row className="events">
-            {events.map((event) => (
-              <Col key={event.key} sm={12} lg={6} xl={4}>
-                <Link to={`event/${event.link}`}>
-                  <Card
-                    hoverable
-                    cover={<img src={event.imageCover} alt={event.eventName} />}
-                  >
-                    <Meta title={event.title} />
-                  </Card>
-                </Link>
-              </Col>
-            ))}
-          </Row>
-        </Content>
-      </Layout>
+    <Container className="events">
+      <Title className="title" level={3}>
+        Оберіть подію, на яку бажаєте зареєструватись
+      </Title>
+      <Row className="events__row">
+        {events?.map((val) => (
+          <Col key={val.key} sm={12} lg={6} xl={4}>
+            <Link to={`event/${val.link}`}>
+              <Card
+                className="events__card"
+                hoverable
+                cover={<img src={val.cover} alt={val.title} />}
+              >
+                <Meta title={val.eventName} />
+              </Card>
+            </Link>
+          </Col>
+        ))}
+      </Row>
     </Container>
   );
 }

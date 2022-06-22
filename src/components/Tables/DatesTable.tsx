@@ -1,20 +1,20 @@
-import React, { Key, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Button, Drawer, Popconfirm, Table,
 } from 'antd';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
-import { firebaseDb } from 'firebaseConfig';
-import { IDateTransformed } from 'types';
+import { db } from 'config/firebase';
+import { IDateUI } from 'types';
 import moment from 'moment';
 import { ColumnsType } from 'antd/lib/table';
 import { deleteDataInDb } from 'helpers/deleteDataInDb';
 import { isEqual, uniqWith } from 'lodash';
-import DatesForm from './DatesForm';
+import DatesForm from '../Forms/DatesForm';
 
 function DatesTable() {
   const [isVisible, setIsVisible] = useState(false);
-  const [dates, loading, error] = useListVals<IDateTransformed>(ref(firebaseDb, 'dates'), {
+  const [dates, loading, error] = useListVals<IDateUI>(ref(db, 'dates'), {
     transform: (val) => ({
       ...val,
       date: moment.unix(val.date).locale('uk').format('L'),
@@ -24,11 +24,11 @@ function DatesTable() {
   const showDrawer = () => setIsVisible(true);
   const closeDrawer = () => setIsVisible(false);
 
-  const deleteDate = (e: Key) => (
-    deleteDataInDb(firebaseDb, 'dates', 'key', e)
+  const deleteDate = (e: number) => (
+    deleteDataInDb(db, 'dates', 'key', e)
   );
 
-  const columns: ColumnsType<IDateTransformed> = [
+  const columns: ColumnsType<IDateUI> = [
     {
       title: 'Подія',
       dataIndex: 'eventName',
@@ -43,7 +43,7 @@ function DatesTable() {
       dataIndex: 'date',
       sortDirections: ['ascend', 'descend', 'ascend'],
       defaultSortOrder: 'descend',
-      sorter: (a, b) => (a.key as number) - (b.key as number),
+      sorter: (a, b) => a.key - b.key,
     },
     {
       title: 'Загальна кількість каяків',

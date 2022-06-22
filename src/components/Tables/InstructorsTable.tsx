@@ -1,56 +1,48 @@
-import React, { Key, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Button, Drawer, Popconfirm, Table,
 } from 'antd';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
-import { IRentalStation } from 'types';
-import { firebaseDb } from 'firebaseConfig';
+import { db } from 'config/firebase';
+import { IInstructor } from 'types';
 import { ColumnsType } from 'antd/lib/table';
 import { deleteDataInDb } from 'helpers/deleteDataInDb';
-import RentalStationsForm from './RentalStationsForm';
+import InstructorsForm from '../Forms/InstructorsForm';
 
-function RentalStationsTable() {
+function InstructorsTable() {
   const [isVisible, setIsVisible] = useState(false);
-  const [rentalStations, loading, error] = useListVals<IRentalStation>(ref(firebaseDb, 'rentalStations'));
+  const [instructors, loading, error] = useListVals<IInstructor>(ref(db, 'instructors'));
 
   const showDrawer = () => setIsVisible(true);
   const closeDrawer = () => setIsVisible(false);
 
-  const deleteStation = (e: Key) => (
-    deleteDataInDb(firebaseDb, 'rentalStations', 'key', e)
+  const deleteInstructor = (e: number) => (
+    deleteDataInDb(db, 'instructors', 'key', e)
   );
 
-  const columns: ColumnsType<IRentalStation> = [
+  const columns: ColumnsType<IInstructor> = [
     {
-      title: 'Станція',
-      dataIndex: 'rentalName',
+      title: 'ПІБ',
+      dataIndex: 'name',
     },
     {
-      title: 'Адреса',
-      render: (value) => (
-        <a href={value.address} target="_blank" rel="noreferrer">
-          {value.address}
-        </a>
-      ),
-    },
-    {
-      title: 'Кількість каяків',
+      title: 'Соціальні мережі',
       children: [
         {
-          title: 'Одномісних',
+          title: 'Facebook',
           render: (value) => (
-            <span>
-              {value.totalPlaces.soloKayaks}
-            </span>
+            <a href={value?.links?.facebook} target="_blank" rel="noreferrer">
+              {value?.links?.facebook}
+            </a>
           ),
         },
         {
-          title: 'Двомісних',
+          title: 'Instagram',
           render: (value) => (
-            <span>
-              {value.totalPlaces.doubleKayaks}
-            </span>
+            <a href={value?.links?.instagram} target="_blank" rel="noreferrer">
+              {value?.links?.instagram}
+            </a>
           ),
         },
       ],
@@ -64,7 +56,7 @@ function RentalStationsTable() {
           title="Ви впевнені?"
           okText="Так"
           cancelText="Ні"
-          onConfirm={() => deleteStation(record.key)}
+          onConfirm={() => deleteInstructor(record.key)}
         >
           <Button block danger>
             Видалити
@@ -80,7 +72,7 @@ function RentalStationsTable() {
       htmlType="button"
       onClick={showDrawer}
     >
-      Додати станцію прокату
+      Додати інструктора
     </Button>
   ), []);
 
@@ -93,12 +85,12 @@ function RentalStationsTable() {
         bordered
         pagination={false}
         loading={loading}
-        dataSource={rentalStations}
+        dataSource={instructors}
         columns={columns}
         footer={() => memoizedFooter}
       />
       <Drawer
-        title="Нова станція прокату"
+        title="Новий інструктор"
         placement="bottom"
         onClose={closeDrawer}
         visible={isVisible}
@@ -106,16 +98,16 @@ function RentalStationsTable() {
           <Button
             htmlType="submit"
             type="primary"
-            form="rental-stations-form"
+            form="instructors-form"
           >
             Додати
           </Button>
-            )}
+          )}
       >
-        <RentalStationsForm closeDrawer={closeDrawer} />
+        <InstructorsForm closeDrawer={closeDrawer} />
       </Drawer>
     </>
   );
 }
 
-export default RentalStationsTable;
+export default InstructorsTable;

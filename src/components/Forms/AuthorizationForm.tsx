@@ -1,16 +1,17 @@
+import { LockOutlined, LoginOutlined, UserOutlined } from '@ant-design/icons';
 import {
   Button, Checkbox, Form, Input, Typography,
 } from 'antd';
-import { LockOutlined, LoginOutlined, UserOutlined } from '@ant-design/icons';
+import { app } from 'config/firebase';
 import {
   browserLocalPersistence,
   browserSessionPersistence,
   getAuth,
   setPersistence,
 } from 'firebase/auth';
-import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import React from 'react';
-import { app } from 'config/firebase';
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import validateMessages from 'utils/validateMessages';
 
 function AuthorizationForm() {
   const { Title } = Typography;
@@ -40,9 +41,10 @@ function AuthorizationForm() {
   return (
     <Form
       className="form"
-      form={form}
-      layout="vertical"
       name="authorization-form"
+      layout="vertical"
+      form={form}
+      validateMessages={validateMessages}
       onFinish={onFinish}
     >
       <Title className="title" level={2}>
@@ -53,17 +55,10 @@ function AuthorizationForm() {
         name="email"
         rules={[
           {
-            required: true,
-            message: 'Поле є обов\'язковим для заповнення',
-          },
-          {
             type: 'email',
-            message: 'Введіть коректний E-mail',
+            required: true,
           },
-          {
-            whitespace: true,
-            message: 'Поле не може бути пустим',
-          },
+          { whitespace: true },
         ]}
       >
         <Input prefix={<UserOutlined />} placeholder="E-mail" />
@@ -72,14 +67,8 @@ function AuthorizationForm() {
         className="form__item"
         name="password"
         rules={[
-          {
-            required: true,
-            message: 'Поле є обов\'язковим для заповнення',
-          },
-          {
-            whitespace: true,
-            message: 'Поле не може бути пустим',
-          },
+          { required: true },
+          { whitespace: true },
         ]}
       >
         <Input.Password prefix={<LockOutlined />} placeholder="Пароль" />

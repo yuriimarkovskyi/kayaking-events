@@ -1,13 +1,13 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import { Col, Container, Row } from 'react-bootstrap';
 import { Typography } from 'antd';
-import EventSlider from 'components/EventSlider';
 import EventInformation from 'components/EventInformation';
-import { useListVals } from 'react-firebase-hooks/database';
-import { ref } from 'firebase/database';
-import { IEvent } from 'types';
+import EventSlider from 'components/EventSlider';
 import { db } from 'config/firebase';
+import { ref } from 'firebase/database';
+import React from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
+import { useListVals } from 'react-firebase-hooks/database';
+import { useParams } from 'react-router-dom';
+import { IEvent } from 'types';
 
 function Event() {
   const { Title } = Typography;

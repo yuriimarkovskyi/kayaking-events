@@ -1,41 +1,71 @@
-import React from 'react';
+import 'moment/locale/uk';
+
+import { DownOutlined } from '@ant-design/icons';
 import {
   Badge, Button, Dropdown, Menu, Popconfirm, Table, Tag,
 } from 'antd';
-import moment from 'moment';
-import 'moment/locale/uk';
-import { useListVals } from 'react-firebase-hooks/database';
-import { ref } from 'firebase/database';
-import { db } from 'config/firebase';
-import { ICustomerUI } from 'types';
 import { ColumnsType } from 'antd/lib/table';
-import { DownOutlined } from '@ant-design/icons';
-import { updateDataInDb } from 'helpers/updateDataInDb';
-import { deleteDataInDb } from 'helpers/deleteDataInDb';
+import { db } from 'config/firebase';
+import { ref } from 'firebase/database';
 import { isEqual, uniqWith } from 'lodash';
+import moment from 'moment';
+import React from 'react';
+import { useListVals } from 'react-firebase-hooks/database';
+import { ICustomerUI } from 'types';
+import { deleteDataInDb, updateDataInDb } from 'utils/dbActions';
 
 function RegistrationsTable() {
   const [registrationsValues, loading, error] = useListVals<ICustomerUI>(ref(db, 'registrations'), {
     transform: (val) => ({
       ...val,
-      registrationTime: moment(val.registrationTime).startOf('seconds').fromNow(),
-      phone: `+380${val.phone}`,
-      eventDate: moment.unix(val.eventDate).locale('uk').format('L'),
-      isChildren: val.isChildren ? 'Так' : 'Ні',
-      childrenAmount: val.childrenAmount ? val.childrenAmount : '-',
+      registrationTime: moment(val.registrationTime)
+        .startOf('seconds')
+        .fromNow(),
+      eventName: val.eventData.eventName,
+      eventDate: moment.unix(val.eventData.eventDate)
+        .locale('uk')
+        .format('L'),
+      fullName: val.customerData.fullName,
+      email: val.customerData.email,
+      phone: `+380${val.customerData.phone}`,
+      soloKayaks: val.boatsData.soloKayaks
+        ? val.boatsData.soloKayaks
+        : undefined,
+      doubleKayaks: val.boatsData.doubleKayaks
+        ? val.boatsData.doubleKayaks
+        : undefined,
+      sups: val.boatsData.sups
+        ? val.boatsData.sups
+        : undefined,
+      childSeats: val.equipmentData.childSeats
+        ? val.equipmentData.childSeats
+        : undefined,
+      carbonPaddles: val.equipmentData.carbonPaddles
+        ? val.equipmentData.carbonPaddles
+        : undefined,
+      neopreneSkirts: val.equipmentData.neopreneSkirts
+        ? val.equipmentData.neopreneSkirts
+        : undefined,
+      nylonSkirts: val.equipmentData.nylonSkirts
+        ? val.equipmentData.nylonSkirts
+        : undefined,
+      waterproofCases: val.equipmentData.waterproofCases
+        ? val.equipmentData.waterproofCases
+        : undefined,
     }),
   });
 
   const updateIsCompleted = (e: number) => (
-    updateDataInDb(db, 'registrations', 'key', { isCompleted: true }, e)
+    updateDataInDb('registrations', 'key', { isCompleted: true }, e)
   );
 
-  const updateIsRejected = (e: number) => (
-    updateDataInDb(db, 'registrations', 'key', { isCompleted: false, isRejected: true }, e)
-  );
+  const updateIsRejected = (e: number) => updateDataInDb('registrations', 'key', {
+    isCompleted: false,
+    isRejected: true,
+  }, e);
 
   const deleteRegistration = (e: number) => (
-    deleteDataInDb(db, 'registrations', 'key', e)
+    deleteDataInDb('registrations', 'key', e)
   );
 
   const columns: ColumnsType<ICustomerUI> = [
@@ -91,53 +121,136 @@ function RegistrationsTable() {
       children: [
         {
           title: 'ПІБ',
-          dataIndex: 'fullName',
+          render: (value) => (
+            <a href={`tel:${value.fullName}`}>
+              {value.fullName}
+            </a>
+          ),
         },
         {
           title: 'Email',
-          dataIndex: 'email',
-          render: (email) => (
-            <a href={`mailto:${email}`}>
-              {email}
+          render: (value) => (
+            <a href={`tel:${value.email}`}>
+              {value.email}
             </a>
           ),
         },
         {
           title: 'Номер телефону',
-          dataIndex: 'phone',
-          render: (phone) => (
-            <a href={`tel:${phone}`}>
-              {phone}
+          render: (value) => (
+            <a href={`tel:${value.phone}`}>
+              {value.phone}
             </a>
           ),
         },
       ],
     },
     {
-      title: 'Каяки',
+      title: 'Плавзасоби',
+      render: (value) => (
+        <div style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'flex-start', rowGap: '5px',
+        }}
+        >
+          {value.soloKayaks && (
+            <Tag color="blue">
+              Одномісні каяки
+            </Tag>
+          )}
+          {value.doubleKayaks && (
+            <Tag color="geekblue">
+              Двомісні каяки
+            </Tag>
+          )}
+          {value.sups && (
+            <Tag color="cyan">
+              Сапи
+            </Tag>
+          )}
+        </div>
+      ),
+    },
+    {
+      title: 'Кількість плавзасобів',
       children: [
         {
-          title: '|',
-          dataIndex: 'soloKayaks',
+          title: 'Каяки',
+          children: [
+            {
+              title: 'Одномісні',
+              dataIndex: 'soloKayaks',
+            },
+            {
+              title: 'Двомісні',
+              dataIndex: 'doubleKayaks',
+            },
+          ],
         },
         {
-          title: 'X',
-          dataIndex: 'doubleKayaks',
+          title: 'Сапи',
+          dataIndex: 'sups',
         },
       ],
     },
     {
-      title: 'Діти',
-      dataIndex: 'isChildren',
-      render: (tag) => (
-        <Tag key={tag}>
-          {tag}
-        </Tag>
+      title: 'Спорядження',
+      render: (value) => (
+        <div style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'flex-start', rowGap: '5px',
+        }}
+        >
+          {value.childSeats && (
+            <Tag color="gold">
+              Дитячі сидіння
+            </Tag>
+          )}
+          {value.carbonPaddles && (
+            <Tag color="magenta">
+              Карбонові весла
+            </Tag>
+          )}
+          {(value.neopreneSkirts || value.nylonSkirts) && (
+            <Tag color="cyan">
+              Cпідниці
+            </Tag>
+          )}
+          {value.waterproofCases && (
+            <Tag color="green">
+              Водонепроникні кейси
+            </Tag>
+          )}
+        </div>
       ),
     },
     {
-      title: 'Кількість дітей',
-      dataIndex: 'childrenAmount',
+      title: 'Кількість спорядження',
+      children: [
+        {
+          title: 'Дитячі сидіння',
+          dataIndex: 'childSeats',
+        },
+        {
+          title: 'Карбонові весла',
+          dataIndex: 'carbonPaddles',
+        },
+        {
+          title: 'Спідниці',
+          children: [
+            {
+              title: 'Неопренові',
+              dataIndex: 'neopreneSkirts',
+            },
+            {
+              title: 'Нейлонові',
+              dataIndex: 'nylonSkirts',
+            },
+          ],
+        },
+        {
+          title: 'Водонепроникні кейси',
+          dataIndex: 'waterproofCases',
+        },
+      ],
     },
     {
       title: 'До сплати',
@@ -204,7 +317,7 @@ function RegistrationsTable() {
                 },
               ]}
             />
-              )}
+          )}
         >
           <Button type="dashed">
             Список дій

@@ -1,6 +1,8 @@
 .registration-form {
   &__items-group {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     column-gap: 20px;
   }
 }

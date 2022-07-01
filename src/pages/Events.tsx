@@ -1,12 +1,12 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Col, Container, Row } from 'react-bootstrap';
 import { Card, Typography } from 'antd';
-import { useListVals } from 'react-firebase-hooks/database';
-import { ref } from 'firebase/database';
-import { IEvent } from 'types';
-import { db } from 'config/firebase';
 import Loader from 'components/Loader';
+import { db } from 'config/firebase';
+import { ref } from 'firebase/database';
+import React from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
+import { useListVals } from 'react-firebase-hooks/database';
+import { Link } from 'react-router-dom';
+import { IEvent } from 'types';
 
 function Events() {
   const { Title } = Typography;

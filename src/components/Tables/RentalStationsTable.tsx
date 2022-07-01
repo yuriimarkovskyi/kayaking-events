@@ -1,13 +1,14 @@
-import React, { useMemo, useState } from 'react';
 import {
   Button, Drawer, Popconfirm, Table,
 } from 'antd';
-import { useListVals } from 'react-firebase-hooks/database';
-import { ref } from 'firebase/database';
-import { IRentalStation } from 'types';
-import { db } from 'config/firebase';
 import { ColumnsType } from 'antd/lib/table';
-import { deleteDataInDb } from 'helpers/deleteDataInDb';
+import { db } from 'config/firebase';
+import { ref } from 'firebase/database';
+import React, { useMemo, useState } from 'react';
+import { useListVals } from 'react-firebase-hooks/database';
+import { IRentalStation } from 'types';
+import { deleteDataInDb } from 'utils/dbActions';
+
 import RentalStationsForm from '../Forms/RentalStationsForm';
 
 function RentalStationsTable() {
@@ -16,7 +17,7 @@ function RentalStationsTable() {
 
   const showDrawer = () => setIsVisible(true);
   const closeDrawer = () => setIsVisible(false);
-  const deleteStation = (e: number) => deleteDataInDb(db, 'rentalStations', 'key', e);
+  const deleteStation = (e: number) => deleteDataInDb('rentalStations', 'key', e);
 
   const columns: ColumnsType<IRentalStation> = [
     {
@@ -86,7 +87,7 @@ function RentalStationsTable() {
               title: 'Неопренових',
               render: (value) => (
                 <span>
-                  {value.equipment.skirts.neoprene}
+                  {value.equipment.neopreneSkirts}
                 </span>
               ),
             },
@@ -94,7 +95,7 @@ function RentalStationsTable() {
               title: 'Нейлонових',
               render: (value) => (
                 <span>
-                  {value.equipment.skirts.nylon}
+                  {value.equipment.nylonSkirts}
                 </span>
               ),
             },
@@ -154,7 +155,6 @@ function RentalStationsTable() {
       />
       <Drawer
         title="Нова станція прокату"
-        placement="bottom"
         onClose={closeDrawer}
         visible={isVisible}
         extra={(

@@ -1,6 +1,6 @@
+import { Button, Result } from 'antd';
 import React from 'react';
 import { Container } from 'react-bootstrap';
-import { Button, Result } from 'antd';
 import { Link } from 'react-router-dom';
 
 function NoMatch() {

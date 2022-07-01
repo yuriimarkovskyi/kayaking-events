@@ -1,58 +1,113 @@
-import React from 'react';
+import 'moment/locale/uk';
+
 import {
   Button, Checkbox, Form, Input, InputNumber, message, Select, Typography,
 } from 'antd';
 import moment from 'moment';
-import 'moment/locale/uk';
-import { db } from 'config/firebase';
-import { pushDataToDb } from 'helpers/pushDataToDb';
+import React, { useEffect } from 'react';
 import {
-  ICustomer, IDate, IEvent, IPrice,
+  ICustomer, IDate, IEvent, IPriceBoats,
 } from 'types';
-import eventPrice from 'helpers/eventPrice';
+import { pushDataToDb, updateDataInDb } from 'utils/dbActions';
+import eventPrice from 'utils/eventPrice';
+import validateMessages from 'utils/validateMessages';
 
 interface Props {
   currentEvent: IEvent[] | undefined;
   dates: IDate[] | undefined;
-  price: IPrice[] | undefined;
-  closeModal: () => void;
+  price: IPriceBoats[] | undefined;
+  // closeModal: () => void;
 }
 
 function RegistrationForm({
   currentEvent,
   dates,
   price,
-  closeModal,
+  // closeModal,
 }: Props) {
   const [form] = Form.useForm();
   const { Option } = Select;
   const { Text } = Typography;
 
-  const dateWatcher = Form.useWatch('eventDate', form);
-  const soloKayaksWatcher = Form.useWatch('soloKayaks', form);
-  const doubleKayaksWatcher = Form.useWatch('doubleKayaks', form);
-  const isChildrenWatcher = Form.useWatch('isChildren', form);
-  const childrenAmountWatcher = Form.useWatch('childrenAmount', form);
+  const eventDateWatch = Form.useWatch('eventDate', form);
+  const soloKayaksWatch = Form.useWatch('soloKayaks', form);
+  const doubleKayaksWatch = Form.useWatch('doubleKayaks', form);
+  const equipmentWatch = Form.useWatch('equipment', form);
+  const isChildSeatsWatch = Form.useWatch('isChildSeats', form);
+  const carbonPaddlesWatch = Form.useWatch('isCarbonPaddles', form);
+  const neopreneSkirtsWatch = Form.useWatch('isNeopreneSkirts', form);
+  const nylonSkirtsWatch = Form.useWatch('isNylonSkirts', form);
+  const waterproofCasesWatch = Form.useWatch('isWaterproofCases', form);
+  const childSeatsWatch = Form.useWatch('childSeats', form);
+
+  useEffect(() => {
+    form.setFieldsValue({
+      isChildSeats: false,
+      isCarbonPaddles: false,
+      isNeopreneSkirts: false,
+      isNylonSkirts: false,
+      isWaterproofCases: false,
+    });
+  }, [equipmentWatch]);
 
   const eventName = currentEvent?.map((val) => val.eventName)
     .toString();
-  const chosenDate = dates?.find((val) => val.date === dateWatcher);
-  const placesSolo = chosenDate?.freePlaces.soloKayaks;
-  const placesDouble = chosenDate?.freePlaces.doubleKayaks;
-
-  const priceSolo = Number(price?.map((val) => val.soloKayak)
+  const filteredDates = dates?.filter(((val) => (
+    val.freePlaces.soloKayaks
+    || val.freePlaces.doubleKayaks
+    || val.freePlaces.sups
+  )));
+  const chosenDate = dates?.find((val) => val.date === eventDateWatch);
+  const {
+    soloKayaks: placesSolo,
+    doubleKayaks: placesDouble,
+    sups: placesSups,
+  } = chosenDate?.freePlaces || {};
+  const {
+    childSeats: freeChildSeats,
+    carbonPaddles: freeCarbonPaddles,
+    neopreneSkirts: freeNeopreneSkirts,
+    nylonSkirts: freeNylonSkirts,
+    waterproofCases: freeCases,
+  } = chosenDate?.freeEquipment || {};
+  const priceSolo = Number(price?.map((val) => val.soloKayaks)
     .toString());
-  const priceDouble = Number(price?.map((val) => val.doubleKayak)
+  const priceDouble = Number(price?.map((val) => val.doubleKayaks)
     .toString());
 
   const amount = eventPrice(
-    isChildrenWatcher,
-    soloKayaksWatcher,
-    doubleKayaksWatcher,
+    isChildSeatsWatch,
+    soloKayaksWatch,
+    doubleKayaksWatch,
     priceSolo,
     priceDouble,
-    childrenAmountWatcher,
+    childSeatsWatch,
   );
+
+  const updateData = (
+    soloKayaks: number,
+    doubleKayaks: number,
+    sups: number,
+    childSeats: number,
+    carbonPaddles: number,
+    neopreneSkirts: number,
+    nylonSkirts: number,
+    waterproofCases: number,
+    e: number,
+  ) => updateDataInDb('dates', 'key', {
+    freePlaces: {
+      soloKayaks,
+      doubleKayaks,
+      sups,
+    },
+    freeEquipment: {
+      childSeats,
+      carbonPaddles,
+      neopreneSkirts,
+      nylonSkirts,
+      waterproofCases,
+    },
+  }, e);
 
   const onFinish = (values: any) => {
     const {
@@ -62,23 +117,39 @@ function RegistrationForm({
       eventDate,
       soloKayaks,
       doubleKayaks,
-      isChildren,
-      childrenAmount,
+      sups,
+      childSeats,
+      carbonPaddles,
+      neopreneSkirts,
+      nylonSkirts,
+      waterproofCases,
       notes,
     } = values;
 
     const customer: ICustomer = {
       key: Date.now(),
-      eventName: eventName || '',
       registrationTime: Date.now(),
-      fullName,
-      email,
-      phone,
-      eventDate,
-      soloKayaks,
-      doubleKayaks,
-      isChildren,
-      childrenAmount: isChildrenWatcher ? childrenAmount : 0,
+      eventData: {
+        eventName: eventName!,
+        eventDate,
+      },
+      customerData: {
+        fullName,
+        email,
+        phone,
+      },
+      boatsData: {
+        soloKayaks,
+        doubleKayaks,
+        sups,
+      },
+      equipmentData: {
+        childSeats,
+        carbonPaddles,
+        neopreneSkirts,
+        nylonSkirts,
+        waterproofCases,
+      },
       amount,
       notes: notes || '',
       isCompleted: false,
@@ -86,9 +157,20 @@ function RegistrationForm({
       rejectedReason: '',
     };
 
-    form.resetFields();
+    // form.resetFields();
 
-    pushDataToDb(db, 'registrations', customer);
+    pushDataToDb('registrations', customer);
+    updateData(
+      placesSolo! - soloKayaks,
+      placesDouble! - doubleKayaks,
+      placesSups! - sups,
+      freeChildSeats! - childSeats,
+      freeCarbonPaddles! - carbonPaddles,
+      freeNeopreneSkirts! - neopreneSkirts,
+      freeNylonSkirts! - nylonSkirts,
+      freeCases! - waterproofCases,
+      chosenDate?.key!,
+    );
 
     message.success({
       content: 'Ви успішно зареєструвались',
@@ -98,48 +180,38 @@ function RegistrationForm({
       },
     });
 
-    closeModal();
+    // closeModal();
   };
 
   return (
     <Form
       className="registration-form form"
-      form={form}
-      layout="vertical"
       name="registration-form"
-      onFinish={onFinish}
+      layout="vertical"
+      form={form}
+      validateMessages={validateMessages}
       initialValues={{
         soloKayaks: 0,
         doubleKayaks: 0,
-        isChildren: false,
-        childrenAmount: 1,
+        sups: 0,
+        childSeats: 0,
+        carbonPaddles: 0,
+        neopreneSkirts: 0,
+        nylonSkirts: 0,
+        waterproofCases: 0,
       }}
+      onFinish={onFinish}
     >
       <Form.Item
         className="form__item"
         name="fullName"
         label="ПІБ:"
         rules={[
-          {
-            required: true,
-            message: 'Поле є обов\'язковим для заповнення',
-          },
-          {
-            whitespace: true,
-            message: 'Поле не може бути пустим',
-          },
-          {
-            min: 6,
-            message: 'Поле має містити у собі мінімум 6 символів',
-          },
-          {
-            max: 120,
-            message: 'Поле може містити у собі максимум 120 символів',
-          },
-          {
-            pattern: /[A-Za-zА-Яа-яїЇ]/,
-            message: 'У полі присутні неприпустимі символи',
-          },
+          { required: true },
+          { whitespace: true },
+          { min: 6 },
+          { max: 120 },
+          { pattern: /[A-Za-zА-Яа-яїЇ]/ },
         ]}
       >
         <Input />
@@ -151,11 +223,7 @@ function RegistrationForm({
         rules={[
           {
             type: 'email',
-            message: 'Введіть коректний E-mail',
-          },
-          {
             required: true,
-            message: 'Поле є обов\'язковим для заповнення',
           },
         ]}
       >
@@ -166,21 +234,10 @@ function RegistrationForm({
         name="phone"
         label="Номер телефону:"
         rules={[
-          {
-            required: true,
-            message: 'Поле є обов\'язковим для заповнення',
-          },
+          { required: true },
           {
             pattern: /^([5-9][0-9]\d{7})$/,
-            message: 'Вкажіть коректний номер телефону',
-          },
-          {
-            min: 9,
-            message: 'Поле має містити у собі 9 символів',
-          },
-          {
-            max: 9,
-            message: 'Поле має містити у собі 9 символів',
+            message: 'Номер телефону має бути українського формату',
           },
         ]}
       >
@@ -198,7 +255,7 @@ function RegistrationForm({
         ]}
       >
         <Select>
-          {dates?.map((val) => (
+          {filteredDates?.map((val) => (
             <Option key={val.date} value={val.date}>
               {moment.unix(val.date)
                 .locale('uk')
@@ -211,69 +268,184 @@ function RegistrationForm({
         <Form.Item
           name="soloKayaks"
           label="Одномісних каяків:"
-          extra={dateWatcher ? `На обрану дату доступно ${placesSolo} одномісних каяків` : null}
+          extra={eventDateWatch && `Доступно ${placesSolo} од.`}
+          hidden={!eventDateWatch || !placesSolo}
           rules={[
-            {
-              required: true,
-              message: 'Поле є обов\'язковим для заповнення',
-            },
+            { required: true },
           ]}
         >
           <InputNumber
-            disabled={!dateWatcher}
+            disabled={!eventDateWatch}
             min={0}
-            max={placesSolo}
+            max={placesSolo!}
           />
         </Form.Item>
         <Form.Item
           name="doubleKayaks"
           label="Двомісних каяків:"
-          extra={dateWatcher ? `На обрану дату доступно ${placesDouble} двомісних каяків` : null}
+          extra={eventDateWatch && `Доступно ${placesDouble} од.`}
+          hidden={!eventDateWatch || !placesDouble}
           rules={[
-            {
-              required: true,
-              message: 'Поле є обов\'язковим для заповнення',
-            },
+            { required: true },
           ]}
         >
           <InputNumber
-            disabled={!dateWatcher}
             min={0}
-            max={placesDouble}
+            max={placesDouble!}
+          />
+        </Form.Item>
+        <Form.Item
+          name="sups"
+          label="Сапів:"
+          extra={eventDateWatch && `Доступно ${placesSups} од.`}
+          hidden={!eventDateWatch || !placesSups}
+          rules={[
+            { required: true },
+          ]}
+        >
+          <InputNumber
+            min={0}
+            max={placesSups!}
           />
         </Form.Item>
       </div>
       <Form.Item
         className="form__item"
-        name="isChildren"
+        name="equipment"
         valuePropName="checked"
+        hidden={!eventDateWatch
+          || (!freeChildSeats
+            && !freeCarbonPaddles
+            && !freeNeopreneSkirts
+            && !freeNylonSkirts
+            && !freeCases)}
       >
-        <Checkbox disabled={!doubleKayaksWatcher}>
-          Потрібне дитяче сидіння у двомісний каяк
+        <Checkbox>
+          Додаткове спорядження
         </Checkbox>
       </Form.Item>
+      <div className="registration-form__items-group">
+        <Form.Item
+          className="form__item"
+          name="isChildSeats"
+          valuePropName="checked"
+          hidden={!equipmentWatch || !freeChildSeats}
+        >
+          <Checkbox disabled={!doubleKayaksWatch}>
+            Дитячі сидіння
+          </Checkbox>
+        </Form.Item>
+        <Form.Item
+          className="form__item"
+          name="isCarbonPaddles"
+          valuePropName="checked"
+          hidden={!equipmentWatch || !freeCarbonPaddles}
+        >
+          <Checkbox disabled={!soloKayaksWatch}>
+            Карбонові весла
+          </Checkbox>
+        </Form.Item>
+        <Form.Item
+          className="form__item"
+          name="isNeopreneSkirts"
+          valuePropName="checked"
+          hidden={!equipmentWatch || !freeNeopreneSkirts}
+        >
+          <Checkbox disabled={!soloKayaksWatch}>
+            Неопренові спідниці
+          </Checkbox>
+        </Form.Item>
+        <Form.Item
+          className="form__item"
+          name="isNylonSkirts"
+          valuePropName="checked"
+          hidden={!equipmentWatch || !freeNylonSkirts}
+        >
+          <Checkbox disabled={!soloKayaksWatch}>
+            Нейлонові спідниці
+          </Checkbox>
+        </Form.Item>
+        <Form.Item
+          className="form__item"
+          name="isWaterproofCases"
+          valuePropName="checked"
+          hidden={!equipmentWatch || !freeCases}
+        >
+          <Checkbox>
+            Водонепроникні кейси
+          </Checkbox>
+        </Form.Item>
+      </div>
+      <div className="registration-form__items-group">
+        <Form.Item
+          className="form__item"
+          name="childSeats"
+          hidden={!isChildSeatsWatch}
+          label="Дитячих сидінь:"
+          extra={`Доступно ${freeChildSeats} од.`}
+          tooltip="Сидіння ставиться у двомісний каяк між переднім та заднім сидіннями. На дитину діє знижка у розмірі 50% від вартості місця"
+        >
+          <InputNumber
+            min={0}
+            max={freeChildSeats}
+          />
+        </Form.Item>
+        <Form.Item
+          className="form__item"
+          name="carbonPaddles"
+          hidden={!carbonPaddlesWatch}
+          label="Карбонових весел:"
+          extra={`Доступно ${freeCarbonPaddles} од.`}
+          tooltip="Тільки для одномісного каяка"
+        >
+          <InputNumber
+            min={0}
+            max={freeCarbonPaddles}
+          />
+        </Form.Item>
+        <Form.Item
+          className="form__item"
+          name="neopreneSkirts"
+          hidden={!neopreneSkirtsWatch}
+          label="Неопренових спідниць:"
+          extra={`Доступно ${freeNeopreneSkirts} од.`}
+          tooltip="Тільки для одномісного каяка"
+        >
+          <InputNumber
+            min={0}
+            max={freeNeopreneSkirts}
+          />
+        </Form.Item>
+        <Form.Item
+          className="form__item"
+          name="nylonSkirts"
+          hidden={!nylonSkirtsWatch}
+          label="Нейлонових спідниць:"
+          extra={`Доступно ${freeNylonSkirts} од.`}
+          tooltip="Тільки для одномісного каяка"
+        >
+          <InputNumber
+            min={0}
+            max={freeNylonSkirts}
+          />
+        </Form.Item>
+        <Form.Item
+          className="form__item"
+          name="waterproofCases"
+          hidden={!waterproofCasesWatch}
+          label="Водонепроникних кейсів:"
+          extra={`Доступно ${freeCases} од.`}
+        >
+          <InputNumber
+            min={0}
+            max={freeCases}
+          />
+        </Form.Item>
+      </div>
       <Form.Item
         className="form__item"
-        name="childrenAmount"
-        hidden={!isChildrenWatcher}
-        label="Кількість дітей:"
-        tooltip="Сидіння ставиться між переднім та заднім сидіннями у каяку. На дитину діє знижка у розмірі 50% від вартості місця"
-        rules={[
-          {
-            required: !isChildrenWatcher,
-            message: 'Поле є обов\'язковим для заповнення',
-          },
-        ]}
-      >
-        <InputNumber
-          min={1}
-          max={doubleKayaksWatcher}
-        />
-      </Form.Item>
-      <Form.Item
-        className="form__item"
-        hidden={!dateWatcher}
-        label="Вартість:"
+        hidden={!eventDateWatch}
+        label="Сума до оплати:"
       >
         <Text strong>
           {`${amount} ГРН`}
@@ -283,10 +455,7 @@ function RegistrationForm({
         name="notes"
         label="Нотатки:"
         rules={[
-          {
-            whitespace: true,
-            message: 'Поле не може бути пустим',
-          },
+          { whitespace: true },
         ]}
       >
         <Input.TextArea showCount maxLength={75} />

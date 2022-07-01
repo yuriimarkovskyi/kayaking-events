@@ -1,13 +1,14 @@
-import React, { useMemo, useState } from 'react';
 import {
   Button, Drawer, Popconfirm, Table,
 } from 'antd';
-import { useListVals } from 'react-firebase-hooks/database';
-import { ref } from 'firebase/database';
-import { db } from 'config/firebase';
-import { IInstructor } from 'types';
 import { ColumnsType } from 'antd/lib/table';
-import { deleteDataInDb } from 'helpers/deleteDataInDb';
+import { db } from 'config/firebase';
+import { ref } from 'firebase/database';
+import React, { useMemo, useState } from 'react';
+import { useListVals } from 'react-firebase-hooks/database';
+import { IInstructor } from 'types';
+import { deleteDataInDb } from 'utils/dbActions';
+
 import InstructorsForm from '../Forms/InstructorsForm';
 
 function InstructorsTable() {
@@ -18,7 +19,7 @@ function InstructorsTable() {
   const closeDrawer = () => setIsVisible(false);
 
   const deleteInstructor = (e: number) => (
-    deleteDataInDb(db, 'instructors', 'key', e)
+    deleteDataInDb('instructors', 'key', e)
   );
 
   const columns: ColumnsType<IInstructor> = [

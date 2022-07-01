@@ -1,18 +1,22 @@
-import React from 'react';
+import Loader from 'components/Loader';
+import React, { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import NoMatch from 'components/NoMatch';
-import Events from 'pages/Events';
-import Dashboard from 'pages/protected/Dashboard';
-import Event from 'pages/Event';
+
+const Events = lazy(() => import ('pages/Events'));
+const Event = lazy(() => import ('pages/Event'));
+const Dashboard = lazy(() => import ('pages/protected/Dashboard'));
+const NoMatch = lazy(() => import ('components/NoMatch'));
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Events />} />
-      <Route path="event/:link" element={<Event />} />
-      <Route path="dashboard" element={<Dashboard />} />
-      <Route path="*" element={<NoMatch />} />
-    </Routes>
+    <Suspense fallback={<Loader />}>
+      <Routes>
+        <Route path="/" element={<Events />} />
+        <Route path="event/:link" element={<Event />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="*" element={<NoMatch />} />
+      </Routes>
+    </Suspense>
   );
 }
 

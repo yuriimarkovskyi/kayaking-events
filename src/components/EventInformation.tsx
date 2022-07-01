@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import 'moment/locale/uk';
+
 import { Button, List, Modal } from 'antd';
 import Item from 'antd/es/list/Item';
-import moment from 'moment';
-import 'moment/locale/uk';
-import { useListVals } from 'react-firebase-hooks/database';
-import { ref } from 'firebase/database';
-import { IDate, IEvent, IPrice } from 'types';
 import { db } from 'config/firebase';
+import { ref } from 'firebase/database';
+import moment from 'moment';
+import React, { useState } from 'react';
+import { useListVals } from 'react-firebase-hooks/database';
+import { useParams } from 'react-router-dom';
+import { IDate, IEvent, IPriceBoats } from 'types';
+
 import RegistrationForm from './Forms/RegistrationForm';
 
 function EventInformation() {
@@ -17,7 +19,7 @@ function EventInformation() {
 
   const [events] = useListVals<IEvent>(ref(db, 'events'));
   const [dates] = useListVals<IDate>(ref(db, 'dates'));
-  const [prices] = useListVals<IPrice>(ref(db, 'prices'));
+  const [prices] = useListVals<IPriceBoats>(ref(db, 'prices'));
 
   const currentEvent = events?.filter((event) => event.link === link);
   const eventDates = dates?.filter((date) => (
@@ -66,13 +68,13 @@ function EventInformation() {
                 <span>
                   Одномісний каяк -
                 </span>
-                {` ${item.soloKayak} ГРН`}
+                {` ${item.soloKayaks} ГРН`}
               </li>
               <li className="event-information__list-item">
                 <span>
                   Двомісний каяк -
                 </span>
-                {` ${item.doubleKayak} ГРН`}
+                {` ${item.doubleKayaks} ГРН`}
               </li>
             </ul>
           </Item>
@@ -88,7 +90,13 @@ function EventInformation() {
         dataSource={eventDates}
         renderItem={(item) => (
           <Item>
-            <ul className="event-information__list">
+            <ul className={`
+              event-information__list
+              ${!(item.freePlaces.soloKayaks + item.freePlaces.doubleKayaks + item.freePlaces.sups)
+              ? 'isCompleted'
+              : ''}
+                `}
+            >
               <li className="event-information__list-item">
                 <span>
                   Дата -
@@ -117,6 +125,7 @@ function EventInformation() {
         type="primary"
         htmlType="button"
         onClick={showModal}
+        disabled={!eventDates?.length}
         block
       >
         Реєстрація
@@ -132,7 +141,7 @@ function EventInformation() {
           currentEvent={currentEvent}
           dates={eventDates}
           price={eventPrice}
-          closeModal={closeModal}
+          // closeModal={closeModal}
         />
       </Modal>
     </div>

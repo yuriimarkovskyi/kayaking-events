@@ -1,9 +1,9 @@
-import React from 'react';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
-import { useParams } from 'react-router-dom';
-import { ref } from 'firebase/storage';
 import { storage } from 'config/firebase';
+import { ref } from 'firebase/storage';
 import useFirebaseStorage from 'hooks/useFirebaseStorage';
+import React, { memo } from 'react';
+import { useParams } from 'react-router-dom';
 
 function EventSlider() {
   const { link } = useParams();
@@ -31,4 +31,4 @@ function EventSlider() {
   );
 }
 
-export default EventSlider;
+export default memo(EventSlider);

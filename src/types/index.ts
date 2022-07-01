@@ -10,16 +10,28 @@ interface ICategoryImages {
 
 interface ICustomer {
   key: number;
-  eventName: string;
   registrationTime: number;
-  fullName: string;
-  email: string;
-  phone: number | string;
-  eventDate: number;
-  soloKayaks: number;
-  doubleKayaks: number;
-  isChildren: boolean;
-  childrenAmount: number;
+  eventData: {
+    eventName: string;
+    eventDate: number;
+  }
+  customerData: {
+    fullName: string;
+    email: string;
+    phone: number | string;
+  }
+  boatsData: {
+    soloKayaks: number;
+    doubleKayaks: number;
+    sups: number;
+  }
+  equipmentData: {
+    childSeats: number;
+    carbonPaddles: number;
+    neopreneSkirts: number;
+    nylonSkirts: number;
+    waterproofCases: number;
+  }
   amount: number;
   notes: string;
   isCompleted: boolean,
@@ -27,13 +39,33 @@ interface ICustomer {
   rejectedReason?: string;
 }
 
-interface ICustomerUI
-  extends Omit<ICustomer, 'registrationTime' | 'phone' | 'eventDate' | 'isChildren' | 'childrenAmount'> {
+interface ICustomerUI {
+  key: number;
   registrationTime: string;
-  phone: string;
+  eventName: string;
   eventDate: string;
-  isChildren: string;
-  childrenAmount: number | string;
+  fullName: string;
+  email: string;
+  phone: string;
+  soloKayaks: number | undefined;
+  doubleKayaks: number | undefined;
+  sups: number | undefined;
+  childSeats: number | undefined;
+  carbonPaddles: number | undefined;
+  neopreneSkirts: number | undefined;
+  nylonSkirts: number | undefined;
+  waterproofCases: number | undefined;
+  amount: number;
+  notes: string;
+  isCompleted: boolean,
+  isRejected: boolean,
+  rejectedReason?: string;
+}
+
+interface IAvailableBoats {
+  soloKayaks: boolean;
+  doubleKayaks: boolean;
+  sups: boolean;
 }
 
 interface IEvent {
@@ -45,6 +77,7 @@ interface IEvent {
   title: string;
   description: string;
   features: string[];
+  availableBoats: IAvailableBoats;
   cover: string;
 }
 
@@ -65,17 +98,15 @@ interface IInstructor {
 interface IPlaces {
   soloKayaks: number;
   doubleKayaks: number;
-  sups?: number;
+  sups: number;
 }
 
 interface IEquipment {
-  childSeats?: number;
-  carbonPaddles?: number;
-  skirts?: {
-    neoprene?: number;
-    nylon?: number;
-  };
-  waterproofCases?: number;
+  childSeats: number;
+  carbonPaddles: number;
+  neopreneSkirts: number;
+  nylonSkirts: number;
+  waterproofCases: number;
 }
 
 interface IDate {
@@ -84,6 +115,8 @@ interface IDate {
   date: number;
   totalPlaces: IPlaces;
   freePlaces: IPlaces;
+  totalEquipment: IEquipment;
+  freeEquipment: IEquipment;
   instructor: string;
 }
 
@@ -91,11 +124,36 @@ interface IDateUI extends Omit<IDate, 'date'> {
   date: string;
 }
 
-interface IPrice {
+interface IPriceBoats {
   key: number;
   eventName: string;
-  soloKayak: number;
-  doubleKayak: number;
+  soloKayaks: number;
+  doubleKayaks: number;
+  sups: number;
+}
+
+interface IPriceBoatsUI extends Omit<IPriceBoats, 'soloKayaks' | 'doubleKayaks' | 'sups'> {
+  soloKayaks: number | string;
+  doubleKayaks: number | string;
+  sups: number | string;
+}
+
+interface IPriceEquipment {
+  key: number;
+  childSeats: number;
+  carbonPaddles: number;
+  neopreneSkirts: number;
+  nylonSkirts: number;
+  waterproofCases: number;
+}
+
+interface IPriceEquipmentUI {
+  key: number;
+  childSeats: number | string;
+  carbonPaddles: number | string;
+  neopreneSkirts: number | string;
+  nylonSkirts: number | string;
+  waterproofCases: number | string;
 }
 
 interface IRentalStation {
@@ -109,13 +167,18 @@ interface IRentalStation {
 export type {
   ICategory,
   ICategoryImages,
-  IEvent,
-  IEventImages,
   ICustomer,
   ICustomerUI,
-  IInstructor,
   IDate,
   IDateUI,
-  IPrice,
+  IEquipment,
+  IEvent,
+  IEventImages,
+  IInstructor,
+  IPlaces,
+  IPriceBoats,
+  IPriceBoatsUI,
+  IPriceEquipment,
+  IPriceEquipmentUI,
   IRentalStation,
 };

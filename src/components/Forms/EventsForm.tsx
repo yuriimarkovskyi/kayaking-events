@@ -1,14 +1,15 @@
-import React from 'react';
-import {
-  Button, Form, Input, message, Select,
-} from 'antd';
-import { pushDataToDb } from 'helpers/pushDataToDb';
-import { db } from 'config/firebase';
-import { URL } from 'config';
-import { useListVals } from 'react-firebase-hooks/database';
-import { ref as ref_db } from 'firebase/database';
-import { IEvent, IRentalStation } from 'types';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  Button, Checkbox, Form, Input, message, Select,
+} from 'antd';
+import { URL } from 'config';
+import { db } from 'config/firebase';
+import { ref as ref_db } from 'firebase/database';
+import React from 'react';
+import { useListVals } from 'react-firebase-hooks/database';
+import { IEvent, IRentalStation } from 'types';
+import { pushDataToDb } from 'utils/dbActions';
+import validateMessages from 'utils/validateMessages';
 
 interface Props {
   closeDrawer: () => void;
@@ -17,7 +18,16 @@ interface Props {
 function EventsForm({ closeDrawer }: Props) {
   const [form] = Form.useForm();
   const { Option } = Select;
+
+  const rentalStationWatcher = Form.useWatch('rentalStation', form);
+
   const [rentalStations] = useListVals<IRentalStation>(ref_db(db, 'rentalStations'));
+  const chosenStation = rentalStations?.find((val) => val.rentalName === rentalStationWatcher);
+  const {
+    soloKayaks: isSoloKayaksPlaces,
+    doubleKayaks: isDoubleKayaksPlaces,
+    sups: isSupsPlaces,
+  } = chosenStation?.totalPlaces || {};
 
   const onFinish = (values: any) => {
     const {
@@ -28,6 +38,9 @@ function EventsForm({ closeDrawer }: Props) {
       title,
       description,
       features,
+      isSoloKayaks,
+      isDoubleKayaks,
+      isSups,
       cover,
     } = values;
 
@@ -40,12 +53,17 @@ function EventsForm({ closeDrawer }: Props) {
       title,
       description,
       features,
+      availableBoats: {
+        soloKayaks: !!isSoloKayaks,
+        doubleKayaks: !!isDoubleKayaks,
+        sups: !!isSups,
+      },
       cover,
     };
 
     form.resetFields();
 
-    pushDataToDb(db, 'events', event);
+    pushDataToDb('events', event);
 
     message.success({
       content: 'Подія додана',
@@ -62,9 +80,10 @@ function EventsForm({ closeDrawer }: Props) {
     <Form
       id="events-form"
       className="form"
-      form={form}
-      layout="vertical"
       name="events-form"
+      layout="vertical"
+      form={form}
+      validateMessages={validateMessages}
       onFinish={onFinish}
     >
       <Form.Item
@@ -73,26 +92,11 @@ function EventsForm({ closeDrawer }: Props) {
         label="Подія:"
         tooltip="Коротка узагальнююча назва, повну назву необхідно буде вказати у полі 'Заголовок'"
         rules={[
-          {
-            required: true,
-            message: 'Поле є обов\'язковим для заповнення',
-          },
-          {
-            whitespace: true,
-            message: 'Поле не може бути пустим',
-          },
-          {
-            min: 4,
-            message: 'Поле має містити у собі мінімум 4 символи',
-          },
-          {
-            max: 25,
-            message: 'Поле може містити у собі максимум 25 символів',
-          },
-          {
-            pattern: /[А-Яа-яїЇ]/,
-            message: 'У полі присутні неприпустимі символи',
-          },
+          { required: true },
+          { whitespace: true },
+          { min: 4 },
+          { max: 25 },
+          { pattern: /[А-Яа-яїЇ]/ },
         ]}
       >
         <Input />
@@ -103,10 +107,7 @@ function EventsForm({ closeDrawer }: Props) {
         label="Станція проведення:"
         tooltip="Станція з якої стартує подія або звідки береться спорядження для події"
         rules={[
-          {
-            required: true,
-            message: 'Необхідно обрати івент',
-          },
+          { required: true },
         ]}
       >
         <Select>
@@ -123,26 +124,11 @@ function EventsForm({ closeDrawer }: Props) {
         label="Лінк:"
         tooltip="Лінк за яким буде доступна сторінка події на сайті"
         rules={[
-          {
-            required: true,
-            message: 'Поле є обов\'язковим для заповнення',
-          },
-          {
-            min: 4,
-            message: 'Поле має містити у собі мінімум 4 символи',
-          },
-          {
-            max: 25,
-            message: 'Поле може містити у собі максимум 25 символів',
-          },
-          {
-            whitespace: true,
-            message: 'Поле не може бути пустим',
-          },
-          {
-            pattern: /[A-Za-z]/,
-            message: 'У полі присутні неприпустимі символи',
-          },
+          { required: true },
+          { min: 4 },
+          { max: 25 },
+          { whitespace: true },
+          { pattern: /[A-Za-z]/ },
         ]}
       >
         <Input addonBefore={`${URL}/event/`} />
@@ -154,17 +140,11 @@ function EventsForm({ closeDrawer }: Props) {
         tooltip="Посилання на активність у Страві"
         rules={[
           {
+            type: 'url',
             required: true,
-            message: 'Поле є обов\'язковим для заповнення',
           },
-          {
-            whitespace: true,
-            message: 'Поле не може бути пустим',
-          },
-          {
-            pattern: /^(https:\/\/)(www.strava.com\/)(activities\/)[0-9]*/,
-            message: 'Посилання має бути коректним',
-          },
+          { whitespace: true },
+          { pattern: /^(https:\/\/)(www.strava.com\/)(activities\/)[0-9]*/ },
         ]}
       >
         <Input />
@@ -174,26 +154,11 @@ function EventsForm({ closeDrawer }: Props) {
         name="title"
         label="Заголовок:"
         rules={[
-          {
-            required: true,
-            message: 'Поле є обов\'язковим для заповнення',
-          },
-          {
-            whitespace: true,
-            message: 'Поле не може бути пустим',
-          },
-          {
-            min: 6,
-            message: 'Поле має містити у собі мінімум 6 символів',
-          },
-          {
-            max: 60,
-            message: 'Поле може містити у собі максимум 60 символів',
-          },
-          {
-            pattern: /[А-Яа-яїЇ]/,
-            message: 'У полі присутні неприпустимі символи',
-          },
+          { required: true },
+          { whitespace: true },
+          { min: 6 },
+          { max: 60 },
+          { pattern: /[А-Яа-яїЇ]/ },
         ]}
       >
         <Input />
@@ -203,26 +168,11 @@ function EventsForm({ closeDrawer }: Props) {
         name="description"
         label="Опис:"
         rules={[
-          {
-            required: true,
-            message: 'Поле є обов\'язковим для заповнення',
-          },
-          {
-            whitespace: true,
-            message: 'Поле не може бути пустим',
-          },
-          {
-            min: 6,
-            message: 'Поле має містити у собі мінімум 6 символів',
-          },
-          {
-            max: 200,
-            message: 'Поле може містити у собі максимум 200 символів',
-          },
-          {
-            pattern: /[А-Яа-яїЇ]/,
-            message: 'У полі присутні неприпустимі символи',
-          },
+          { required: true },
+          { whitespace: true },
+          { min: 6 },
+          { max: 200 },
+          { pattern: /[А-Яа-яїЇ]/ },
         ]}
       >
         <Input />
@@ -245,10 +195,7 @@ function EventsForm({ closeDrawer }: Props) {
                   {...restField}
                   name={[name]}
                   rules={[
-                    {
-                      required: true,
-                      message: 'Поле є обов\'язковим для заповнення',
-                    },
+                    { required: true },
                   ]}
                   style={{ width: '100%' }}
                 >
@@ -267,35 +214,46 @@ function EventsForm({ closeDrawer }: Props) {
       </Form.List>
       <Form.Item
         className="form__item"
+        name="isSoloKayaks"
+        label="Доступні для вибору плавзасоби:"
+        valuePropName="checked"
+      >
+        <Checkbox
+          disabled={!isSoloKayaksPlaces}
+        >
+          Одномісні каяки
+        </Checkbox>
+      </Form.Item>
+      <Form.Item
+        className="form__item"
+        name="isDoubleKayaks"
+        valuePropName="checked"
+      >
+        <Checkbox
+          disabled={!isDoubleKayaksPlaces}
+        >
+          Двомісні каяки
+        </Checkbox>
+      </Form.Item>
+      <Form.Item
+        className="form__item"
+        name="isSups"
+        valuePropName="checked"
+      >
+        <Checkbox
+          disabled={!isSupsPlaces}
+        >
+          Сапи
+        </Checkbox>
+      </Form.Item>
+      <Form.Item
+        className="form__item"
         name="cover"
         label="Обкладинка:"
         tooltip="Посилання на папку з обкладинкою"
         rules={[
-          {
-            required: true,
-            message: 'Поле є обов\'язковим для заповнення',
-          },
-          {
-            whitespace: true,
-            message: 'Поле не може бути пустим',
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="sliderImages"
-        label="Зображення слайдеру:"
-        tooltip="Посилання на папку з зображеннями для слайдера"
-        rules={[
-          {
-            required: true,
-            message: 'Поле є обов\'язковим для заповнення',
-          },
-          {
-            whitespace: true,
-            message: 'Поле не може бути пустим',
-          },
+          { required: true },
+          { whitespace: true },
         ]}
       >
         <Input />

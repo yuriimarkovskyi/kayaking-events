@@ -3,7 +3,11 @@
     font-weight: bold;
   }
 
-  &__list{}
+  &__list{
+    &.isCompleted {
+      text-decoration: line-through;
+    }
+  }
 
   &__list-item {
     span {

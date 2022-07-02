@@ -1,10 +1,10 @@
-import React from 'react';
 import {
   Form, Input, InputNumber, message,
 } from 'antd';
+import React from 'react';
 import { IRentalStation } from 'types';
-import { pushDataToDb } from 'helpers/pushDataToDb';
-import { db } from 'config/firebase';
+import { pushDataToDb } from 'utils/dbActions';
+import validateMessages from 'utils/validateMessages';
 
 interface Props {
   closeDrawer: () => void;
@@ -39,17 +39,15 @@ function RentalStationsForm({ closeDrawer }: Props) {
       equipment: {
         childSeats,
         carbonPaddles,
-        skirts: {
-          neoprene: neopreneSkirts,
-          nylon: nylonSkirts,
-        },
+        neopreneSkirts,
+        nylonSkirts,
         waterproofCases,
       },
     };
 
     form.resetFields();
 
-    pushDataToDb(db, 'rentalStations', rentalStation);
+    pushDataToDb('rentalStations', rentalStation);
 
     message.success({
       content: 'Станція прокату додана',
@@ -66,10 +64,9 @@ function RentalStationsForm({ closeDrawer }: Props) {
     <Form
       id="rental-stations-form"
       className="form"
-      form={form}
-      layout="vertical"
       name="rental-stations-form"
-      onFinish={onFinish}
+      layout="vertical"
+      form={form}
       initialValues={{
         soloKayaks: 0,
         doubleKayaks: 0,
@@ -80,24 +77,17 @@ function RentalStationsForm({ closeDrawer }: Props) {
         nylonSkirts: 0,
         waterproofCases: 0,
       }}
+      validateMessages={validateMessages}
+      onFinish={onFinish}
     >
       <Form.Item
         className="form__item"
         name="rentalName"
         label="Станція:"
         rules={[
-          {
-            required: true,
-            message: 'Поле є обов\'язковим для заповнення',
-          },
-          {
-            whitespace: true,
-            message: 'Поле не може бути пустим',
-          },
-          {
-            pattern: /[А-Яа-яїЇ]/,
-            message: 'У полі присутні неприпустимі символи',
-          },
+          { required: true },
+          { whitespace: true },
+          { pattern: /[А-Яа-яїЇ]/ },
         ]}
       >
         <Input />
@@ -109,16 +99,13 @@ function RentalStationsForm({ closeDrawer }: Props) {
         tooltip="Посилання на гугл карти"
         rules={[
           {
+            type: 'url',
             required: true,
-            message: 'Поле є обов\'язковим для заповнення',
           },
-          {
-            whitespace: true,
-            message: 'Поле не може бути пустим',
-          },
+          { whitespace: true },
           {
             pattern: /^(https:\/\/)(goo.gl\/)(maps\/)[A-Za-z0-9]*/,
-            message: 'Посилання має бути коректним',
+            message: 'Посилання має вести на гугл карти',
           },
         ]}
       >
@@ -130,10 +117,7 @@ function RentalStationsForm({ closeDrawer }: Props) {
           label="Одномісних каяків:"
           tooltip="Тут і надалі необхідно вказати кількість, що доступна саме для проведення подій"
           rules={[
-            {
-              required: true,
-              message: 'Поле є обов\'язковим для заповнення',
-            },
+            { required: true },
           ]}
         >
           <InputNumber min={0} />
@@ -142,10 +126,7 @@ function RentalStationsForm({ closeDrawer }: Props) {
           name="doubleKayaks"
           label="Двомісних каяків:"
           rules={[
-            {
-              required: true,
-              message: 'Поле є обов\'язковим для заповнення',
-            },
+            { required: true },
           ]}
         >
           <InputNumber min={0} />
@@ -153,43 +134,59 @@ function RentalStationsForm({ closeDrawer }: Props) {
         <Form.Item
           name="sups"
           label="Дошок:"
+          rules={[
+            { required: true },
+          ]}
         >
           <InputNumber min={0} />
         </Form.Item>
       </div>
-      <div className="registration-form__items-group">
-        <Form.Item
-          name="childSeats"
-          label="Дитячих сидінь:"
-          tooltip="Тут і надалі необхідно вказати кількість, що доступна для видачі клієнтам на подіях"
-        >
-          <InputNumber min={0} />
-        </Form.Item>
-        <Form.Item
-          name="carbonPaddles"
-          label="Карбонових весел:"
-        >
-          <InputNumber min={0} />
-        </Form.Item>
-        <Form.Item
-          name="neopreneSkirts"
-          label="Неопренових спідниць:"
-        >
-          <InputNumber min={0} />
-        </Form.Item>
-        <Form.Item
-          name="nylonSkirts"
-          label="Нейлонових спідниць:"
-        >
-          <InputNumber min={0} />
-        </Form.Item>
-        <Form.Item
-          name="waterproofCases"
-          label="Водонепроникних кейсів:"
-        >
-          <InputNumber min={0} />
-        </Form.Item>
-      </div>
+      <Form.Item
+        name="childSeats"
+        label="Дитячих сидінь:"
+        tooltip="Тут і надалі необхідно вказати кількість, що доступна для видачі клієнтам на подіях"
+        rules={[
+          { required: true },
+        ]}
+      >
+        <InputNumber min={0} />
+      </Form.Item>
+      <Form.Item
+        name="carbonPaddles"
+        label="Карбонових весел:"
+        rules={[
+          { required: true },
+        ]}
+      >
+        <InputNumber min={0} />
+      </Form.Item>
+      <Form.Item
+        name="neopreneSkirts"
+        label="Неопренових спідниць:"
+        rules={[
+          { required: true },
+        ]}
+      >
+        <InputNumber min={0} />
+      </Form.Item>
+      <Form.Item
+        name="nylonSkirts"
+        label="Нейлонових спідниць:"
+        rules={[
+          { required: true },
+        ]}
+      >
+        <InputNumber min={0} />
+      </Form.Item>
+      <Form.Item
+        name="waterproofCases"
+        label="Водонепроникних кейсів:"
+        rules={[
+          { required: true },
+        ]}
+      >
+        <InputNumber min={0} />
+      </Form.Item>
     </Form>
   );
 }

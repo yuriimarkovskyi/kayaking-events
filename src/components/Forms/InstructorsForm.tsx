@@ -1,8 +1,7 @@
-import React from 'react';
 import { Form, Input, message } from 'antd';
-import { pushDataToDb } from 'helpers/pushDataToDb';
-import { db } from 'config/firebase';
+import React from 'react';
 import { IInstructor } from 'types';
+import { pushDataToDb } from 'utils/dbActions';
 
 interface Props {
   closeDrawer: () => void;
@@ -29,7 +28,7 @@ function InstructorsForm({ closeDrawer }: Props) {
 
     form.resetFields();
 
-    pushDataToDb(db, 'instructors', instructor);
+    pushDataToDb('instructors', instructor);
 
     message.success({
       content: 'Інструктор доданий',

@@ -1,18 +1,18 @@
-import React from 'react';
-import { Button, Tabs } from 'antd';
-import { Col, Container, Row } from 'react-bootstrap';
 import { LogoutOutlined } from '@ant-design/icons';
-import { getAuth, signOut } from 'firebase/auth';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import RegistrationsTable from 'components/Tables/RegistrationsTable';
-import { app } from 'config/firebase';
+import { Button, Tabs } from 'antd';
 import AuthorizationForm from 'components/Forms/AuthorizationForm';
 import Loader from 'components/Loader';
-import InstructorsTable from 'components/Tables/InstructorsTable';
-import EventsTable from 'components/Tables/EventsTable';
-import RentalStationsTable from 'components/Tables/RentalStationsTable';
-import PricesTable from 'components/Tables/PricesTable';
 import DatesTable from 'components/Tables/DatesTable';
+import EventsTable from 'components/Tables/EventsTable';
+import InstructorsTable from 'components/Tables/InstructorsTable';
+import PricesBoatsTable from 'components/Tables/PricesBoatsTable';
+import RegistrationsTable from 'components/Tables/RegistrationsTable';
+import RentalStationsTable from 'components/Tables/RentalStationsTable';
+import { app } from 'config/firebase';
+import { getAuth, signOut } from 'firebase/auth';
+import React from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 function Dashboard() {
   const { TabPane } = Tabs;
@@ -49,7 +49,7 @@ function Dashboard() {
             <TabPane tab="Реєстрації" key="1">
               <RegistrationsTable />
             </TabPane>
-            <TabPane tab="Івенти" key="2">
+            <TabPane tab="Події" key="2">
               <EventsTable />
             </TabPane>
             <TabPane tab="Інструктори" key="3">
@@ -59,7 +59,7 @@ function Dashboard() {
               <DatesTable />
             </TabPane>
             <TabPane tab="Ціни" key="5">
-              <PricesTable />
+              <PricesBoatsTable />
             </TabPane>
             <TabPane tab="Прокати" key="6">
               <RentalStationsTable />

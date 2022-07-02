@@ -1,18 +1,25 @@
-import React, { useMemo, useState } from 'react';
-import { useListVals } from 'react-firebase-hooks/database';
-import { ref } from 'firebase/database';
 import {
   Button, Drawer, Popconfirm, Table, Tooltip,
 } from 'antd';
-import { IEvent, IPrice } from 'types';
-import { db } from 'config/firebase';
 import { ColumnsType } from 'antd/lib/table';
-import { deleteDataInDb } from 'helpers/deleteDataInDb';
-import PricesForm from '../Forms/PricesForm';
+import PricesBoatsForm from 'components/Forms/PricesBoatsForm';
+import { db } from 'config/firebase';
+import { ref } from 'firebase/database';
+import React, { useMemo, useState } from 'react';
+import { useListVals } from 'react-firebase-hooks/database';
+import { IEvent, IPriceBoatsUI } from 'types';
+import { deleteDataInDb } from 'utils/dbActions';
 
-function PricesTable() {
+function PricesBoatsTable() {
   const [isVisible, setIsVisible] = useState(false);
-  const [prices, loading, error] = useListVals<IPrice>(ref(db, 'prices'));
+  const [prices, loading, error] = useListVals<IPriceBoatsUI>(ref(db, 'prices'), {
+    transform: (val) => ({
+      ...val,
+      soloKayaks: val.soloKayaks ? val.soloKayaks : '-',
+      doubleKayaks: val.doubleKayaks ? val.doubleKayaks : '-',
+      sups: val.sups ? val.sups : '-',
+    }),
+  });
   const [events] = useListVals<IEvent>(ref(db, 'events'));
 
   const filteredEvents = events?.filter((event) => (
@@ -23,21 +30,31 @@ function PricesTable() {
   const closeDrawer = () => setIsVisible(false);
 
   const deletePrice = (e: number) => (
-    deleteDataInDb(db, 'prices', 'key', e)
+    deleteDataInDb('prices', 'key', e)
   );
 
-  const columns: ColumnsType<IPrice> = [
+  const columns: ColumnsType<IPriceBoatsUI> = [
     {
       title: 'Подія',
       dataIndex: 'eventName',
     },
     {
-      title: 'Одномісний каяк',
-      dataIndex: 'soloKayak',
+      title: 'Каяки',
+      children: [
+        {
+          title: 'Одномісний',
+          dataIndex: 'soloKayaks',
+        },
+        {
+          title: 'Двомісний',
+          dataIndex: 'doubleKayaks',
+        },
+      ],
+
     },
     {
-      title: 'Двомісний каяк',
-      dataIndex: 'doubleKayak',
+      title: 'Сап',
+      dataIndex: 'sups',
     },
     {
       title: 'Дії',
@@ -76,7 +93,7 @@ function PricesTable() {
 
   return (
     <>
-      <Table
+      <Table<IPriceBoatsUI>
         size="small"
         bordered
         pagination={false}
@@ -87,8 +104,6 @@ function PricesTable() {
       />
       <Drawer
         title="Новий прайс"
-        placement="bottom"
-        height={300}
         onClose={closeDrawer}
         visible={isVisible}
         extra={(
@@ -101,10 +116,10 @@ function PricesTable() {
           </Button>
             )}
       >
-        <PricesForm closeDrawer={closeDrawer} events={filteredEvents} />
+        <PricesBoatsForm closeDrawer={closeDrawer} events={filteredEvents} />
       </Drawer>
     </>
   );
 }
 
-export default PricesTable;
+export default PricesBoatsTable;

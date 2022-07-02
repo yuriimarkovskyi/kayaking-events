@@ -1,13 +1,14 @@
+import {
+  Button, Drawer, Popconfirm, Table, Tag, Tooltip,
+} from 'antd';
+import { ColumnsType } from 'antd/lib/table';
+import { db } from 'config/firebase';
+import { ref } from 'firebase/database';
 import React, { useMemo, useState } from 'react';
 import { useListVals } from 'react-firebase-hooks/database';
-import { ref } from 'firebase/database';
-import {
-  Button, Drawer, Popconfirm, Table, Tooltip,
-} from 'antd';
 import { IEvent } from 'types';
-import { db } from 'config/firebase';
-import { ColumnsType } from 'antd/lib/table';
-import { deleteDataInDb } from 'helpers/deleteDataInDb';
+import { deleteDataInDb } from 'utils/dbActions';
+
 import EventsForm from '../Forms/EventsForm';
 import EventsImagesForm from '../Forms/EventsImagesForm';
 
@@ -25,7 +26,7 @@ function EventsTable() {
   };
 
   const deleteEvent = (e: number) => (
-    deleteDataInDb(db, 'events', 'key', e)
+    deleteDataInDb('events', 'key', e)
   );
 
   const columns: ColumnsType<IEvent> = [
@@ -79,6 +80,31 @@ function EventsTable() {
       ),
     },
     {
+      title: 'Доступні плавзасоби',
+      render: (value) => (
+        <div style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'flex-start', rowGap: '5px',
+        }}
+        >
+          {value.availableBoats.soloKayaks && (
+            <Tag color="blue">
+              Одномісні каяки
+            </Tag>
+          )}
+          {value.availableBoats.doubleKayaks && (
+            <Tag color="geekblue">
+              Двомісні каяки
+            </Tag>
+          )}
+          {value.availableBoats.sups && (
+            <Tag color="cyan">
+              Сапи
+            </Tag>
+          )}
+        </div>
+      ),
+    },
+    {
       title: 'Обкладинка',
       dataIndex: 'cover',
       ellipsis: true,
@@ -115,7 +141,7 @@ function EventsTable() {
         onClick={showDrawerPrimary}
         style={{ marginRight: '10px' }}
       >
-        Додати івент
+        Додати подію
       </Button>
       <Button
         type="primary"
@@ -132,7 +158,7 @@ function EventsTable() {
 
   return (
     <>
-      <Table
+      <Table<IEvent>
         size="small"
         bordered
         pagination={false}
@@ -142,7 +168,7 @@ function EventsTable() {
         footer={() => memoizedFooter}
       />
       <Drawer
-        title={isVisiblePrimary ? 'Новий івент' : 'Додати зображення'}
+        title={isVisiblePrimary ? 'Нова подія' : 'Додати зображення'}
         placement="right"
         width="600"
         onClose={closeDrawer}

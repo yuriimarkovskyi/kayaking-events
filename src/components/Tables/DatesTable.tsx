@@ -1,15 +1,16 @@
-import React, { useMemo, useState } from 'react';
 import {
   Button, Drawer, Popconfirm, Table,
 } from 'antd';
-import { useListVals } from 'react-firebase-hooks/database';
-import { ref } from 'firebase/database';
-import { db } from 'config/firebase';
-import { IDateUI } from 'types';
-import moment from 'moment';
 import { ColumnsType } from 'antd/lib/table';
-import { deleteDataInDb } from 'helpers/deleteDataInDb';
+import { db } from 'config/firebase';
+import { ref } from 'firebase/database';
 import { isEqual, uniqWith } from 'lodash';
+import moment from 'moment';
+import React, { useMemo, useState } from 'react';
+import { useListVals } from 'react-firebase-hooks/database';
+import { IDateUI } from 'types';
+import { deleteDataInDb } from 'utils/dbActions';
+
 import DatesForm from '../Forms/DatesForm';
 
 function DatesTable() {
@@ -25,7 +26,7 @@ function DatesTable() {
   const closeDrawer = () => setIsVisible(false);
 
   const deleteDate = (e: number) => (
-    deleteDataInDb(db, 'dates', 'key', e)
+    deleteDataInDb('dates', 'key', e)
   );
 
   const columns: ColumnsType<IDateUI> = [
@@ -41,12 +42,9 @@ function DatesTable() {
     {
       title: 'Дата',
       dataIndex: 'date',
-      sortDirections: ['ascend', 'descend', 'ascend'],
-      defaultSortOrder: 'descend',
-      sorter: (a, b) => a.key - b.key,
     },
     {
-      title: 'Загальна кількість каяків',
+      title: 'Загальна кількість плавзасобів',
       children: [
         {
           title: 'Одномісних',
@@ -64,10 +62,18 @@ function DatesTable() {
             </span>
           ),
         },
+        {
+          title: 'Сапів',
+          render: (value) => (
+            <span>
+              {value.totalPlaces.sups}
+            </span>
+          ),
+        },
       ],
     },
     {
-      title: 'Доступно каяків',
+      title: 'Доступна кількість плавзасобів',
       children: [
         {
           title: 'Одномісних',
@@ -82,6 +88,64 @@ function DatesTable() {
           render: (value) => (
             <span>
               {value.freePlaces.doubleKayaks}
+            </span>
+          ),
+        },
+        {
+          title: 'Сапів',
+          render: (value) => (
+            <span>
+              {value.totalPlaces.sups}
+            </span>
+          ),
+        },
+      ],
+    },
+    {
+      title: 'Доступна кількість спорядження',
+      children: [
+        {
+          title: 'Дитячих сидінь',
+          render: (value) => (
+            <span>
+              {value.freeEquipment.childSeats}
+            </span>
+          ),
+        },
+        {
+          title: 'Карбонових весел',
+          render: (value) => (
+            <span>
+              {value.freeEquipment.carbonPaddles}
+            </span>
+          ),
+        },
+        {
+          title: 'Спідниць',
+          children: [
+            {
+              title: 'Неопренових',
+              render: (value) => (
+                <span>
+                  {value.freeEquipment.neopreneSkirts}
+                </span>
+              ),
+            },
+            {
+              title: 'Нейлонових',
+              render: (value) => (
+                <span>
+                  {value.freeEquipment.nylonSkirts}
+                </span>
+              ),
+            },
+          ],
+        },
+        {
+          title: 'Водонепроникних кейсів',
+          render: (value) => (
+            <span>
+              {value.freeEquipment.waterproofCases}
             </span>
           ),
         },
@@ -129,9 +193,10 @@ function DatesTable() {
 
   return (
     <>
-      <Table
+      <Table<IDateUI>
         size="small"
         bordered
+        scroll={{ x: true }}
         pagination={false}
         loading={loading}
         dataSource={dates}
@@ -140,7 +205,6 @@ function DatesTable() {
       />
       <Drawer
         title="Нова дата"
-        placement="bottom"
         onClose={closeDrawer}
         visible={isVisible}
         extra={(

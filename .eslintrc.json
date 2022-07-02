@@ -27,15 +27,23 @@
   },
   "plugins": [
     "react",
-    "react-hooks"
+    "react-hooks",
+    "simple-import-sort"
   ],
   "rules": {
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error",
     "import/prefer-default-export": "off",
     "react/react-in-jsx-scope": "off",
     "react/jsx-props-no-spreading": "off",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "linebreak-style": ["error", "windows"],
+    "no-unsafe-optional-chaining": "off",
+    "no-template-curly-in-string": "off",
     "no-console": [
       "warn",
       {

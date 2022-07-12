@@ -1,7 +1,10 @@
 import 'moment/locale/uk';
 
-import { Button, List, Modal } from 'antd';
+import {
+  Alert, Button, List, Modal,
+} from 'antd';
 import Item from 'antd/es/list/Item';
+import RegistrationForm from 'components/Forms/RegistrationForm/RegistrationForm';
 import { db } from 'config/firebase';
 import { ref } from 'firebase/database';
 import moment from 'moment';
@@ -10,8 +13,6 @@ import { useListVals } from 'react-firebase-hooks/database';
 import { useParams } from 'react-router-dom';
 import { IDate, IEvent, IPriceBoats } from 'types';
 
-import RegistrationForm from './Forms/RegistrationForm';
-
 function EventInformation() {
   const { link } = useParams();
 
@@ -19,14 +20,15 @@ function EventInformation() {
 
   const [events] = useListVals<IEvent>(ref(db, 'events'));
   const [dates] = useListVals<IDate>(ref(db, 'dates'));
-  const [prices] = useListVals<IPriceBoats>(ref(db, 'prices'));
+  const [prices] = useListVals<IPriceBoats>(ref(db, 'prices/boats'));
 
-  const currentEvent = events?.filter((event) => event.link === link);
-  const eventDates = dates?.filter((date) => (
-    currentEvent?.find((val) => val.eventName === date.eventName)
-  ));
-  const eventPrice = prices?.filter((price) => (
-    currentEvent?.find((event) => event.eventName === price.eventName)
+  const currentEvent = events?.find((event) => event.link === link);
+  const eventDates = dates?.filter((date) => date.eventName === currentEvent?.eventName);
+  const eventPrice = prices?.find((price) => price.eventName === currentEvent?.eventName);
+  const freePlacesSummary = eventDates?.every((val) => (
+    !val.freePlaces.soloKayaks
+    && !val.freePlaces.doubleKayaks
+    && !val.freePlaces.sups
   ));
 
   const showModal = () => setIsVisible(true);
@@ -34,25 +36,22 @@ function EventInformation() {
 
   return (
     <div className="event-information">
-      {currentEvent?.map((val) => (
-        <List
-          key={val.key}
-          size="small"
-          header={(
-            <h3 className="event-information__title">
-              {`🤗 ${val.description}`}
-            </h3>
+      <List
+        size="small"
+        header={(
+          <h3 className="event-information__title">
+            {`🤗 ${currentEvent?.description}`}
+          </h3>
           )}
-          dataSource={val.features}
-          renderItem={(item) => (
-            <Item>
-              <span>
-                {`🔹 ${item}`}
-              </span>
-            </Item>
-          )}
-        />
-      ))}
+        dataSource={currentEvent?.features}
+        renderItem={(item) => (
+          <Item>
+            <span>
+              {`🔹 ${item}`}
+            </span>
+          </Item>
+        )}
+      />
       <List
         size="small"
         header={(
@@ -60,22 +59,39 @@ function EventInformation() {
             💳 Вартість:
           </h3>
         )}
-        dataSource={eventPrice}
-        renderItem={(item) => (
+        renderItem={() => (
           <Item>
             <ul className="event-information__list">
-              <li className="event-information__list-item">
-                <span>
-                  Одномісний каяк -
-                </span>
-                {` ${item.soloKayaks} ГРН`}
-              </li>
-              <li className="event-information__list-item">
-                <span>
-                  Двомісний каяк -
-                </span>
-                {` ${item.doubleKayaks} ГРН`}
-              </li>
+              {
+                eventPrice?.soloKayak && (
+                <li className="event-information__list-item">
+                  <span>
+                    Одномісний каяк -
+                  </span>
+                  {` ${eventPrice?.soloKayak} ГРН`}
+                </li>
+                )
+              }
+              {
+                eventPrice?.doubleKayak && (
+                <li className="event-information__list-item">
+                  <span>
+                    Двомісний каяк -
+                  </span>
+                  {` ${eventPrice?.doubleKayak} ГРН`}
+                </li>
+                )
+              }
+              {
+                eventPrice?.sup && (
+                <li className="event-information__list-item">
+                  <span>
+                    Сап -
+                  </span>
+                  {` ${eventPrice?.sup} ГРН`}
+                </li>
+                )
+              }
             </ul>
           </Item>
         )}
@@ -89,10 +105,12 @@ function EventInformation() {
         )}
         dataSource={eventDates}
         renderItem={(item) => (
-          <Item>
+          <Item className="event-information">
             <ul className={`
               event-information__list
-              ${!(item.freePlaces.soloKayaks + item.freePlaces.doubleKayaks + item.freePlaces.sups)
+              ${!(item.freePlaces.soloKayaks
+              + item.freePlaces.doubleKayaks
+              + item.freePlaces.sups)
               ? 'isCompleted'
               : ''}
                 `}
@@ -109,7 +127,9 @@ function EventInformation() {
                 <span>
                   Вільних місць -
                 </span>
-                {` ${item.freePlaces.soloKayaks + item.freePlaces.doubleKayaks}`}
+                {` ${item.freePlaces.soloKayaks
+                + item.freePlaces.doubleKayaks
+                + item.freePlaces.sups}`}
               </li>
               <li className="event-information__list-item">
                 <span>
@@ -118,6 +138,19 @@ function EventInformation() {
                 {` ${item.instructor}`}
               </li>
             </ul>
+            {
+              !(item.freePlaces.soloKayaks
+                + item.freePlaces.doubleKayaks
+                + item.freePlaces.sups)
+                ? (
+                  <Alert
+                    message="Вільних місць немає"
+                    type="info"
+                    showIcon
+                  />
+                )
+                : null
+            }
           </Item>
         )}
       />
@@ -125,7 +158,7 @@ function EventInformation() {
         type="primary"
         htmlType="button"
         onClick={showModal}
-        disabled={!eventDates?.length}
+        disabled={freePlacesSummary}
         block
       >
         Реєстрація
@@ -138,10 +171,9 @@ function EventInformation() {
         onCancel={closeModal}
       >
         <RegistrationForm
-          currentEvent={currentEvent}
+          eventName={currentEvent?.eventName}
           dates={eventDates}
-          price={eventPrice}
-          // closeModal={closeModal}
+          closeModal={closeModal}
         />
       </Modal>
     </div>

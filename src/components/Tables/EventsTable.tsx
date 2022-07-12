@@ -69,8 +69,8 @@ function EventsTable() {
       },
       render: (features) => (
         <ul style={{ listStyle: 'circle', paddingLeft: '15px' }}>
-          {features.map((feature: string) => (
-            <li key={feature}>
+          {features.map((feature: string, index: number) => (
+            <li key={feature + index.toString()}>
               <Tooltip placement="topLeft" title={feature}>
                 {feature}
               </Tooltip>

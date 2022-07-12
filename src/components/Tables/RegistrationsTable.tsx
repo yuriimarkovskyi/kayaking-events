@@ -21,8 +21,7 @@ function RegistrationsTable() {
       registrationTime: moment(val.registrationTime)
         .startOf('seconds')
         .fromNow(),
-      eventName: val.eventData.eventName,
-      eventDate: moment.unix(val.eventData.eventDate)
+      eventDate: moment.unix(val.eventDate)
         .locale('uk')
         .format('L'),
       fullName: val.customerData.fullName,

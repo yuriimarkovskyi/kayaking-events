@@ -1,9 +1,10 @@
 import {
-  Form, Input, InputNumber, message,
+  Form, Input, InputNumber,
 } from 'antd';
 import React from 'react';
 import { IRentalStation } from 'types';
 import { pushDataToDb } from 'utils/dbActions';
+import messageSuccess from 'utils/messageSuccess';
 import validateMessages from 'utils/validateMessages';
 
 interface Props {
@@ -11,7 +12,8 @@ interface Props {
 }
 
 function RentalStationsForm({ closeDrawer }: Props) {
-  const [form] = Form.useForm();
+  const { useForm, Item } = Form;
+  const [form] = useForm();
 
   const onFinish = (values: any) => {
     const {
@@ -46,17 +48,8 @@ function RentalStationsForm({ closeDrawer }: Props) {
     };
 
     form.resetFields();
-
-    pushDataToDb('rentalStations', rentalStation);
-
-    message.success({
-      content: 'Станція прокату додана',
-      duration: 3,
-      style: {
-        marginTop: '30vh',
-      },
-    });
-
+    pushDataToDb('rentalStations', rentalStation)
+      .then(() => messageSuccess('Станція прокату додана'));
     closeDrawer();
   };
 
@@ -80,8 +73,7 @@ function RentalStationsForm({ closeDrawer }: Props) {
       validateMessages={validateMessages}
       onFinish={onFinish}
     >
-      <Form.Item
-        className="form__item"
+      <Item
         name="rentalName"
         label="Станція:"
         rules={[
@@ -91,9 +83,8 @@ function RentalStationsForm({ closeDrawer }: Props) {
         ]}
       >
         <Input />
-      </Form.Item>
-      <Form.Item
-        className="form__item"
+      </Item>
+      <Item
         name="address"
         label="Адреса:"
         tooltip="Посилання на гугл карти"
@@ -110,38 +101,36 @@ function RentalStationsForm({ closeDrawer }: Props) {
         ]}
       >
         <Input />
-      </Form.Item>
-      <div className="registration-form__items-group">
-        <Form.Item
-          name="soloKayaks"
-          label="Одномісних каяків:"
-          tooltip="Тут і надалі необхідно вказати кількість, що доступна саме для проведення подій"
-          rules={[
-            { required: true },
-          ]}
-        >
-          <InputNumber min={0} />
-        </Form.Item>
-        <Form.Item
-          name="doubleKayaks"
-          label="Двомісних каяків:"
-          rules={[
-            { required: true },
-          ]}
-        >
-          <InputNumber min={0} />
-        </Form.Item>
-        <Form.Item
-          name="sups"
-          label="Дошок:"
-          rules={[
-            { required: true },
-          ]}
-        >
-          <InputNumber min={0} />
-        </Form.Item>
-      </div>
-      <Form.Item
+      </Item>
+      <Item
+        name="soloKayaks"
+        label="Одномісних каяків:"
+        tooltip="Тут і надалі необхідно вказати кількість, що доступна саме для проведення подій"
+        rules={[
+          { required: true },
+        ]}
+      >
+        <InputNumber min={0} />
+      </Item>
+      <Item
+        name="doubleKayaks"
+        label="Двомісних каяків:"
+        rules={[
+          { required: true },
+        ]}
+      >
+        <InputNumber min={0} />
+      </Item>
+      <Item
+        name="sups"
+        label="Дошок:"
+        rules={[
+          { required: true },
+        ]}
+      >
+        <InputNumber min={0} />
+      </Item>
+      <Item
         name="childSeats"
         label="Дитячих сидінь:"
         tooltip="Тут і надалі необхідно вказати кількість, що доступна для видачі клієнтам на подіях"
@@ -150,8 +139,8 @@ function RentalStationsForm({ closeDrawer }: Props) {
         ]}
       >
         <InputNumber min={0} />
-      </Form.Item>
-      <Form.Item
+      </Item>
+      <Item
         name="carbonPaddles"
         label="Карбонових весел:"
         rules={[
@@ -159,8 +148,8 @@ function RentalStationsForm({ closeDrawer }: Props) {
         ]}
       >
         <InputNumber min={0} />
-      </Form.Item>
-      <Form.Item
+      </Item>
+      <Item
         name="neopreneSkirts"
         label="Неопренових спідниць:"
         rules={[
@@ -168,8 +157,8 @@ function RentalStationsForm({ closeDrawer }: Props) {
         ]}
       >
         <InputNumber min={0} />
-      </Form.Item>
-      <Form.Item
+      </Item>
+      <Item
         name="nylonSkirts"
         label="Нейлонових спідниць:"
         rules={[
@@ -177,8 +166,8 @@ function RentalStationsForm({ closeDrawer }: Props) {
         ]}
       >
         <InputNumber min={0} />
-      </Form.Item>
-      <Form.Item
+      </Item>
+      <Item
         name="waterproofCases"
         label="Водонепроникних кейсів:"
         rules={[
@@ -186,7 +175,7 @@ function RentalStationsForm({ closeDrawer }: Props) {
         ]}
       >
         <InputNumber min={0} />
-      </Form.Item>
+      </Item>
     </Form>
   );
 }

@@ -1,122 +1,103 @@
-import {
-  Form, InputNumber, message, Select,
-} from 'antd';
+import { Form, InputNumber } from 'antd';
 import React from 'react';
-import { IEvent, IPriceBoats } from 'types';
+import { IPriceEquipment } from 'types';
 import { pushDataToDb } from 'utils/dbActions';
+import messageSuccess from 'utils/messageSuccess';
 
 interface Props {
   closeDrawer: () => void;
-  events: IEvent[] | undefined;
 }
 
-function PricesEquipmentForm({
-  closeDrawer,
-  events,
-}: Props) {
-  const [form] = Form.useForm();
-  const { Option } = Select;
-
-  const eventNameWatch = Form.useWatch('eventName', form);
-
+function PricesEquipmentForm({ closeDrawer }: Props) {
   const {
-    soloKayaks: isSoloKayaksAvailable,
-    doubleKayaks: isDoubleKayaksAvailable,
-    sups: isSupsAvailable,
-  } = events?.find((val) => val.eventName === eventNameWatch)?.availableBoats || {};
+    useForm,
+    Item,
+  } = Form;
+  const [form] = useForm();
 
   const onFinish = (values: any) => {
     const {
-      eventName,
-      soloKayaks,
-      doubleKayaks,
-      sups,
+      childSeat,
+      carbonPaddle,
+      neopreneSkirt,
+      nylonSkirt,
+      waterproofCase,
     } = values;
 
-    const price: IPriceBoats = {
+    const price: IPriceEquipment = {
       key: Date.now(),
-      eventName,
-      soloKayaks,
-      doubleKayaks,
-      sups,
+      childSeat,
+      carbonPaddle,
+      neopreneSkirt,
+      nylonSkirt,
+      waterproofCase,
     };
 
     form.resetFields();
-
-    pushDataToDb('pricesBoats', price);
-
-    message.success({
-      content: 'Прайс доданий',
-      duration: 3,
-      style: {
-        marginTop: '30vh',
-      },
-    });
-
+    pushDataToDb('prices/equipment', price)
+      .then(() => messageSuccess('Прайс доданий'));
     closeDrawer();
   };
 
   return (
     <Form
-      id="prices-form"
+      id="prices-equipment-form"
       className="form"
-      name="prices-form"
+      name="prices-equipment-form"
       layout="vertical"
       form={form}
-      initialValues={{
-        soloKayaks: 0,
-        doubleKayaks: 0,
-        sups: 0,
-      }}
       onFinish={onFinish}
     >
-      <Form.Item
+      <Item
         className="form__item"
-        name="eventName"
-        label="Подія:"
+        name="childSeat"
+        label="Дитяче сидіння:"
         rules={[
           { required: true },
         ]}
       >
-        <Select>
-          {events?.map((val) => (
-            <Option key={val.key} value={val.eventName}>
-              {val.eventName}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
-      <Form.Item
-        name="soloKayaks"
-        label="За одномісний каяк:"
-        hidden={!isSoloKayaksAvailable}
+        <InputNumber min={1} />
+      </Item>
+      <Item
+        className="form__item"
+        name="carbonPaddle"
+        label="Карбонове весло:"
         rules={[
-          { required: !!isSoloKayaksAvailable },
+          { required: true },
         ]}
       >
         <InputNumber min={1} />
-      </Form.Item>
-      <Form.Item
-        name="doubleKayaks"
-        label="За двомісний каяк:"
-        tooltip="Для дитини (на дитячому сидінні) вартість буде становити половину від вказаної вартості"
-        hidden={!isDoubleKayaksAvailable}
+      </Item>
+      <Item
+        className="form__item"
+        name="neopreneSkirt"
+        label="Неопренова спідниця:"
         rules={[
-          { required: !!isDoubleKayaksAvailable },
+          { required: true },
         ]}
       >
         <InputNumber min={1} />
-      </Form.Item>
-      <Form.Item
-        name="sups"
-        label="За сап:"
-        hidden={!isSupsAvailable}
+      </Item>
+      <Item
+        className="form__item"
+        name="nylonSkirt"
+        label="Нейлонова спідниця:"
         rules={[
-          { required: !!isSupsAvailable },
+          { required: true },
         ]}
       >
         <InputNumber min={1} />
-      </Form.Item>
+      </Item>
+      <Item
+        className="form__item"
+        name="waterproofCase"
+        label="Водонепроникний кейс:"
+        rules={[
+          { required: true },
+        ]}
+      >
+        <InputNumber min={1} />
+      </Item>
     </Form>
   );
 }

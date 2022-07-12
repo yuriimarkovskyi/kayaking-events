@@ -1,5 +1,5 @@
 import {
-  Button, Drawer, Popconfirm, Table, Tooltip,
+  Button, Drawer, Popconfirm, Table, Typography,
 } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import PricesBoatsForm from 'components/Forms/PricesBoatsForm';
@@ -11,13 +11,15 @@ import { IEvent, IPriceBoatsUI } from 'types';
 import { deleteDataInDb } from 'utils/dbActions';
 
 function PricesBoatsTable() {
+  const { Title } = Typography;
+
   const [isVisible, setIsVisible] = useState(false);
-  const [prices, loading, error] = useListVals<IPriceBoatsUI>(ref(db, 'prices'), {
+  const [prices, loading, error] = useListVals<IPriceBoatsUI>(ref(db, 'prices/boats'), {
     transform: (val) => ({
       ...val,
-      soloKayaks: val.soloKayaks ? val.soloKayaks : '-',
-      doubleKayaks: val.doubleKayaks ? val.doubleKayaks : '-',
-      sups: val.sups ? val.sups : '-',
+      soloKayak: val.soloKayak ? val.soloKayak : '-',
+      doubleKayak: val.doubleKayak ? val.doubleKayak : '-',
+      sup: val.sup ? val.sup : '-',
     }),
   });
   const [events] = useListVals<IEvent>(ref(db, 'events'));
@@ -30,7 +32,7 @@ function PricesBoatsTable() {
   const closeDrawer = () => setIsVisible(false);
 
   const deletePrice = (e: number) => (
-    deleteDataInDb('prices', 'key', e)
+    deleteDataInDb('prices/boats', 'key', e)
   );
 
   const columns: ColumnsType<IPriceBoatsUI> = [
@@ -43,18 +45,18 @@ function PricesBoatsTable() {
       children: [
         {
           title: 'Одномісний',
-          dataIndex: 'soloKayaks',
+          dataIndex: 'soloKayak',
         },
         {
           title: 'Двомісний',
-          dataIndex: 'doubleKayaks',
+          dataIndex: 'doubleKayak',
         },
       ],
 
     },
     {
       title: 'Сап',
-      dataIndex: 'sups',
+      dataIndex: 'sup',
     },
     {
       title: 'Дії',
@@ -76,23 +78,27 @@ function PricesBoatsTable() {
   ];
 
   const memoizedFooter = useMemo(() => (
-    <Tooltip title={!filteredEvents?.length ? 'Прайси для усіх існуючих подій вже додані' : ''}>
-      <Button
-        type="primary"
-        htmlType="button"
-        onClick={showDrawer}
-        disabled={!filteredEvents?.length}
-      >
-        Додати прайс
-      </Button>
-    </Tooltip>
-
+    <Button
+      type="primary"
+      htmlType="button"
+      onClick={showDrawer}
+      disabled={!filteredEvents?.length}
+    >
+      Додати прайс
+    </Button>
   ), [filteredEvents?.length]);
 
   if (error) console.error(error);
 
   return (
     <>
+      <Title
+        className="title"
+        level={2}
+        style={{ marginTop: '20px' }}
+      >
+        Плавзасоби
+      </Title>
       <Table<IPriceBoatsUI>
         size="small"
         bordered
@@ -110,7 +116,7 @@ function PricesBoatsTable() {
           <Button
             htmlType="submit"
             type="primary"
-            form="prices-form"
+            form="prices-boats-form"
           >
             Додати
           </Button>

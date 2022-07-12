@@ -8,20 +8,14 @@ import { ref } from 'firebase/database';
 import React from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useListVals } from 'react-firebase-hooks/database';
-import { Link, useParams } from 'react-router-dom';
-import { ICategory, IEvent } from 'types';
+import { Link } from 'react-router-dom';
+import { ICategory } from 'types';
 
-function Events() {
-  const { link } = useParams();
-
+function Categories() {
   const { Title } = Typography;
   const { Meta } = Card;
 
-  const [events, loading, error] = useListVals<IEvent>(ref(db, 'events'));
-  const [categories] = useListVals<ICategory>(ref(db, 'categories'));
-
-  const { categoryName } = categories?.find((category) => category.link === link) || {};
-  const filteredEvents = events?.filter((event) => event.categoryName === categoryName);
+  const [categories, loading, error] = useListVals<ICategory>(ref(db, 'categories'));
 
   if (loading) return <Loader />;
   if (error) console.error(error);
@@ -32,23 +26,23 @@ function Events() {
         <MyHeader />
         <MyContent>
           <Title className="title">
-            Оберіть бажану подію
+            Оберіть бажану категорію
           </Title>
           <Row className="cards-list">
-            {filteredEvents?.map((event) => (
-              <Col key={event.key} sm={12} lg={6} xl={4}>
-                <Link to={`../event/${event.link}`}>
+            {categories?.map((category) => (
+              <Col key={category.key} sm={12} lg={6} xl={4}>
+                <Link to={`events/${category.link}`}>
                   <Card
                     className="cards-list__item"
                     hoverable
                     cover={(
                       <img
-                        src={event.cover}
-                        alt={event.title}
+                        src={category.coverName}
+                        alt={category.categoryName}
                       />
                     )}
                   >
-                    <Meta title={event.eventName} />
+                    <Meta title={category.categoryName} />
                   </Card>
                 </Link>
               </Col>
@@ -61,4 +55,4 @@ function Events() {
   );
 }
 
-export default Events;
+export default Categories;

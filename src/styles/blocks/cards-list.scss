@@ -1,0 +1,10 @@
+.cards-list {
+  row-gap: 25px;
+
+  &__item {
+    img {
+      height: 25vh;
+      object-fit: cover;
+    }
+  }
+}

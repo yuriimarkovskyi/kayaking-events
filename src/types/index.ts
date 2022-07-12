@@ -1,20 +1,8 @@
-interface ICategory {
-  key: number;
-  categoryName: string;
-  link: string;
-}
-
-interface ICategoryImages {
-  imageCover: string;
-}
-
 interface ICustomer {
   key: number;
   registrationTime: number;
-  eventData: {
-    eventName: string;
-    eventDate: number;
-  }
+  eventName: string;
+  eventDate: number;
   customerData: {
     fullName: string;
     email: string;
@@ -68,9 +56,17 @@ interface IAvailableBoats {
   sups: boolean;
 }
 
+interface ICategory {
+  key: number;
+  categoryName: string;
+  link: string;
+  coverName: string;
+}
+
 interface IEvent {
   key: number;
   eventName: string;
+  categoryName: string;
   rentalStation: string;
   link: string;
   routeMap: string;
@@ -79,11 +75,6 @@ interface IEvent {
   features: string[];
   availableBoats: IAvailableBoats;
   cover: string;
-}
-
-interface IEventImages {
-  cover: string;
-  slider: string[];
 }
 
 interface IInstructor {
@@ -127,33 +118,24 @@ interface IDateUI extends Omit<IDate, 'date'> {
 interface IPriceBoats {
   key: number;
   eventName: string;
-  soloKayaks: number;
-  doubleKayaks: number;
-  sups: number;
+  soloKayak: number;
+  doubleKayak: number;
+  sup: number;
 }
 
-interface IPriceBoatsUI extends Omit<IPriceBoats, 'soloKayaks' | 'doubleKayaks' | 'sups'> {
-  soloKayaks: number | string;
-  doubleKayaks: number | string;
-  sups: number | string;
+interface IPriceBoatsUI extends Omit<IPriceBoats, 'soloKayak' | 'doubleKayak' | 'sup'> {
+  soloKayak: number | string;
+  doubleKayak: number | string;
+  sup: number | string;
 }
 
 interface IPriceEquipment {
   key: number;
-  childSeats: number;
-  carbonPaddles: number;
-  neopreneSkirts: number;
-  nylonSkirts: number;
-  waterproofCases: number;
-}
-
-interface IPriceEquipmentUI {
-  key: number;
-  childSeats: number | string;
-  carbonPaddles: number | string;
-  neopreneSkirts: number | string;
-  nylonSkirts: number | string;
-  waterproofCases: number | string;
+  childSeat: number;
+  carbonPaddle: number;
+  neopreneSkirt: number;
+  nylonSkirt: number;
+  waterproofCase: number;
 }
 
 interface IRentalStation {
@@ -166,19 +148,16 @@ interface IRentalStation {
 
 export type {
   ICategory,
-  ICategoryImages,
   ICustomer,
   ICustomerUI,
   IDate,
   IDateUI,
   IEquipment,
   IEvent,
-  IEventImages,
   IInstructor,
   IPlaces,
   IPriceBoats,
   IPriceBoatsUI,
   IPriceEquipment,
-  IPriceEquipmentUI,
   IRentalStation,
 };

@@ -1,52 +1,48 @@
 import {
-  Button, Drawer, Popconfirm, Table,
+  Button, Drawer, Popconfirm, Table, Typography,
 } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
+import PricesEquipmentForm from 'components/Forms/PriceEquipmentForm';
 import { db } from 'config/firebase';
 import { ref } from 'firebase/database';
 import React, { useMemo, useState } from 'react';
 import { useListVals } from 'react-firebase-hooks/database';
-import { IInstructor } from 'types';
+import { IPriceEquipment } from 'types';
 import { deleteDataInDb } from 'utils/dbActions';
 
-import InstructorsForm from '../Forms/InstructorsForm';
+function PricesEquipmentTable() {
+  const { Title } = Typography;
 
-function InstructorsTable() {
   const [isVisible, setIsVisible] = useState(false);
-  const [instructors, loading, error] = useListVals<IInstructor>(ref(db, 'instructors'));
+  const [prices, loading, error] = useListVals<IPriceEquipment>(ref(db, 'prices/equipment'));
 
   const showDrawer = () => setIsVisible(true);
   const closeDrawer = () => setIsVisible(false);
 
-  const deleteInstructor = (e: number) => (
-    deleteDataInDb('instructors', 'key', e)
+  const deletePrice = (e: number) => (
+    deleteDataInDb('prices/equipment', 'key', e)
   );
 
-  const columns: ColumnsType<IInstructor> = [
+  const columns: ColumnsType<IPriceEquipment> = [
     {
-      title: 'ПІБ',
-      dataIndex: 'name',
+      title: 'Дитяче сидіння',
+      dataIndex: 'childSeat',
     },
     {
-      title: 'Соціальні мережі',
-      children: [
-        {
-          title: 'Facebook',
-          render: (value) => (
-            <a href={value?.links?.facebook} target="_blank" rel="noreferrer">
-              {value?.links?.facebook}
-            </a>
-          ),
-        },
-        {
-          title: 'Instagram',
-          render: (value) => (
-            <a href={value?.links?.instagram} target="_blank" rel="noreferrer">
-              {value?.links?.instagram}
-            </a>
-          ),
-        },
-      ],
+      title: 'Карбонове весло',
+      dataIndex: 'carbonPaddle',
+    },
+    {
+      title: 'Неопренова спідниця',
+      dataIndex: 'neopreneSkirt',
+    },
+    {
+      title: 'Нейлонова спідниця',
+      dataIndex: 'nylonSkirt',
+    },
+    {
+      title: 'Водонепроникний кейс',
+      dataIndex: 'waterproofCase',
     },
     {
       title: 'Дії',
@@ -57,7 +53,7 @@ function InstructorsTable() {
           title="Ви впевнені?"
           okText="Так"
           cancelText="Ні"
-          onConfirm={() => deleteInstructor(record.key)}
+          onConfirm={() => deletePrice(record.key)}
         >
           <Button block danger>
             Видалити
@@ -72,42 +68,50 @@ function InstructorsTable() {
       type="primary"
       htmlType="button"
       onClick={showDrawer}
+      disabled={!!prices?.length}
     >
-      Додати інструктора
+      Додати прайс
     </Button>
-  ), []);
+  ), [prices?.length]);
 
   if (error) console.error(error);
 
   return (
     <>
-      <Table
+      <Title
+        className="title"
+        level={2}
+        style={{ marginTop: '20px' }}
+      >
+        Спорядження
+      </Title>
+      <Table<IPriceEquipment>
         size="small"
         bordered
         pagination={false}
         loading={loading}
-        dataSource={instructors}
+        dataSource={prices}
         columns={columns}
         footer={() => memoizedFooter}
       />
       <Drawer
-        title="Новий інструктор"
+        title="Новий прайс"
         onClose={closeDrawer}
         visible={isVisible}
         extra={(
           <Button
             htmlType="submit"
             type="primary"
-            form="instructors-form"
+            form="prices-equipment-form"
           >
             Додати
           </Button>
-          )}
+            )}
       >
-        <InstructorsForm closeDrawer={closeDrawer} />
+        <PricesEquipmentForm closeDrawer={closeDrawer} />
       </Drawer>
     </>
   );
 }
 
-export default InstructorsTable;
+export default PricesEquipmentTable;

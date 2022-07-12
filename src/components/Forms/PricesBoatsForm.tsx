@@ -1,9 +1,10 @@
 import {
-  Form, InputNumber, message, Select,
+  Form, InputNumber, Select,
 } from 'antd';
 import React from 'react';
 import { IEvent, IPriceBoats } from 'types';
 import { pushDataToDb } from 'utils/dbActions';
+import messageSuccess from 'utils/messageSuccess';
 
 interface Props {
   closeDrawer: () => void;
@@ -14,10 +15,11 @@ function PricesBoatsForm({
   closeDrawer,
   events,
 }: Props) {
-  const [form] = Form.useForm();
+  const { useForm, useWatch, Item } = Form;
+  const [form] = useForm();
   const { Option } = Select;
 
-  const eventNameWatch = Form.useWatch('eventName', form);
+  const eventNameWatch = useWatch('eventName', form);
 
   const {
     soloKayaks: isSoloKayaksAvailable,
@@ -28,50 +30,35 @@ function PricesBoatsForm({
   const onFinish = (values: any) => {
     const {
       eventName,
-      soloKayaks,
-      doubleKayaks,
-      sups,
+      soloKayak,
+      doubleKayak,
+      sup,
     } = values;
 
     const price: IPriceBoats = {
       key: Date.now(),
       eventName,
-      soloKayaks,
-      doubleKayaks,
-      sups,
+      soloKayak: soloKayak || 0,
+      doubleKayak: doubleKayak || 0,
+      sup: sup || 0,
     };
 
     form.resetFields();
-
-    pushDataToDb('pricesBoats', price);
-
-    message.success({
-      content: 'Прайс доданий',
-      duration: 3,
-      style: {
-        marginTop: '30vh',
-      },
-    });
-
+    pushDataToDb('prices/boats', price)
+      .then(() => messageSuccess('Прайс доданий'));
     closeDrawer();
   };
 
   return (
     <Form
-      id="prices-form"
+      id="prices-boats-form"
       className="form"
-      name="prices-form"
+      name="prices-boats-form"
       layout="vertical"
       form={form}
-      initialValues={{
-        soloKayaks: 0,
-        doubleKayaks: 0,
-        sups: 0,
-      }}
       onFinish={onFinish}
     >
-      <Form.Item
-        className="form__item"
+      <Item
         name="eventName"
         label="Подія:"
         rules={[
@@ -85,38 +72,37 @@ function PricesBoatsForm({
             </Option>
           ))}
         </Select>
-      </Form.Item>
-      <Form.Item
-        name="soloKayaks"
-        label="За одномісний каяк:"
+      </Item>
+      <Item
+        name="soloKayak"
+        label="Одномісний каяк:"
         hidden={!isSoloKayaksAvailable}
         rules={[
           { required: !!isSoloKayaksAvailable },
         ]}
       >
         <InputNumber min={1} />
-      </Form.Item>
-      <Form.Item
-        name="doubleKayaks"
-        label="За двомісний каяк:"
-        tooltip="Для дитини (на дитячому сидінні) вартість буде становити половину від вказаної вартості"
+      </Item>
+      <Item
+        name="doubleKayak"
+        label="Двомісний каяк:"
         hidden={!isDoubleKayaksAvailable}
         rules={[
           { required: !!isDoubleKayaksAvailable },
         ]}
       >
         <InputNumber min={1} />
-      </Form.Item>
-      <Form.Item
-        name="sups"
-        label="За сап:"
+      </Item>
+      <Item
+        name="sup"
+        label="Сап:"
         hidden={!isSupsAvailable}
         rules={[
           { required: !!isSupsAvailable },
         ]}
       >
         <InputNumber min={1} />
-      </Form.Item>
+      </Item>
     </Form>
   );
 }

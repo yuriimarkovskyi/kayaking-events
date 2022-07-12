@@ -1,14 +1,16 @@
-import { Form, Input, message } from 'antd';
+import { Form, Input } from 'antd';
 import React from 'react';
 import { IInstructor } from 'types';
 import { pushDataToDb } from 'utils/dbActions';
+import messageSuccess from 'utils/messageSuccess';
 
 interface Props {
   closeDrawer: () => void;
 }
 
 function InstructorsForm({ closeDrawer }: Props) {
-  const [form] = Form.useForm();
+  const { useForm, Item } = Form;
+  const [form] = useForm();
 
   const onFinish = (values: any) => {
     const {
@@ -27,17 +29,8 @@ function InstructorsForm({ closeDrawer }: Props) {
     };
 
     form.resetFields();
-
-    pushDataToDb('instructors', instructor);
-
-    message.success({
-      content: 'Інструктор доданий',
-      duration: 3,
-      style: {
-        marginTop: '30vh',
-      },
-    });
-
+    pushDataToDb('instructors', instructor)
+      .then(() => messageSuccess('Інструктор доданий'));
     closeDrawer();
   };
 
@@ -50,75 +43,45 @@ function InstructorsForm({ closeDrawer }: Props) {
       name="instructors-form"
       onFinish={onFinish}
     >
-      <Form.Item
-        className="form__item"
+      <Item
         name="name"
         label="ПІБ:"
         rules={[
-          {
-            required: true,
-            message: 'Поле є обов\'язковим для заповнення',
-          },
-          {
-            whitespace: true,
-            message: 'Поле не може містити у собі лише пробіли',
-          },
-          {
-            min: 6,
-            message: 'Поле має містити у собі мінімум 6 символів',
-          },
-          {
-            max: 120,
-            message: 'Поле може містити у собі максимум 120 символів',
-          },
-          {
-            pattern: /[А-Яа-яїЇ]/,
-            message: 'У полі присутні неприпустимі символи',
-          },
+          { required: true },
+          { whitespace: true },
+          { min: 6 },
+          { max: 120 },
+          { pattern: /[А-Яа-яїЇ]/ },
         ]}
       >
         <Input />
-      </Form.Item>
-      <Form.Item
-        className="form__item"
+      </Item>
+      <Item
         name="facebook"
         label="Facebook:"
         rules={[
-          {
-            whitespace: true,
-            message: 'Поле не може містити у собі лише пробіли',
-          },
-          {
-            pattern: /[A-Za-zА\d]/,
-            message: 'У полі присутні неприпустимі символи',
-          },
+          { whitespace: true },
+          { pattern: /[A-Za-zА\d]/ },
         ]}
       >
         <Input
           addonBefore="https://www.facebook.com/"
           placeholder="user"
         />
-      </Form.Item>
-      <Form.Item
-        className="form__item"
+      </Item>
+      <Item
         name="instagram"
         label="Instagram:"
         rules={[
-          {
-            whitespace: true,
-            message: 'Поле не може містити у собі лише пробіли',
-          },
-          {
-            pattern: /[A-Za-zА\d]/,
-            message: 'У полі присутні неприпустимі символи',
-          },
+          { whitespace: true },
+          { pattern: /[A-Za-zА\d]/ },
         ]}
       >
         <Input
           addonBefore="https://www.instagram.com/"
           placeholder="user"
         />
-      </Form.Item>
+      </Item>
     </Form>
   );
 }

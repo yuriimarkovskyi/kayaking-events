@@ -1,14 +1,16 @@
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { MinusCircleOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import {
-  Button, Checkbox, Form, Input, message, Select,
+  Button, Checkbox, Form, Input, message, Select, Upload,
 } from 'antd';
 import { URL } from 'config';
-import { db } from 'config/firebase';
+import { db, storage } from 'config/firebase';
 import { ref as ref_db } from 'firebase/database';
+import { getDownloadURL, ref as ref_storage, uploadBytes } from 'firebase/storage';
 import React from 'react';
 import { useListVals } from 'react-firebase-hooks/database';
-import { IEvent, IRentalStation } from 'types';
+import { ICategory, IEvent, IRentalStation } from 'types';
 import { pushDataToDb } from 'utils/dbActions';
+import messageSuccess from 'utils/messageSuccess';
 import validateMessages from 'utils/validateMessages';
 
 interface Props {
@@ -16,11 +18,17 @@ interface Props {
 }
 
 function EventsForm({ closeDrawer }: Props) {
-  const [form] = Form.useForm();
+  const {
+    useForm,
+    useWatch,
+    Item,
+  } = Form;
+  const [form] = useForm();
   const { Option } = Select;
 
-  const rentalStationWatcher = Form.useWatch('rentalStation', form);
+  const rentalStationWatcher = useWatch('rentalStation', form);
 
+  const [categories] = useListVals<ICategory>(ref_db(db, 'categories'));
   const [rentalStations] = useListVals<IRentalStation>(ref_db(db, 'rentalStations'));
   const chosenStation = rentalStations?.find((val) => val.rentalName === rentalStationWatcher);
   const {
@@ -29,9 +37,12 @@ function EventsForm({ closeDrawer }: Props) {
     sups: isSupsPlaces,
   } = chosenStation?.totalPlaces || {};
 
-  const onFinish = (values: any) => {
+  const coverEvent = (e: any) => e.file;
+
+  const onFinish = async (values: any) => {
     const {
       eventName,
+      categoryName,
       rentalStation,
       link,
       routeMap,
@@ -44,11 +55,14 @@ function EventsForm({ closeDrawer }: Props) {
       cover,
     } = values;
 
+    const modifiedLink = link.replace(/\s/g, '');
+
     const event: IEvent = {
       key: Date.now(),
       eventName,
+      categoryName,
       rentalStation,
-      link,
+      link: modifiedLink,
       routeMap,
       title,
       description,
@@ -58,21 +72,26 @@ function EventsForm({ closeDrawer }: Props) {
         doubleKayaks: !!isDoubleKayaks,
         sups: !!isSups,
       },
-      cover,
+      cover: '',
     };
 
+    const coverRef = ref_storage(storage, `images/events/covers/${modifiedLink}/${eventName}`);
+
+    await uploadBytes(coverRef, cover)
+      .then(() => (getDownloadURL(coverRef)
+        .then((url) => {
+          event.cover = url;
+        }))
+        .catch((err) => {
+          console.error(err);
+        }))
+      .catch((err) => {
+        console.error(err);
+      });
+
     form.resetFields();
-
-    pushDataToDb('events', event);
-
-    message.success({
-      content: 'Подія додана',
-      duration: 3,
-      style: {
-        marginTop: '30vh',
-      },
-    });
-
+    pushDataToDb('events', event)
+      .then(() => messageSuccess('Подія додана'));
     closeDrawer();
   };
 
@@ -86,10 +105,9 @@ function EventsForm({ closeDrawer }: Props) {
       validateMessages={validateMessages}
       onFinish={onFinish}
     >
-      <Form.Item
-        className="form__item"
+      <Item
         name="eventName"
-        label="Подія:"
+        label="Назва події:"
         tooltip="Коротка узагальнююча назва, повну назву необхідно буде вказати у полі 'Заголовок'"
         rules={[
           { required: true },
@@ -100,9 +118,23 @@ function EventsForm({ closeDrawer }: Props) {
         ]}
       >
         <Input />
-      </Form.Item>
-      <Form.Item
-        className="form__item"
+      </Item>
+      <Item
+        name="categoryName"
+        label="Категорія події:"
+        rules={[
+          { required: true },
+        ]}
+      >
+        <Select>
+          {categories?.map((category) => (
+            <Option key={category.key} value={category.categoryName}>
+              {category.categoryName}
+            </Option>
+          ))}
+        </Select>
+      </Item>
+      <Item
         name="rentalStation"
         label="Станція проведення:"
         tooltip="Станція з якої стартує подія або звідки береться спорядження для події"
@@ -111,15 +143,14 @@ function EventsForm({ closeDrawer }: Props) {
         ]}
       >
         <Select>
-          {rentalStations?.map((val) => (
-            <Option key={val.key} value={val.rentalName}>
-              {val.rentalName}
+          {rentalStations?.map((station) => (
+            <Option key={station.key} value={station.rentalName}>
+              {station.rentalName}
             </Option>
           ))}
         </Select>
-      </Form.Item>
-      <Form.Item
-        className="form__item"
+      </Item>
+      <Item
         name="link"
         label="Лінк:"
         tooltip="Лінк за яким буде доступна сторінка події на сайті"
@@ -132,9 +163,8 @@ function EventsForm({ closeDrawer }: Props) {
         ]}
       >
         <Input addonBefore={`${URL}/event/`} />
-      </Form.Item>
-      <Form.Item
-        className="form__item"
+      </Item>
+      <Item
         name="routeMap"
         label="Карта маршруту:"
         tooltip="Посилання на активність у Страві"
@@ -148,9 +178,8 @@ function EventsForm({ closeDrawer }: Props) {
         ]}
       >
         <Input />
-      </Form.Item>
-      <Form.Item
-        className="form__item"
+      </Item>
+      <Item
         name="title"
         label="Заголовок:"
         rules={[
@@ -162,9 +191,8 @@ function EventsForm({ closeDrawer }: Props) {
         ]}
       >
         <Input />
-      </Form.Item>
-      <Form.Item
-        className="form__item"
+      </Item>
+      <Item
         name="description"
         label="Опис:"
         rules={[
@@ -176,7 +204,7 @@ function EventsForm({ closeDrawer }: Props) {
         ]}
       >
         <Input />
-      </Form.Item>
+      </Item>
       <Form.List
         name="features"
       >
@@ -191,7 +219,7 @@ function EventsForm({ closeDrawer }: Props) {
               ...restField
             }) => (
               <div className="form__list" key={key}>
-                <Form.Item
+                <Item
                   {...restField}
                   name={[name]}
                   rules={[
@@ -200,20 +228,19 @@ function EventsForm({ closeDrawer }: Props) {
                   style={{ width: '100%' }}
                 >
                   <Input />
-                </Form.Item>
+                </Item>
                 <MinusCircleOutlined onClick={() => remove(name)} />
               </div>
             ))}
-            <Form.Item>
+            <Item>
               <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
                 Ключові особливості
               </Button>
-            </Form.Item>
+            </Item>
           </>
         )}
       </Form.List>
-      <Form.Item
-        className="form__item"
+      <Item
         name="isSoloKayaks"
         label="Доступні для вибору плавзасоби:"
         valuePropName="checked"
@@ -223,9 +250,8 @@ function EventsForm({ closeDrawer }: Props) {
         >
           Одномісні каяки
         </Checkbox>
-      </Form.Item>
-      <Form.Item
-        className="form__item"
+      </Item>
+      <Item
         name="isDoubleKayaks"
         valuePropName="checked"
       >
@@ -234,9 +260,8 @@ function EventsForm({ closeDrawer }: Props) {
         >
           Двомісні каяки
         </Checkbox>
-      </Form.Item>
-      <Form.Item
-        className="form__item"
+      </Item>
+      <Item
         name="isSups"
         valuePropName="checked"
       >
@@ -245,19 +270,50 @@ function EventsForm({ closeDrawer }: Props) {
         >
           Сапи
         </Checkbox>
-      </Form.Item>
-      <Form.Item
-        className="form__item"
+      </Item>
+      <Item
         name="cover"
         label="Обкладинка:"
-        tooltip="Посилання на папку з обкладинкою"
+        valuePropName="file"
+        getValueFromEvent={coverEvent}
+        tooltip="Доступні формати: png, jpg, jpeg. Розмір файлу не має перевищувати 2 мб"
         rules={[
-          { required: true },
-          { whitespace: true },
+          {
+            required: true,
+            message: 'Необхідно завантажити обкладинку',
+          },
         ]}
       >
-        <Input />
-      </Form.Item>
+        <Upload
+          accept=".png, .jpg, .jpeg"
+          maxCount={1}
+          listType="picture"
+          beforeUpload={(file) => {
+            const allowedExtensions = file.type === 'image/png'
+              || file.type === 'image/jpg'
+              || file.type === 'image/jpeg';
+
+            if (!allowedExtensions) {
+              message.error('Доступні формати: png, jpg, jpeg');
+
+              return Upload.LIST_IGNORE;
+            }
+
+            const maxFileSize = file.size / 1024 / 1024 < 2;
+
+            if (!maxFileSize) {
+              message.error('Розмір файлу не має перевищувати 2 мб');
+
+              return Upload.LIST_IGNORE;
+            }
+            return false;
+          }}
+        >
+          <Button icon={<UploadOutlined />}>
+            Завантажити
+          </Button>
+        </Upload>
+      </Item>
     </Form>
   );
 }

@@ -14,28 +14,32 @@ import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import validateMessages from 'utils/validateMessages';
 
 function AuthorizationForm() {
-  const { Title } = Typography;
-
   const auth = getAuth(app);
   const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
 
-  const [form] = Form.useForm();
-  const isRemember = Form.useWatch('isRemember', form);
+  const { Title } = Typography;
+  const {
+    useForm,
+    Item,
+  } = Form;
+  const [form] = useForm();
 
   const onFinish = (values: any) => {
     const {
       email,
       password,
+      isRemember,
     } = values;
 
     if (isRemember) {
-      return setPersistence(auth, browserLocalPersistence)
+      setPersistence(auth, browserLocalPersistence)
+        .then(() => signInWithEmailAndPassword(email, password))
+        .catch((error) => console.error(error));
+    } else {
+      setPersistence(auth, browserSessionPersistence)
         .then(() => signInWithEmailAndPassword(email, password))
         .catch((error) => console.error(error));
     }
-    return setPersistence(auth, browserSessionPersistence)
-      .then(() => signInWithEmailAndPassword(email, password))
-      .catch((error) => console.error(error));
   };
 
   return (
@@ -50,7 +54,7 @@ function AuthorizationForm() {
       <Title className="title" level={2}>
         Форма авторизації
       </Title>
-      <Form.Item
+      <Item
         className="form__item"
         name="email"
         rules={[
@@ -62,8 +66,8 @@ function AuthorizationForm() {
         ]}
       >
         <Input prefix={<UserOutlined />} placeholder="E-mail" />
-      </Form.Item>
-      <Form.Item
+      </Item>
+      <Item
         className="form__item"
         name="password"
         rules={[
@@ -72,17 +76,16 @@ function AuthorizationForm() {
         ]}
       >
         <Input.Password prefix={<LockOutlined />} placeholder="Пароль" />
-      </Form.Item>
-      <Form.Item
+      </Item>
+      <Item
         name="isRemember"
         valuePropName="checked"
-        initialValue={false}
       >
         <Checkbox>
           Запам`ятати
         </Checkbox>
-      </Form.Item>
-      <Form.Item>
+      </Item>
+      <Item>
         <Button
           type="primary"
           htmlType="submit"
@@ -91,7 +94,7 @@ function AuthorizationForm() {
         >
           Авторизуватись
         </Button>
-      </Form.Item>
+      </Item>
     </Form>
   );
 }

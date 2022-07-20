@@ -1,3 +1,20 @@
+declare global {
+  interface Window {
+    LiqPayCheckoutCallback: any;
+    LiqPayCheckout: any;
+  }
+}
+
+interface IPaymentPayload {
+  version: number;
+  public_key: string | undefined;
+  action: string;
+  amount: number;
+  currency: string;
+  description: string;
+  order_id: string | number;
+}
+
 interface ICustomer {
   key: number;
   registrationTime: number;
@@ -61,6 +78,7 @@ interface ICategory {
   categoryName: string;
   link: string;
   coverName: string;
+  isPublished: boolean;
 }
 
 interface IEvent {
@@ -75,6 +93,7 @@ interface IEvent {
   features: string[];
   availableBoats: IAvailableBoats;
   cover: string;
+  isPublished: boolean;
 }
 
 interface IInstructor {
@@ -155,6 +174,7 @@ export type {
   IEquipment,
   IEvent,
   IInstructor,
+  IPaymentPayload,
   IPlaces,
   IPriceBoats,
   IPriceBoatsUI,

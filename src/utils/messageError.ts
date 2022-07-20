@@ -1,7 +1,7 @@
 import { message } from 'antd';
 
-const messageSuccess = (content: string) => {
-  message.success({
+const messageError = (content: string) => {
+  message.error({
     content,
     duration: 5,
     style: {
@@ -10,4 +10,4 @@ const messageSuccess = (content: string) => {
   });
 };
 
-export default messageSuccess;
+export default messageError;

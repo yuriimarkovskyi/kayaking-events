@@ -1,4 +1,4 @@
-import 'styles/index.scss';
+import 'assets/scss/index.scss';
 
 import { ConfigProvider } from 'antd';
 import uk_UA from 'antd/lib/locale/uk_UA';

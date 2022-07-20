@@ -1,0 +1,7 @@
+.event-information {
+  &__list{
+    &.isCompleted {
+      text-decoration: line-through;
+    }
+  }
+}

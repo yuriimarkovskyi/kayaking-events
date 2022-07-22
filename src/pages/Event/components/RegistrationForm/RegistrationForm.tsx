@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { ICustomer, IDate } from 'types';
 import { pushDataToDb } from 'utils/dbActions';
 import messageSuccess from 'utils/messageSuccess';
-import validateMessages from 'utils/validateMessages';
+import validationMessages from 'utils/validationMessages';
 
 interface Props {
   eventName: string | undefined;
@@ -63,7 +63,7 @@ function RegistrationForm({
       name="registration-form"
       layout="vertical"
       form={form}
-      validateMessages={validateMessages}
+      validateMessages={validationMessages}
       onFinish={onFinish}
     >
       <Stepper

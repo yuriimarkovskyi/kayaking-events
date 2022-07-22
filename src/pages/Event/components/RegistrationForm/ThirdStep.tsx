@@ -1,8 +1,8 @@
 import { Card, Statistic } from 'antd';
 import Loader from 'components/Loader';
-import PaymentWidget from 'components/PaymentWidget';
 import { db } from 'config/firebase';
 import { ref } from 'firebase/database';
+import PaymentWidget from 'pages/Event/components/RegistrationForm/PaymentWidget';
 import React, { useEffect, useState } from 'react';
 import { useListVals } from 'react-firebase-hooks/database';
 import { ICustomer, IPriceBoats, IPriceEquipment } from 'types';

@@ -1,4 +1,4 @@
-const validateMessages = {
+const validationMessages = {
   required: 'Обов`язкове поле',
   whitespace: 'Поле не може бути пустим',
   string: {
@@ -14,4 +14,4 @@ const validateMessages = {
   },
 };
 
-export default validateMessages;
+export default validationMessages;

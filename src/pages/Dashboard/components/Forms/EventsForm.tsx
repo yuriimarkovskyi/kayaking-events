@@ -1,6 +1,12 @@
-import { MinusCircleOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import {
-  Button, Checkbox, Form, Input, message, Select, Upload,
+  CheckOutlined,
+  CloseOutlined,
+  MinusCircleOutlined,
+  PlusOutlined,
+  UploadOutlined,
+} from '@ant-design/icons';
+import {
+  Button, Checkbox, Form, Input, message, Select, Switch, Upload,
 } from 'antd';
 import { URL } from 'config';
 import { db, storage } from 'config/firebase';
@@ -11,7 +17,7 @@ import { useListVals } from 'react-firebase-hooks/database';
 import { ICategory, IEvent, IRentalStation } from 'types';
 import { pushDataToDb } from 'utils/dbActions';
 import messageSuccess from 'utils/messageSuccess';
-import validateMessages from 'utils/validateMessages';
+import validationMessages from 'utils/validationMessages';
 
 interface Props {
   closeDrawer: () => void;
@@ -58,7 +64,7 @@ function EventsForm({ closeDrawer }: Props) {
         sups: !!values.isSups,
       },
       cover: values.cover,
-      isPublished: false,
+      isPublished: values.isPublished,
     };
 
     const coverRef = ref_storage(storage, `images/events/cover/${modifiedLink}/${values.eventName}`);
@@ -88,7 +94,7 @@ function EventsForm({ closeDrawer }: Props) {
       name="events-form"
       layout="vertical"
       form={form}
-      validateMessages={validateMessages}
+      validateMessages={validationMessages}
       onFinish={onFinish}
     >
       <Item
@@ -231,9 +237,7 @@ function EventsForm({ closeDrawer }: Props) {
         label="Доступні для вибору плавзасоби:"
         valuePropName="checked"
       >
-        <Checkbox
-          disabled={!isSoloKayaksPlaces}
-        >
+        <Checkbox disabled={!isSoloKayaksPlaces}>
           Одномісні каяки
         </Checkbox>
       </Item>
@@ -241,9 +245,7 @@ function EventsForm({ closeDrawer }: Props) {
         name="isDoubleKayaks"
         valuePropName="checked"
       >
-        <Checkbox
-          disabled={!isDoubleKayaksPlaces}
-        >
+        <Checkbox disabled={!isDoubleKayaksPlaces}>
           Двомісні каяки
         </Checkbox>
       </Item>
@@ -251,11 +253,20 @@ function EventsForm({ closeDrawer }: Props) {
         name="isSups"
         valuePropName="checked"
       >
-        <Checkbox
-          disabled={!isSupsPlaces}
-        >
+        <Checkbox disabled={!isSupsPlaces}>
           Сапи
         </Checkbox>
+      </Item>
+      <Item
+        name="isPublished"
+        label="Опубліковано:"
+        valuePropName="checked"
+        initialValue
+      >
+        <Switch
+          checkedChildren={<CheckOutlined />}
+          unCheckedChildren={<CloseOutlined />}
+        />
       </Item>
       <Item
         name="cover"

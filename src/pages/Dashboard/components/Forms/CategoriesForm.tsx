@@ -1,6 +1,6 @@
-import { UploadOutlined } from '@ant-design/icons';
+import { CheckOutlined, CloseOutlined, UploadOutlined } from '@ant-design/icons';
 import {
-  Button, Form, Input, message, Upload,
+  Button, Form, Input, message, Switch, Upload,
 } from 'antd';
 import { storage } from 'config/firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -8,7 +8,7 @@ import React from 'react';
 import { ICategory } from 'types';
 import { pushDataToDb } from 'utils/dbActions';
 import messageSuccess from 'utils/messageSuccess';
-import validateMessages from 'utils/validateMessages';
+import validationMessages from 'utils/validationMessages';
 
 interface Props {
   closeDrawer: () => void;
@@ -24,25 +24,19 @@ function CategoriesForm({ closeDrawer }: Props) {
   const coverEvent = (e: any) => e.file;
 
   const onFinish = async (values: any) => {
-    const {
-      categoryName,
-      link,
-      cover,
-    } = values;
-
-    const modifiedLink = link.replace(/\s/g, '');
+    const modifiedLink = values.link.replace(/\s/g, '');
 
     const category: ICategory = {
       key: Date.now(),
-      categoryName,
+      categoryName: values.categoryName,
       link: modifiedLink,
       coverName: '',
-      isPublished: false,
+      isPublished: values.isPublished,
     };
 
-    const coverRef = ref(storage, `images/categories/covers/${modifiedLink}/${categoryName}`);
+    const coverRef = ref(storage, `images/categories/covers/${modifiedLink}/${values.categoryName}`);
 
-    await uploadBytes(coverRef, cover)
+    await uploadBytes(coverRef, values.cover)
       .then(() => (getDownloadURL(coverRef)
         .then((url) => {
           category.coverName = url;
@@ -67,7 +61,7 @@ function CategoriesForm({ closeDrawer }: Props) {
       name="categories-form"
       layout="vertical"
       form={form}
-      validateMessages={validateMessages}
+      validateMessages={validationMessages}
       onFinish={onFinish}
     >
       <Item
@@ -95,6 +89,17 @@ function CategoriesForm({ closeDrawer }: Props) {
         ]}
       >
         <Input addonBefore="category/" />
+      </Item>
+      <Item
+        name="isPublished"
+        label="Опубліковано:"
+        valuePropName="checked"
+        initialValue
+      >
+        <Switch
+          checkedChildren={<CheckOutlined />}
+          unCheckedChildren={<CloseOutlined />}
+        />
       </Item>
       <Item
         name="cover"

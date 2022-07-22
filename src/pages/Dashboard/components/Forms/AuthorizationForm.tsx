@@ -11,7 +11,7 @@ import {
 } from 'firebase/auth';
 import React from 'react';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
-import validateMessages from 'utils/validateMessages';
+import validationMessages from 'utils/validationMessages';
 
 function AuthorizationForm() {
   const auth = getAuth(app);
@@ -48,7 +48,7 @@ function AuthorizationForm() {
       name="authorization-form"
       layout="vertical"
       form={form}
-      validateMessages={validateMessages}
+      validateMessages={validationMessages}
       onFinish={onFinish}
     >
       <Title className="title" level={2}>
